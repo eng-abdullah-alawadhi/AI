@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -27,9 +27,10 @@ a{color:var(--ink)} a:hover{color:var(--lime-ink)}
 .wrap{max-width:860px;margin:0 auto;padding:0 20px}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
 header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
 .brand span{font-size:15px;color:var(--ink-2);font-weight:500}
-.lang{display:flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
 .lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
 .lang button[aria-pressed=true]{background:var(--lime);color:#fff}
 .hero{padding:56px 0 32px}
@@ -92,8 +93,8 @@ footer{padding:0 0 48px;color:var(--mute);font-size:14px}
       @eng.abd.alawadhi <span data-i="by">by Abdullah Alawadhi</span>
     </a>
     <div class="lang" role="group" aria-label="Language">
-      <button type="button" id="btn-en" aria-pressed="true">EN</button>
-      <button type="button" id="btn-ar" aria-pressed="false">عربي</button>
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
     </div>
   </div>
 </header>
@@ -489,8 +490,8 @@ and WhatsApp number. Never invent prices.`;</pre>
   $$("[data-i]").forEach(function(el){ EN[el.getAttribute("data-i")] = el.innerHTML; });
   T.en = EN;
 
-  var lang = "en";
-  try { lang = localStorage.getItem("dm-guide-lang") || ((navigator.language||"").slice(0,2)==="ar" ? "ar" : "en"); } catch(e){}
+  var lang = "ar";
+  try { lang = localStorage.getItem("dm-guide-lang-v2") || "ar"; } catch(e){}
 
   function setLang(l){
     lang = l;
@@ -502,7 +503,7 @@ and WhatsApp number. Never invent prices.`;</pre>
     document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
     $("#btn-en").setAttribute("aria-pressed", l==="en");
     $("#btn-ar").setAttribute("aria-pressed", l==="ar");
-    try { localStorage.setItem("dm-guide-lang", l); } catch(e){}
+    try { localStorage.setItem("dm-guide-lang-v2", l); } catch(e){}
     renderScripts();
   }
   $("#btn-en").addEventListener("click", function(){ setLang("en"); });
