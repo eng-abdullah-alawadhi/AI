@@ -111,7 +111,7 @@ footer{padding:0 0 48px;color:var(--mute);font-size:14px}
     <div class="field"><label for="f-handle" data-i="fHandle">Your Instagram handle</label><input id="f-handle" value="eng.abd.alawadhi"></div>
     <div class="field"><label for="f-kw" data-i="fKw">Trigger keyword</label><input id="f-kw" value="AI"></div>
     <div class="field"><label for="f-gift" data-i="fGift">What they unlock</label><input id="f-gift" value="the full step-by-step setup guide"></div>
-    <div class="field"><label for="f-link" data-i="fLink">Link to it</label><input id="f-link" value="https://your-site.github.io/guide"></div>
+    <div class="field"><label for="f-link" data-i="fLink">Link to it</label><input id="f-link" value="https://www.your-site.com"></div>
   </section>
 
   <div class="routes" role="tablist" aria-label="Setup route">
@@ -414,7 +414,7 @@ and WhatsApp number. Never invent prices.`;</pre>
       lead:"واحد يكتب كلمة بالتعليقات، يتابعك، ويوصله دايركت فيه الملف اللي وعدته فيه — كل هذا بأقل من ثانيتين وبدون ما تلمس التلفون. هالصفحة تمشيك خطوة خطوة. علّم على كل خطوة تخلصها، والتقدم ينحفظ على جهازك.",
       m1:"٢٠ دقيقة", m2:"بدون برمجة", m3:"فيه مسار للمبرمجين",
       setupH:"عدّل الرسائل على مقاسك", setupHint:"اكتب بياناتك وكل الرسائل الجاهزة بالصفحة تتغير.",
-      fHandle:"حسابك بانستغرام", fKw:"الكلمة المفتاحية", fGift:"وش يحصلون عليه", fLink:"الرابط",
+      fHandle:"حسابك بانستغرام", fKw:"الكلمة المفتاحية", fGift:"شنو يحصلون عليه", fLink:"الرابط",
       tabNc:"بدون برمجة (ManyChat)", tabDev:"للمبرمجين (Instagram API)",
       done:"خلصت",
       nc1h:"حوّل حسابك إلى حساب احترافي",
@@ -471,7 +471,7 @@ and WhatsApp number. Never invent prices.`;</pre>
       dev4tip:"قواعد تضرك إذا نسيتها: ما تقدر تراسل المستخدم إلا خلال ٢٤ ساعة من آخر رسالة منه؛ الـ <code>comment_id</code> كمستلم يشتغل مرة وحدة لكل تعليق؛ وفحص المتابعة مو موجود بالـ API، فخلّ البوابة على رد («YES»).",
       dev5h:"ضف رد بالذكاء الاصطناعي لكل شي ثاني",
       dev5p:"الرسائل اللي ما طابقت شي تروح لنموذج لغوي مع system prompt قصير عنك وقاعدة صارمة إنه يرد بلغة المرسل وبأقل من ٣ أسطر. احفظ مفتاح الـ API كـ secret، حدّ الردود برد واحد لكل رسالة، ودايم اعطهم طريقة يوصلون للإنسان:",
-      dev5tip:"ابدأ بتدفق الكلمة بس. ضف الذكاء الاصطناعي بعد ما تقرأ ٥٠ دايركت حقيقي — وقتها تعرف الناس وش تسأل فعلاً.",
+      dev5tip:"ابدأ بتدفق الكلمة بس. ضف الذكاء الاصطناعي بعد ما تقرأ ٥٠ دايركت حقيقي — وقتها تعرف الناس شنو تسأل فعلاً.",
       dev6h:"جدّد التوكن وانطلق",
       dev6l1:"الـ long-lived token ينتهي بعد ٦٠ يوم. ضف دالة مجدولة تستدعي <code>GET /refresh_access_token?grant_type=ig_refresh_token</code> كل ٣٠ يوم وتحدّث الـ secret.",
       dev6l2:"قدّم App Review لصلاحية <code>instagram_business_manage_messages</code> مع تسجيل شاشة: تعليق ← دايركت ← رد.",
@@ -480,7 +480,7 @@ and WhatsApp number. Never invent prices.`;</pre>
       dev7l1:"سجّل كل حدث بـ Firestore: تعليق ← دايركت انرسل ← YES ← اهتمام ← رقم انعطى.",
       dev7l2:"الأرقام الوحيدة اللي تهم: تعليقات لكل بوست، نسبة اللي ردوا YES، نسبة اللي عطوا رقم. صلّح أضعف خطوة أول.",
       finH:"بنيتها؟ ورّني.",
-      finP:"أرسل لي سكرين شوت لأول رد أوتوماتيك عندك وقل لي وش تبي تؤتمت بعدها — واتساب، حجوزات، تقارير. هذا اللي أنشر عنه كل أسبوع.",
+      finP:"أرسل لي سكرين شوت لأول رد أوتوماتيك عندك وقل لي شنو تبي تؤتمت بعدها — واتساب، حجوزات، تقارير. هذا اللي أنشر عنه كل أسبوع.",
       finBtn:"تابع @eng.abd.alawadhi",
       foot:"عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت"
     }
@@ -522,7 +522,7 @@ and WhatsApp number. Never invent prices.`;</pre>
       pub: function(v){ return "شوف الدايركت 📩"; },
       m1:  function(v){ return "هلا 👋 هالرد وصلك بأقل من ثانيتين، بدون أي تدخل بشري. هذا نوع الأنظمة اللي أبنيها."; },
       m2:  function(v){ return "تبي " + v.gift + "؟ تابع @" + v.handle + " أول، وبعدين اضغط الزر اللي تحت 👇"; },
-      m3:  function(v){ return "تفضل: " + v.link + "\n\nوش تبيني أؤتمت بعدها؟\n1️⃣ ردود واتساب\n2️⃣ حجوزات\n3️⃣ تقارير"; },
+      m3:  function(v){ return "تفضل: " + v.link + "\n\nشنو تبيني أؤتمت بعدها؟\n1️⃣ ردود واتساب\n2️⃣ حجوزات\n3️⃣ تقارير"; },
       def: function(v){ return "ياهلا 👋 عبدالله معاك. رد برقم:\n١ — أبي " + v.gift + "\n٢ — عندي شركة وأبي نظام\n٣ — بس أسلّم"; }
     }
   };
