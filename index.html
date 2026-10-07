@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Instagram AI DM Auto-Reply — Step-by-step setup</title>
+<meta name="description" content="Set up an Instagram comment-to-DM auto reply in 20 minutes. No-code (ManyChat) and developer (Instagram API + Cloud Function) routes. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+.lang{display:flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:14ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:1fr 1fr}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:1fr}}
+.routes{display:flex;gap:8px;margin:0 0 20px;border-bottom:2px solid var(--line)}
+.routes button{font:inherit;font-weight:700;font-size:17px;background:none;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:12px 6px;color:var(--mute);cursor:pointer;min-height:48px}
+.routes button[aria-selected=true]{color:var(--ink);border-color:var(--lime)}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+pre{background:var(--ink);color:#E6EDF3;border-radius:12px;padding:16px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.5;margin:12px 0;direction:ltr;text-align:left}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener">
+      <svg width="34" height="21" viewBox="0 0 56 34" aria-hidden="true"><rect width="56" height="34" rx="4" fill="#FFFFFF"/><rect width="56" height="11.33" rx="4" fill="#007A3D"/><rect y="22.67" width="56" height="11.33" rx="4" fill="#CE1126"/><path d="M0 0h18l10 11.33v11.34L18 34H0z" fill="#10251B"/></svg>
+      @eng.abd.alawadhi <span data-i="by">by Abdullah Alawadhi</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-en" aria-pressed="true">EN</button>
+      <button type="button" id="btn-ar" aria-pressed="false">عربي</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 data-i="h1">Make Instagram answer your DMs for you.</h1>
+    <p data-i="lead">Someone comments a keyword on your post, follows you, and gets a DM with your resource — all in under two seconds, with nobody touching the phone. This page walks you through it. Tick each step as you go; your progress is saved on this device.</p>
+    <div class="meta"><span data-i="m1">20 minutes</span><span data-i="m2">No code needed</span><span data-i="m3">Developer route included</span></div>
+  </section>
+
+  <section class="setup" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH">Personalize the scripts below</h2>
+    <p class="hint" data-i="setupHint">Type your own values and every message script on this page updates.</p>
+    <div class="field"><label for="f-handle" data-i="fHandle">Your Instagram handle</label><input id="f-handle" value="eng.abd.alawadhi"></div>
+    <div class="field"><label for="f-kw" data-i="fKw">Trigger keyword</label><input id="f-kw" value="AI"></div>
+    <div class="field"><label for="f-gift" data-i="fGift">What they unlock</label><input id="f-gift" value="the full step-by-step setup guide"></div>
+    <div class="field"><label for="f-link" data-i="fLink">Link to it</label><input id="f-link" value="https://your-site.github.io/guide"></div>
+  </section>
+
+  <div class="routes" role="tablist" aria-label="Setup route">
+    <button type="button" role="tab" id="tab-nc" aria-selected="true" aria-controls="route-nc" data-i="tabNc">No-code (ManyChat)</button>
+    <button type="button" role="tab" id="tab-dev" aria-selected="false" aria-controls="route-dev" data-i="tabDev">Developer (Instagram API)</button>
+  </div>
+
+  <div class="progress"><span id="prog-label">0 / 7</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <!-- ================= NO-CODE ROUTE ================= -->
+  <section id="route-nc" role="tabpanel" aria-labelledby="tab-nc">
+
+    <details class="step" data-step="nc1" open>
+      <summary><span class="num">1</span><h3 data-i="nc1h">Switch to a Professional account</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="nc1p">Instagram only lets Business or Creator accounts use message automation. It's free and reversible.</p>
+        <ul>
+          <li data-i="nc1l1">Instagram app → your profile → menu → <strong>Settings and privacy</strong> → <strong>Account type and tools</strong> → <strong>Switch to professional account</strong>.</li>
+          <li data-i="nc1l2">Pick a category. "Business service" or "Software company" both work.</li>
+          <li data-i="nc1l3">Then: <strong>Settings → Messages and story replies → Message controls</strong> → set "Allow access to messages" to on. Without this, the bot can't send.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="nc2">
+      <summary><span class="num">2</span><h3 data-i="nc2h">Create a ManyChat account and connect Instagram</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="nc2l1">Go to <a href="https://manychat.com" target="_blank" rel="noopener">manychat.com</a>, sign up, choose <strong>Instagram</strong> as your channel.</li>
+          <li data-i="nc2l2">Log in with Instagram when asked and allow all requested permissions (messages, comments). If it won't connect, step 1's "Allow access to messages" toggle is usually the reason.</li>
+          <li data-i="nc2l3">The free plan covers comment-to-DM and keyword replies. You only need to pay later for advanced follow checks or large audiences.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="nc3">
+      <summary><span class="num">3</span><h3 data-i="nc3h">Build the comment-to-DM automation</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="nc3l1"><strong>Automation → New Automation → Instagram → "Send a message when someone comments on a post"</strong> (names change a little between ManyChat versions).</li>
+          <li data-i="nc3l2">Choose <strong>a specific post</strong> (your carousel) — or "any post" if you want one flow for everything.</li>
+          <li data-i="nc3l3">Trigger on <strong>specific keywords</strong>. Add the keyword in every spelling people will use: <code class="kw-list">AI, ai, Ai</code>, plus Arabic variants like <code>اي</code> and <code>ذكاء</code>.</li>
+          <li data-i="nc3l4">Turn on <strong>public reply to the comment</strong> and paste this (ManyChat rotates between several if you add more):</li>
+        </ul>
+        <div class="script" data-script="pub"></div>
+        <div class="tip" data-i="nc3tip">Instagram's own rule: the bot can only DM someone who commented, replied to a story, or messaged you first. The comment is the opt-in — that's why the keyword matters.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="nc4">
+      <summary><span class="num">4</span><h3 data-i="nc4h">Write the DM: opener, follow gate, reward</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="nc4p">Three messages, in order. Copy and paste them into the flow.</p>
+        <p><strong data-i="nc4a">Message 1 — the opener (this is your proof)</strong></p>
+        <div class="script" data-script="m1"></div>
+        <p><strong data-i="nc4b">Message 2 — the follow gate</strong> <span data-i="nc4b2">(add a button under it labelled "I'm following")</span></p>
+        <div class="script" data-script="m2"></div>
+        <p><strong data-i="nc4c">Message 3 — the reward + next question</strong> <span data-i="nc4c2">(attach after the button, add 3 quick-reply buttons)</span></p>
+        <div class="script" data-script="m3"></div>
+        <div class="tip" data-i="nc4tip">On the Pro plan you can add a real "Is follower?" condition before message 3. On the free plan the button is an honor system — it still converts most people, because they want the reward.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="nc5">
+      <summary><span class="num">5</span><h3 data-i="nc5h">Add a default reply for every new DM</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="nc5p">This catches people who DM you directly instead of commenting. <strong>Automation → Default Reply</strong> (sometimes under "Basic"). Set it to reply once per 24 hours so it doesn't spam a real conversation.</p>
+        <div class="script" data-script="def"></div>
+        <ul>
+          <li data-i="nc5l1">Reply <strong>1</strong> → send the same reward flow as step 4.</li>
+          <li data-i="nc5l2">Reply <strong>2</strong> → ask for business name + WhatsApp number, save them to the contact. This is your lead list.</li>
+          <li data-i="nc5l3">Reply <strong>3</strong> → a short thank-you, then stop. You answer by hand.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="nc6">
+      <summary><span class="num">6</span><h3 data-i="nc6h">Test it with a second account</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="nc6l1">Set the automation to <strong>Active</strong>.</li>
+          <li data-i="nc6l2">From another account (a friend's is fine), comment the keyword. You should see the public reply within seconds and a DM right after.</li>
+          <li data-i="nc6l3">Tap the follow button, check message 3 arrives and the link opens.</li>
+          <li data-i="nc6l4">Nothing happened? Check in this order: automation is Active → the post is the right one → keyword spelling → "Allow access to messages" in Instagram.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="nc7">
+      <summary><span class="num">7</span><h3 data-i="nc7h">Post, pin, and keep the loop going</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="nc7l1">Pin a comment from yourself on the post with the keyword in it. People copy what they see.</li>
+          <li data-i="nc7l2">Change the keyword per post (AI, AUTO, BOT…). One flow per post keeps the stats clean.</li>
+          <li data-i="nc7l3">Reply by hand to anyone who writes after the bot. Automation opens the conversation; you close it.</li>
+          <li data-i="nc7l4">Check ManyChat's contact list weekly — every person in it opted in. That's your audience for the next launch.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= DEVELOPER ROUTE ================= -->
+  <section id="route-dev" role="tabpanel" aria-labelledby="tab-dev" class="hidden">
+
+    <details class="step" data-step="dev1" open>
+      <summary><span class="num">1</span><h3 data-i="dev1h">Create a Meta app with Instagram Messaging</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="dev1l1">Your Instagram must be a Professional account (see the no-code route, step 1).</li>
+          <li data-i="dev1l2"><a href="https://developers.facebook.com" target="_blank" rel="noopener">developers.facebook.com</a> → Create app → use case <strong>"Manage messaging and content on Instagram"</strong> (Instagram API with Instagram Login).</li>
+          <li data-i="dev1l3">Add your Instagram account as a tester, generate a user access token with <code>instagram_business_basic</code>, <code>instagram_business_manage_messages</code> and <code>instagram_business_manage_comments</code>. Exchange it for a long-lived token (60 days) and store it as a secret.</li>
+          <li data-i="dev1l4">For your own account you can run in development mode. To message the public you need <strong>App Review</strong> for the messaging permission — budget a few days and record a screen video of the flow.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="dev2">
+      <summary><span class="num">2</span><h3 data-i="dev2h">Deploy a webhook Cloud Function</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dev2p">One HTTPS function handles both the verification handshake (GET) and events (POST). Firebase Functions v2, Node 20. Set the secrets first:</p>
+<pre>firebase functions:secrets:set IG_TOKEN
+firebase functions:secrets:set IG_VERIFY_TOKEN
+firebase functions:secrets:set IG_APP_SECRET</pre>
+<pre>// functions/igWebhook.js
+const { onRequest } = require("firebase-functions/v2/https");
+const { defineSecret } = require("firebase-functions/params");
+const crypto = require("crypto");
+
+const IG_TOKEN = defineSecret("IG_TOKEN");
+const IG_VERIFY_TOKEN = defineSecret("IG_VERIFY_TOKEN");
+const IG_APP_SECRET = defineSecret("IG_APP_SECRET");
+
+const KEYWORDS = ["ai", "اي", "ذكاء"];
+const GRAPH = "https://graph.instagram.com/v21.0";
+
+async function ig(path, body, token) {
+  const r = await fetch(`${GRAPH}/${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`${path} ${r.status} ${await r.text()}`);
+  return r.json();
+}
+
+exports.igWebhook = onRequest(
+  { region: "us-central1", secrets: [IG_TOKEN, IG_VERIFY_TOKEN, IG_APP_SECRET] },
+  async (req, res) => {
+    // 1) Verification handshake
+    if (req.method === "GET") {
+      const ok = req.query["hub.mode"] === "subscribe" &&
+                 req.query["hub.verify_token"] === IG_VERIFY_TOKEN.value();
+      return ok ? res.status(200).send(req.query["hub.challenge"]) : res.sendStatus(403);
+    }
+
+    // 2) Signature check
+    const sig = req.get("x-hub-signature-256") || "";
+    const expected = "sha256=" + crypto
+      .createHmac("sha256", IG_APP_SECRET.value())
+      .update(req.rawBody).digest("hex");
+    if (sig.length !== expected.length ||
+        !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
+      return res.sendStatus(401);
+    }
+    res.sendStatus(200); // ack fast; Meta retries if you take &gt;20s
+
+    const token = IG_TOKEN.value();
+    for (const entry of req.body.entry || []) {
+      for (const ch of entry.changes || []) {
+        if (ch.field !== "comments") continue;
+        const c = ch.value;
+        const text = (c.text || "").trim().toLowerCase();
+        if (!KEYWORDS.some(k =&gt; text.includes(k))) continue;
+        if (c.from?.id === entry.id) continue; // ignore my own comments
+        try {
+          await ig(`${c.id}/replies`, { message: "Check your DMs 📩 شوف الدايركت" }, token);
+          await ig(`${entry.id}/messages`,
+            { recipient: { comment_id: c.id },
+              message: { text: "هلا 👋 هالرد وصلك بأقل من ثانيتين بدون أي تدخل بشري.\nWant the exact setup? Follow me, then reply YES." } },
+            token);
+        } catch (e) { console.error(e.message); }
+      }
+    }
+  }
+);</pre>
+        <p data-i="dev2p2">Export it from <code>index.js</code>, then deploy only this function:</p>
+<pre>firebase deploy --only functions:igWebhook</pre>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="dev3">
+      <summary><span class="num">3</span><h3 data-i="dev3h">Subscribe the webhook</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="dev3l1">Meta app dashboard → <strong>Instagram → Webhooks</strong> → callback URL = your function URL, verify token = the <code>IG_VERIFY_TOKEN</code> you set.</li>
+          <li data-i="dev3l2">Subscribe to <code>comments</code> and <code>messages</code>.</li>
+          <li data-i="dev3l3">Then subscribe your account to the app: <code>POST /&lt;IG_USER_ID&gt;/subscribed_apps?subscribed_fields=comments,messages</code> with your token.</li>
+          <li data-i="dev3l4">Comment the keyword from a test account. Watch <code>firebase functions:log --only igWebhook</code>.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="dev4">
+      <summary><span class="num">4</span><h3 data-i="dev4h">Handle replies and store leads in Firestore</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dev4p">Messaging events arrive under <code>entry[].messaging[]</code>. Route on the text and keep a tiny state machine per sender:</p>
+<pre>for (const m of entry.messaging || []) {
+  if (!m.message?.text || m.message.is_echo) continue;
+  const sender = m.sender.id;
+  const t = m.message.text.trim().toLowerCase();
+  const ref = db.collection("ig_leads").doc(sender);
+  const snap = await ref.get();
+  const state = snap.exists ? snap.data().state : "new";
+
+  if (t === "yes" &amp;&amp; state === "new") {
+    await ig(`${entry.id}/messages`, { recipient: { id: sender },
+      message: { text: `Here you go: ${GUIDE_URL}\nWhat should I automate next? 1 WhatsApp  2 Bookings  3 Reports` } }, token);
+    await ref.set({ state: "rewarded", at: new Date() }, { merge: true });
+  } else if (["1","2","3"].includes(t)) {
+    await ref.set({ interest: t, state: "qualified" }, { merge: true });
+    await ig(`${entry.id}/messages`, { recipient: { id: sender },
+      message: { text: "Perfect. Send me your business name and WhatsApp number and I'll reach out." } }, token);
+  }
+}</pre>
+        <div class="tip" data-i="dev4tip">Rules that bite: you can only message a user within 24 hours of their last message to you; the <code>comment_id</code> recipient works once per comment; and a follow check isn't exposed by the API, so gate on a reply ("YES") instead.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="dev5">
+      <summary><span class="num">5</span><h3 data-i="dev5h">Add an AI reply for everything else</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dev5p">Unmatched messages go to a language model with a short system prompt about you and a hard rule to answer in the sender's language and keep it under 3 lines. Store the API key as a secret, cap replies to 1 per message, and always offer a way to reach the human:</p>
+<pre>const SYSTEM = `You are the DM assistant for ${HANDLE}, an IT manager in Kuwait who builds
+AI and automation systems. Answer in the sender's language (Kuwaiti dialect for Arabic,
+use "منو" never "مين"). Max 3 short lines. If they want work done, ask for business name
+and WhatsApp number. Never invent prices.`;</pre>
+        <div class="tip" data-i="dev5tip">Start with the keyword flow only. Add the AI fallback once you've read 50 real DMs — then you know what people actually ask.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="dev6">
+      <summary><span class="num">6</span><h3 data-i="dev6h">Rotate the token and go live</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="dev6l1">Long-lived tokens expire after 60 days. Add a scheduled function that calls <code>GET /refresh_access_token?grant_type=ig_refresh_token</code> every 30 days and updates the secret.</li>
+          <li data-i="dev6l2">Submit App Review for <code>instagram_business_manage_messages</code> with a screen recording of comment → DM → reply.</li>
+          <li data-i="dev6l3">Switch the app to Live mode. Post the carousel. Pin the keyword comment.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="dev7">
+      <summary><span class="num">7</span><h3 data-i="dev7h">Measure</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="dev7l1">Log every event to a Firestore collection: comment → DM sent → YES → interest → contact given.</li>
+          <li data-i="dev7l2">The only numbers that matter: comments per post, % that replied YES, % that left a number. Fix the weakest step first.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done">Done</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH">Built it? Show me.</h2>
+    <p data-i="finP">DM me a screenshot of your first automated reply and tell me what you want to automate next — WhatsApp, bookings, reports. That's what I post about every week.</p>
+    <a class="btn" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener" data-i="finBtn">Follow @eng.abd.alawadhi</a>
+  </section>
+
+  <footer>
+    <span data-i="foot">Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait</span>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+
+  /* ---------- translations ---------- */
+  var T = {
+    en: {}, // English is the markup
+    ar: {
+      by:"بقلم عبدالله العوضي",
+      h1:"خلّ انستغرام يرد على الدايركت بدالك.",
+      lead:"واحد يكتب كلمة بالتعليقات، يتابعك، ويوصله دايركت فيه الملف اللي وعدته فيه — كل هذا بأقل من ثانيتين وبدون ما تلمس التلفون. هالصفحة تمشيك خطوة خطوة. علّم على كل خطوة تخلصها، والتقدم ينحفظ على جهازك.",
+      m1:"٢٠ دقيقة", m2:"بدون برمجة", m3:"فيه مسار للمبرمجين",
+      setupH:"عدّل الرسائل على مقاسك", setupHint:"اكتب بياناتك وكل الرسائل الجاهزة بالصفحة تتغير.",
+      fHandle:"حسابك بانستغرام", fKw:"الكلمة المفتاحية", fGift:"وش يحصلون عليه", fLink:"الرابط",
+      tabNc:"بدون برمجة (ManyChat)", tabDev:"للمبرمجين (Instagram API)",
+      done:"خلصت",
+      nc1h:"حوّل حسابك إلى حساب احترافي",
+      nc1p:"انستغرام ما يسمح بأتمتة الرسائل إلا لحسابات Business أو Creator. مجاني وتقدر ترجع.",
+      nc1l1:"تطبيق انستغرام ← حسابك ← القائمة ← <strong>الإعدادات والخصوصية</strong> ← <strong>نوع الحساب والأدوات</strong> ← <strong>التحويل إلى حساب احترافي</strong>.",
+      nc1l2:"اختر تصنيف. «خدمة أعمال» أو «شركة برمجيات» كلها تمشي.",
+      nc1l3:"بعدين: <strong>الإعدادات ← الرسائل والردود على القصص ← التحكم بالرسائل</strong> ← فعّل «السماح بالوصول إلى الرسائل». بدونها البوت ما يقدر يرسل.",
+      nc2h:"سوّ حساب ManyChat واربطه بانستغرام",
+      nc2l1:"روح <a href=\"https://manychat.com\" target=\"_blank\" rel=\"noopener\">manychat.com</a>، سجّل، واختر <strong>Instagram</strong> كقناة.",
+      nc2l2:"سجّل دخول بانستغرام لما يطلب منك ووافق على كل الصلاحيات (الرسائل والتعليقات). إذا ما ربط، غالباً السبب زر «السماح بالوصول إلى الرسائل» بالخطوة ١.",
+      nc2l3:"الخطة المجانية تغطي الرد على التعليقات والكلمات المفتاحية. الدفع بس إذا بغيت فحص المتابعة الحقيقي أو جمهور كبير.",
+      nc3h:"ابنِ أتمتة التعليق ← الدايركت",
+      nc3l1:"<strong>Automation ← New Automation ← Instagram ← «Send a message when someone comments on a post»</strong> (الأسماء تتغير شوي بين إصدارات ManyChat).",
+      nc3l2:"اختر <strong>بوست معيّن</strong> (الكاروسيل حقك) — أو «أي بوست» إذا تبي تدفق واحد للكل.",
+      nc3l3:"التشغيل على <strong>كلمات محددة</strong>. ضف الكلمة بكل طريقة ممكن يكتبونها: <code class=\"kw-list\">AI, ai, Ai</code>، وبالعربي مثل <code>اي</code> و<code>ذكاء</code>.",
+      nc3l4:"فعّل <strong>الرد العام على التعليق</strong> والصق هذا (ManyChat يبدّل بينها إذا ضفت أكثر من وحدة):",
+      nc3tip:"قاعدة انستغرام نفسه: البوت ما يقدر يراسل إلا واحد علّق أو رد على ستوري أو راسلك أول. التعليق هو الموافقة — عشان جذي الكلمة مهمة.",
+      nc4h:"اكتب الدايركت: الافتتاحية، بوابة المتابعة، المكافأة",
+      nc4p:"ثلاث رسائل بالترتيب. انسخها والصقها بالتدفق.",
+      nc4a:"الرسالة ١ — الافتتاحية (هذي إثباتك)",
+      nc4b:"الرسالة ٢ — بوابة المتابعة", nc4b2:"(ضف تحتها زر اسمه «أنا متابع»)",
+      nc4c:"الرسالة ٣ — المكافأة + السؤال الجاي", nc4c2:"(تنرسل بعد الزر، وضف ٣ أزرار رد سريع)",
+      nc4tip:"بخطة Pro تقدر تضيف شرط حقيقي «هل هو متابع؟» قبل الرسالة ٣. بالمجانية الزر على الأمانة — ومع هذا أغلب الناس يتابعون لأنهم يبون المكافأة.",
+      nc5h:"ضف رد افتراضي لكل دايركت جديد",
+      nc5p:"هذا يمسك الناس اللي يراسلونك مباشرة بدل التعليق. <strong>Automation ← Default Reply</strong> (أحياناً تحت «Basic»). خلّه يرد مرة كل ٢٤ ساعة عشان ما يزعج محادثة حقيقية.",
+      nc5l1:"رد <strong>١</strong> ← أرسل نفس تدفق المكافأة بالخطوة ٤.",
+      nc5l2:"رد <strong>٢</strong> ← اطلب اسم الشركة ورقم الواتساب واحفظهم بجهة الاتصال. هذي قائمة عملائك المحتملين.",
+      nc5l3:"رد <strong>٣</strong> ← شكر قصير وبس. وأنت ترد بيدك.",
+      nc6h:"جرّبها بحساب ثاني",
+      nc6l1:"خلّ الأتمتة <strong>Active</strong>.",
+      nc6l2:"من حساب ثاني (حساب صديق يمشي)، علّق الكلمة. لازم تشوف الرد العام خلال ثواني والدايركت بعدها مباشرة.",
+      nc6l3:"اضغط زر المتابعة، وتأكد إن الرسالة ٣ وصلت والرابط يفتح.",
+      nc6l4:"ما صار شي؟ تأكد بهالترتيب: الأتمتة Active ← البوست الصح ← إملاء الكلمة ← «السماح بالوصول إلى الرسائل» بانستغرام.",
+      nc7h:"انشر، ثبّت، وخلّ الدورة تستمر",
+      nc7l1:"ثبّت تعليق من حسابك على البوست فيه الكلمة. الناس تنسخ اللي تشوفه.",
+      nc7l2:"غيّر الكلمة لكل بوست (AI, AUTO, BOT…). تدفق لكل بوست يخلي الإحصائيات واضحة.",
+      nc7l3:"رد بيدك على أي أحد يكتب بعد البوت. الأتمتة تفتح المحادثة، وأنت تقفلها.",
+      nc7l4:"راجع قائمة جهات الاتصال بـ ManyChat كل أسبوع — كل واحد فيها وافق بنفسه. هذا جمهورك للإطلاق الجاي.",
+      dev1h:"سوّ تطبيق Meta مع Instagram Messaging",
+      dev1l1:"حسابك لازم يكون احترافي (شوف الخطوة ١ بمسار بدون برمجة).",
+      dev1l2:"<a href=\"https://developers.facebook.com\" target=\"_blank\" rel=\"noopener\">developers.facebook.com</a> ← Create app ← حالة الاستخدام <strong>«Manage messaging and content on Instagram»</strong> (Instagram API with Instagram Login).",
+      dev1l3:"ضف حسابك كـ tester، ولّد user access token بصلاحيات <code>instagram_business_basic</code> و<code>instagram_business_manage_messages</code> و<code>instagram_business_manage_comments</code>. بدّله بـ long-lived token (٦٠ يوم) واحفظه كـ secret.",
+      dev1l4:"لحسابك أنت تقدر تشتغل بوضع Development. عشان تراسل الناس تحتاج <strong>App Review</strong> لصلاحية الرسائل — احسب لها كم يوم وسجّل فيديو للتدفق.",
+      dev2h:"انشر Cloud Function للـ webhook",
+      dev2p:"دالة HTTPS وحدة تتعامل مع التحقق (GET) والأحداث (POST). Firebase Functions v2، Node 20. حط الـ secrets أول:",
+      dev2p2:"صدّرها من <code>index.js</code>، وانشر هالدالة بس:",
+      dev3h:"اشترك بالـ webhook",
+      dev3l1:"لوحة تطبيق Meta ← <strong>Instagram ← Webhooks</strong> ← callback URL = رابط الدالة، verify token = الـ <code>IG_VERIFY_TOKEN</code> اللي حطيته.",
+      dev3l2:"اشترك بـ <code>comments</code> و<code>messages</code>.",
+      dev3l3:"بعدين اشترك حسابك بالتطبيق: <code>POST /&lt;IG_USER_ID&gt;/subscribed_apps?subscribed_fields=comments,messages</code> بالتوكن حقك.",
+      dev3l4:"علّق الكلمة من حساب تجريبي. راقب <code>firebase functions:log --only igWebhook</code>.",
+      dev4h:"تعامل مع الردود واحفظ العملاء بـ Firestore",
+      dev4p:"أحداث الرسائل توصل تحت <code>entry[].messaging[]</code>. وجّه حسب النص واحتفظ بحالة بسيطة لكل مرسل:",
+      dev4tip:"قواعد تضرك إذا نسيتها: ما تقدر تراسل المستخدم إلا خلال ٢٤ ساعة من آخر رسالة منه؛ الـ <code>comment_id</code> كمستلم يشتغل مرة وحدة لكل تعليق؛ وفحص المتابعة مو موجود بالـ API، فخلّ البوابة على رد («YES»).",
+      dev5h:"ضف رد بالذكاء الاصطناعي لكل شي ثاني",
+      dev5p:"الرسائل اللي ما طابقت شي تروح لنموذج لغوي مع system prompt قصير عنك وقاعدة صارمة إنه يرد بلغة المرسل وبأقل من ٣ أسطر. احفظ مفتاح الـ API كـ secret، حدّ الردود برد واحد لكل رسالة، ودايم اعطهم طريقة يوصلون للإنسان:",
+      dev5tip:"ابدأ بتدفق الكلمة بس. ضف الذكاء الاصطناعي بعد ما تقرأ ٥٠ دايركت حقيقي — وقتها تعرف الناس وش تسأل فعلاً.",
+      dev6h:"جدّد التوكن وانطلق",
+      dev6l1:"الـ long-lived token ينتهي بعد ٦٠ يوم. ضف دالة مجدولة تستدعي <code>GET /refresh_access_token?grant_type=ig_refresh_token</code> كل ٣٠ يوم وتحدّث الـ secret.",
+      dev6l2:"قدّم App Review لصلاحية <code>instagram_business_manage_messages</code> مع تسجيل شاشة: تعليق ← دايركت ← رد.",
+      dev6l3:"حوّل التطبيق لوضع Live. انشر الكاروسيل. ثبّت تعليق الكلمة.",
+      dev7h:"قِس",
+      dev7l1:"سجّل كل حدث بـ Firestore: تعليق ← دايركت انرسل ← YES ← اهتمام ← رقم انعطى.",
+      dev7l2:"الأرقام الوحيدة اللي تهم: تعليقات لكل بوست، نسبة اللي ردوا YES، نسبة اللي عطوا رقم. صلّح أضعف خطوة أول.",
+      finH:"بنيتها؟ ورّني.",
+      finP:"أرسل لي سكرين شوت لأول رد أوتوماتيك عندك وقل لي وش تبي تؤتمت بعدها — واتساب، حجوزات، تقارير. هذا اللي أنشر عنه كل أسبوع.",
+      finBtn:"تابع @eng.abd.alawadhi",
+      foot:"عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت"
+    }
+  };
+  var EN = {};
+  $$("[data-i]").forEach(function(el){ EN[el.getAttribute("data-i")] = el.innerHTML; });
+  T.en = EN;
+
+  var lang = "en";
+  try { lang = localStorage.getItem("dm-guide-lang") || ((navigator.language||"").slice(0,2)==="ar" ? "ar" : "en"); } catch(e){}
+
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){
+      var k = el.getAttribute("data-i");
+      if (T[l][k] !== undefined) el.innerHTML = T[l][k];
+    });
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en");
+    $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    try { localStorage.setItem("dm-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  /* ---------- scripts that update with the form ---------- */
+  var F = { handle:$("#f-handle"), kw:$("#f-kw"), gift:$("#f-gift"), link:$("#f-link") };
+  var S = {
+    en: {
+      pub: function(v){ return "Check your DMs 📩"; },
+      m1:  function(v){ return "Hey 👋 this reply reached you in under 2 seconds — no human involved. That's the kind of system I build."; },
+      m2:  function(v){ return "Want " + v.gift + "? Follow @" + v.handle + " first, then tap the button below 👇"; },
+      m3:  function(v){ return "Here you go: " + v.link + "\n\nWhat do you want me to automate next?\n1️⃣ WhatsApp replies\n2️⃣ Bookings\n3️⃣ Reports"; },
+      def: function(v){ return "Hey 👋 Abdullah here. Reply with a number:\n1 — I want " + v.gift + "\n2 — I have a business and want a system built\n3 — Just saying hi"; }
+    },
+    ar: {
+      pub: function(v){ return "شوف الدايركت 📩"; },
+      m1:  function(v){ return "هلا 👋 هالرد وصلك بأقل من ثانيتين، بدون أي تدخل بشري. هذا نوع الأنظمة اللي أبنيها."; },
+      m2:  function(v){ return "تبي " + v.gift + "؟ تابع @" + v.handle + " أول، وبعدين اضغط الزر اللي تحت 👇"; },
+      m3:  function(v){ return "تفضل: " + v.link + "\n\nوش تبيني أؤتمت بعدها؟\n1️⃣ ردود واتساب\n2️⃣ حجوزات\n3️⃣ تقارير"; },
+      def: function(v){ return "ياهلا 👋 عبدالله معاك. رد برقم:\n١ — أبي " + v.gift + "\n٢ — عندي شركة وأبي نظام\n٣ — بس أسلّم"; }
+    }
+  };
+  function vals(){ return { handle:F.handle.value.replace(/^@/,"").trim()||"your.handle", kw:F.kw.value.trim()||"AI", gift:F.gift.value.trim()||"the guide", link:F.link.value.trim()||"[LINK]" }; }
+  function renderScripts(){
+    var v = vals();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script");
+      box.textContent = S[lang][k](v);
+      box.setAttribute("dir", lang==="ar" ? "rtl" : "ltr");
+      var b = document.createElement("button");
+      b.type="button"; b.className="copy"; b.textContent = lang==="ar" ? "نسخ" : "Copy";
+      b.setAttribute("aria-label", (lang==="ar"?"نسخ الرسالة":"Copy message"));
+      b.addEventListener("click", function(){
+        var txt = box.textContent.replace(/(نسخ|Copy|Copied|تم النسخ)$/,"").trim();
+        var done = function(){ b.textContent = lang==="ar" ? "تم النسخ" : "Copied"; setTimeout(function(){ b.textContent = lang==="ar" ? "نسخ" : "Copy"; }, 1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done); else done();
+      });
+      box.appendChild(b);
+    });
+    var k = v.kw;
+    $$(".kw-list").forEach(function(el){ el.textContent = k + ", " + k.toLowerCase() + ", " + (k.charAt(0).toUpperCase()+k.slice(1).toLowerCase()); });
+    try { localStorage.setItem("dm-guide-form", JSON.stringify(v)); } catch(e){}
+  }
+  try {
+    var saved = JSON.parse(localStorage.getItem("dm-guide-form") || "null");
+    if (saved) { F.handle.value = saved.handle; F.kw.value = saved.kw; F.gift.value = saved.gift; F.link.value = saved.link; }
+  } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); });
+
+  /* ---------- route tabs ---------- */
+  var route = "nc";
+  try { route = localStorage.getItem("dm-guide-route") || "nc"; } catch(e){}
+  function setRoute(r){
+    route = r;
+    $("#route-nc").classList.toggle("hidden", r!=="nc");
+    $("#route-dev").classList.toggle("hidden", r!=="dev");
+    $("#tab-nc").setAttribute("aria-selected", r==="nc");
+    $("#tab-dev").setAttribute("aria-selected", r==="dev");
+    try { localStorage.setItem("dm-guide-route", r); } catch(e){}
+    updateProgress();
+  }
+  $("#tab-nc").addEventListener("click", function(){ setRoute("nc"); });
+  $("#tab-dev").addEventListener("click", function(){ setRoute("dev"); });
+
+  /* ---------- progress ---------- */
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("dm-guide-done") || "{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-" + route + " .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step");
+    var cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id];
+    step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked;
+      step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("dm-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) {
+        step.removeAttribute("open");
+        var next = step.nextElementSibling;
+        if (next && next.classList.contains("step")) next.setAttribute("open","");
+      }
+    });
+  });
+
+  setLang(lang);
+  setRoute(route);
+})();
+</script>
+</body>
+</html>
