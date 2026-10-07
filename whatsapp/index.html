@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الرد الأوتوماتيكي على واتساب — ٣ مستويات</title>
+<meta name="description" content="WhatsApp auto-reply in three levels: free in the WhatsApp Business app, a no-code menu bot, and an AI reply on the WhatsApp Cloud API with a Firebase Cloud Function. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:14ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.routes{display:flex;gap:8px;margin:0 0 20px;border-bottom:2px solid var(--line)}
+.routes button{font:inherit;font-weight:700;font-size:17px;background:none;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:12px 6px;color:var(--mute);cursor:pointer;min-height:48px}
+.routes button[aria-selected=true]{color:var(--ink);border-color:var(--lime)}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+pre{background:var(--ink);color:#E6EDF3;border-radius:12px;padding:16px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.5;margin:12px 0;direction:ltr;text-align:left}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+.hidden{display:none!important}
+.lvl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.lvl button{font:inherit;font-weight:700;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:14px 10px;cursor:pointer;min-height:64px;color:var(--mute);display:flex;flex-direction:column;gap:4px;align-items:center}
+.lvl button small{font-weight:500;font-size:13px}
+.lvl button[aria-selected=true]{border-color:var(--lime);color:var(--ink);background:var(--lime-soft)}
+@media (max-width:520px){.lvl{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener">
+      <svg width="34" height="21" viewBox="0 0 56 34" aria-hidden="true"><rect width="56" height="34" rx="4" fill="#FFFFFF"/><rect width="56" height="11.33" rx="4" fill="#007A3D"/><rect y="22.67" width="56" height="11.33" rx="4" fill="#CE1126"/><path d="M0 0h18l10 11.33v11.34L18 34H0z" fill="#10251B"/></svg>
+      @eng.abd.alawadhi <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 data-i="h1" data-en="Make WhatsApp answer your customers for you.">خلّ واتساب يرد على عملائك بدالك.</h1>
+    <p data-i="lead" data-en="Three levels, from free in five minutes to an AI that understands the question. Pick the one that fits your business, tick the steps, and your progress is saved on this device.">ثلاث مستويات: من مجاني بخمس دقايق إلى ذكاء اصطناعي يفهم السؤال. اختر اللي يناسب شغلك، علّم على الخطوات، والتقدم ينحفظ على جهازك.</p>
+    <div class="meta"><span data-i="m1" data-en="Level 1: 5 minutes">المستوى ١: ٥ دقايق</span><span data-i="m2" data-en="Level 2: no code">المستوى ٢: بدون برمجة</span><span data-i="m3" data-en="Level 3: AI + code">المستوى ٣: ذكاء اصطناعي + كود</span></div>
+  </section>
+
+  <section class="setup" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Personalize the scripts below">عدّل الرسائل على مقاسك</h2>
+    <p class="hint" data-i="setupHint" data-en="Type your details and every ready message updates.">اكتب بياناتك وكل الرسائل الجاهزة تتغير.</p>
+    <div class="field"><label for="f-biz" data-i="fBiz" data-en="Business name">اسم الشركة / المحل</label><input id="f-biz" dir="auto" value="[اسم الشركة]"></div>
+    <div class="field"><label for="f-hours" data-i="fHours" data-en="Working hours">ساعات الدوام</label><input id="f-hours" dir="auto" value="من ٩ الصبح لـ ٩ بالليل"></div>
+    <div class="field"><label for="f-price" data-i="fPrice" data-en="Main price or offer">السعر أو العرض الأساسي</label><input id="f-price" dir="auto" value="[السعر] د.ك"></div>
+    <div class="field"><label for="f-loc" data-i="fLoc" data-en="Location">الموقع</label><input id="f-loc" dir="auto" value="[المنطقة]، الكويت"></div>
+  </section>
+
+  <div class="lvl" role="tablist" aria-label="Level">
+    <button type="button" role="tab" id="tab-l1" aria-selected="true" aria-controls="route-l1"><span data-i="t1" data-en="Level 1">المستوى ١</span><small data-i="t1s" data-en="Free · WhatsApp Business app">مجاني · تطبيق WhatsApp Business</small></button>
+    <button type="button" role="tab" id="tab-l2" aria-selected="false" aria-controls="route-l2"><span data-i="t2" data-en="Level 2">المستوى ٢</span><small data-i="t2s" data-en="Menu bot · no code">بوت قوائم · بدون برمجة</small></button>
+    <button type="button" role="tab" id="tab-l3" aria-selected="false" aria-controls="route-l3"><span data-i="t3" data-en="Level 3">المستوى ٣</span><small data-i="t3s" data-en="AI · Cloud API + code">ذكاء اصطناعي · API + كود</small></button>
+  </div>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1" role="tabpanel" aria-labelledby="tab-l1">
+    <details class="step" data-step="l1a" open>
+      <summary><span class="num">1</span><h3 data-i="l1ah" data-en="Install WhatsApp Business and set up the profile">حمّل WhatsApp Business وفعّل ملف الشركة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1a1" data-en="Install <strong>WhatsApp Business</strong> (a separate app) with the business number.">حمّل <strong>WhatsApp Business</strong> (تطبيق منفصل عن واتساب العادي) وسجّل برقم الشركة.</li>
+          <li data-i="l1a2" data-en="Settings → <strong>Business tools</strong> → <strong>Business profile</strong>: name, hours, address, website.">الإعدادات ← <strong>أدوات الأعمال</strong> ← <strong>ملف الشركة</strong>: الاسم، الدوام، الموقع، الموقع الإلكتروني.</li>
+          <li data-i="l1a3" data-en="The catalog is optional but strong: add 3–5 services with prices so you can link them in replies.">الكتالوج اختياري بس قوي: حط ٣–٥ خدمات بأسعارها عشان تربطها بالردود.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1b">
+      <summary><span class="num">2</span><h3 data-i="l1bh" data-en="Greeting message">رسالة الترحيب</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l1bp" data-en="Business tools → <strong>Greeting message</strong> → on → everyone → paste:">أدوات الأعمال ← <strong>رسالة ترحيب</strong> ← فعّلها ← «الكل» ← الصق:</p>
+        <div class="script" data-script="greet"></div>
+        <div class="tip" data-i="l1bt" data-en="Sent once to new contacts or after 14 days of silence. Not on every message, so it never annoys.">تنرسل مرة وحدة للعميل الجديد أو بعد ١٤ يوم صمت. ما تنرسل لكل رسالة — فما تزعج.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1c">
+      <summary><span class="num">3</span><h3 data-i="l1ch" data-en="Away message">رسالة خارج الدوام</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l1cp" data-en="Business tools → <strong>Away message</strong> → on → schedule: outside business hours → paste:">أدوات الأعمال ← <strong>رسالة الغياب</strong> ← فعّلها ← جدول: خارج ساعات الدوام ← الصق:</p>
+        <div class="script" data-script="away"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1d">
+      <summary><span class="num">4</span><h3 data-i="l1dh" data-en="Quick replies">الردود السريعة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l1dp" data-en="Business tools → <strong>Quick replies</strong> → add. Type <code>/</code> in any chat to pick one. Start with these three:">أدوات الأعمال ← <strong>الردود السريعة</strong> ← أضف. تكتب <code>/</code> بالمحادثة وتطلع لك القائمة. ابدأ بهالثلاثة:</p>
+        <p data-i="l1d1" data-en="<strong>/price</strong>"><strong>/price</strong></p>
+        <div class="script" data-script="qprice"></div>
+        <p data-i="l1d2" data-en="<strong>/location</strong>"><strong>/location</strong></p>
+        <div class="script" data-script="qloc"></div>
+        <p data-i="l1d3" data-en="<strong>/booking</strong>"><strong>/booking</strong></p>
+        <div class="script" data-script="qbook"></div>
+        <div class="tip" data-i="l1dt" data-en="This level does not answer for you; it lets you answer in a second instead of a minute. Enough for a small shop.">هذا المستوى ما يرد بدالك على الأسئلة — يخليك ترد بثانية بدل دقيقة. كافي لمحل صغير.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1e">
+      <summary><span class="num">5</span><h3 data-i="l1eh" data-en="Test from another number">جرّب من رقم ثاني</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1e1" data-en="Message the business number from your personal phone: the greeting should arrive.">راسل رقم الشركة من جوالك الشخصي: لازم توصلك رسالة الترحيب.</li>
+          <li data-i="l1e2" data-en="Temporarily set the away schedule to &quot;always&quot;, confirm it fires, then set it back.">غيّر الجدول مؤقتاً لـ «دائماً» وتأكد من رسالة الغياب، بعدين رجّعه.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section id="route-l2" role="tabpanel" aria-labelledby="tab-l2" class="hidden">
+    <details class="step" data-step="l2a" open>
+      <summary><span class="num">1</span><h3 data-i="l2ah" data-en="Connect the number to a bot tool">اربط الرقم بأداة بوت</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2a1" data-en="You need the <strong>WhatsApp Business Platform</strong> (API), not the app. The number must not be registered in any WhatsApp app — use a fresh number or remove it from the app first.">تحتاج <strong>WhatsApp Business Platform</strong> (API)، مو التطبيق. الرقم لازم ما يكون مسجّل بأي تطبيق واتساب — استخدم رقم جديد أو احذفه من التطبيق أول.</li>
+          <li data-i="l2a2" data-en="Easiest path: ManyChat → add the WhatsApp channel → it walks you through linking the number to your Meta Business account.">أسهل طريق: ManyChat ← أضف قناة WhatsApp ← يمشيك خطوة خطوة لربط الرقم بحساب Meta Business.</li>
+          <li data-i="l2a3" data-en="Similar tools: Wati, Respond.io, Zoko. Same idea.">بدائل مشابهة: Wati، Respond.io، Zoko. كلها نفس الفكرة.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2b">
+      <summary><span class="num">2</span><h3 data-i="l2bh" data-en="Build the main menu">ابنِ القائمة الرئيسية</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l2bp" data-en="A welcome message with a numbered menu. Numbers, not buttons — they work on every phone and language:">رسالة ترحيب فيها قائمة مرقّمة. أرقام مو أزرار — تشتغل على أي جوال وأي لغة:</p>
+        <div class="script" data-script="menu"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2c">
+      <summary><span class="num">3</span><h3 data-i="l2ch" data-en="Each number → a reply or a data request">كل رقم ← رد أو طلب بيانات</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2c1" data-en="<strong>1</strong> → the price message (same as <code>/price</code> from Level 1)."><strong>١</strong> ← رسالة الأسعار (نفس <code>/price</code> من المستوى ١).</li>
+          <li data-i="l2c2" data-en="<strong>2</strong> → location + a Google Maps link."><strong>٢</strong> ← الموقع + رابط خرائط قوقل.</li>
+          <li data-i="l2c3" data-en="<strong>3</strong> → ask for name, then day, save both to custom fields. That is your bookings list."><strong>٣</strong> ← اسأل الاسم، بعدين اليوم، واحفظهم بحقول مخصصة. هذي حجوزاتك.</li>
+          <li data-i="l2c4" data-en="<strong>4</strong> → &quot;a team member will contact you&quot; + pause the bot for this contact."><strong>٤</strong> ← «بيتواصل معاك موظف» + أوقف البوت لهالعميل.</li>
+        </ul>
+        <div class="script" data-script="book"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2d">
+      <summary><span class="num">4</span><h3 data-i="l2dh" data-en="Default reply">الرد الافتراضي</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l2dp" data-en="For any message that is not a menu number: resend the menu once per 24 hours, not on every message.">لأي رسالة ما تطابق رقم: أعد إرسال القائمة مرة وحدة كل ٢٤ ساعة، مو كل رسالة.</p>
+        <div class="script" data-script="fallback"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2e">
+      <summary><span class="num">5</span><h3 data-i="l2eh" data-en="Notifications and the human touch">الإشعارات واللمسة البشرية</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2e1" data-en="Wire options 3 and 4 to a notification (WhatsApp or email) so you act on bookings fast.">اربط الخيار ٣ و٤ بإشعار لك (واتساب أو إيميل) عشان تلحق على الحجز بسرعة.</li>
+          <li data-i="l2e2" data-en="Open the inbox daily: any chat where the bot stopped, a person finishes.">افتح الـ Inbox يومياً: أي محادثة البوت وقف فيها، إنسان يكملها.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section id="route-l3" role="tabpanel" aria-labelledby="tab-l3" class="hidden">
+    <details class="step" data-step="l3a" open>
+      <summary><span class="num">1</span><h3 data-i="l3ah" data-en="Meta app + WhatsApp number">تطبيق Meta + رقم واتساب</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3a1" data-en="developers.facebook.com → Create app → Business type → add the <strong>WhatsApp</strong> product.">developers.facebook.com ← Create app ← نوع Business ← أضف منتج <strong>WhatsApp</strong>.</li>
+          <li data-i="l3a2" data-en="A test number is instant. For production add your own number (not registered in the app), verify by SMS, and complete <strong>Business verification</strong> with your trade licence (1–5 days).">للتجربة فيه رقم تجريبي فوري. للإنتاج: أضف رقم الشركة (غير مسجّل بالتطبيق) وتحقق بالـ SMS، وكمّل <strong>Business verification</strong> بالرخصة التجارية (١–٥ أيام).</li>
+          <li data-i="l3a3" data-en="Note: <strong>Phone Number ID</strong>, <strong>WABA ID</strong>, and a permanent System User token with <code>whatsapp_business_messaging</code> and <code>whatsapp_business_management</code>.">سجّل: <strong>Phone Number ID</strong>، <strong>WABA ID</strong>، وتوكن دائم من System User بصلاحيات <code>whatsapp_business_messaging</code> و<code>whatsapp_business_management</code>.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3b">
+      <summary><span class="num">2</span><h3 data-i="l3bh" data-en="Secrets and the function">الأسرار والدالة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l3bp" data-en="Firebase Functions v2 on Node 20. Secrets first:">Firebase Functions v2 على Node 20. الأسرار أول:</p>
+<pre>firebase functions:secrets:set WA_TOKEN
+firebase functions:secrets:set WA_VERIFY_TOKEN
+firebase functions:secrets:set WA_APP_SECRET
+firebase functions:secrets:set WA_PHONE_ID
+firebase functions:secrets:set AI_API_KEY</pre>
+        <p data-i="l3bp2" data-en="The function: verification (GET), HMAC signature, Firestore conversation memory, the AI call, and human handoff:">الدالة: تحقق (GET)، توقيع HMAC، ذاكرة محادثة بـ Firestore، نداء الذكاء الاصطناعي، وتحويل لموظف:</p>
+<pre>// functions/waWebhook.js
+const { onRequest } = require("firebase-functions/v2/https");
+const { defineSecret } = require("firebase-functions/params");
+const admin = require("firebase-admin");
+const crypto = require("crypto");
+if (!admin.apps.length) admin.initializeApp();
+const db = admin.firestore();
+
+const WA_TOKEN = defineSecret("WA_TOKEN"), WA_VERIFY_TOKEN = defineSecret("WA_VERIFY_TOKEN"),
+      WA_APP_SECRET = defineSecret("WA_APP_SECRET"), WA_PHONE_ID = defineSecret("WA_PHONE_ID"),
+      AI_API_KEY = defineSecret("AI_API_KEY");
+const GRAPH = "https://graph.facebook.com/v21.0"; // use the version shown in your Meta dashboard
+
+const FACTS = `الاسم: [اسم الشركة]. الدوام: [الدوام]. الموقع: [الموقع]. الأسعار: [الأسعار].`;
+const SYSTEM = `أنت مساعد واتساب لشركة بالكويت. رد بلهجة كويتية مختصرة (استخدم "منو" مو "مين")،
+أقصى ٣ أسطر. جاوب فقط من هالمعلومات: ${FACTS}
+إذا السؤال خارج المعلومات، أو العميل يبي يحجز أو يكلم موظف، رد بالضبط: HANDOFF`;
+
+async function sendText(to, body) {
+  const r = await fetch(`${GRAPH}/${WA_PHONE_ID.value()}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${WA_TOKEN.value()}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ messaging_product: "whatsapp", to, type: "text", text: { body } }),
+  });
+  if (!r.ok) console.error("send", r.status, await r.text());
+}
+
+async function askAI(history) {
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "x-api-key": AI_API_KEY.value(), "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "claude-haiku-4-5", max_tokens: 300, system: SYSTEM, messages: history }),
+  });
+  const j = await r.json();
+  return (j.content || []).map(c =&gt; c.text || "").join("").trim();
+}
+
+exports.waWebhook = onRequest(
+  { region: "us-central1", secrets: [WA_TOKEN, WA_VERIFY_TOKEN, WA_APP_SECRET, WA_PHONE_ID, AI_API_KEY] },
+  async (req, res) =&gt; {
+    if (req.method === "GET") {
+      const ok = req.query["hub.mode"] === "subscribe" &amp;&amp; req.query["hub.verify_token"] === WA_VERIFY_TOKEN.value();
+      return ok ? res.status(200).send(req.query["hub.challenge"]) : res.sendStatus(403);
+    }
+    const sig = req.get("x-hub-signature-256") || "";
+    const exp = "sha256=" + crypto.createHmac("sha256", WA_APP_SECRET.value()).update(req.rawBody).digest("hex");
+    if (sig.length !== exp.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(exp))) return res.sendStatus(401);
+    res.sendStatus(200); // ack within 20s or Meta retries
+
+    for (const e of req.body.entry || []) for (const ch of e.changes || []) {
+      const msg = ch.value?.messages?.[0];
+      if (!msg || msg.type !== "text") continue;
+      const from = msg.from, text = msg.text.body.trim();
+
+      const ref = db.collection("wa_chats").doc(from);
+      const snap = await ref.get();
+      const d = snap.exists ? snap.data() : { history: [], human: false, seen: [] };
+      if (d.seen?.includes(msg.id)) continue;   // Meta retries
+      if (d.human) continue;                      // a person took over
+
+      const history = [...d.history.slice(-10), { role: "user", content: text }];
+      let reply = await askAI(history);
+      if (reply === "HANDOFF" || /موظف|انسان|شخص/.test(text)) {
+        reply = "تمام، بيتواصل معاك أحد الفريق خلال ساعة 🙏";
+        await db.collection("wa_handoffs").add({ from, text, at: new Date() });
+        d.human = true;
+      }
+      await sendText(from, reply);
+      await ref.set({ history: [...history, { role: "assistant", content: reply }], human: d.human,
+                      seen: [...(d.seen || []).slice(-50), msg.id], updated: new Date() }, { merge: true });
+    }
+  }
+);
+</pre>
+<pre>firebase deploy --only functions:waWebhook</pre>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3c">
+      <summary><span class="num">3</span><h3 data-i="l3ch" data-en="Subscribe the webhook">اشترك بالـ webhook</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3c1" data-en="App dashboard → WhatsApp → <strong>Configuration</strong> → Callback URL = the function URL, Verify token = <code>WA_VERIFY_TOKEN</code> → Verify.">لوحة التطبيق ← WhatsApp ← <strong>Configuration</strong> ← Callback URL = رابط الدالة، Verify token = <code>WA_VERIFY_TOKEN</code> ← Verify.</li>
+          <li data-i="l3c2" data-en="Subscribe to the <strong>messages</strong> field.">اشترك بحقل <strong>messages</strong>.</li>
+          <li data-i="l3c3" data-en="Message the number from your phone and watch <code>firebase functions:log --only waWebhook</code>.">راسل الرقم من جوالك وراقب <code>firebase functions:log --only waWebhook</code>.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3d">
+      <summary><span class="num">4</span><h3 data-i="l3dh" data-en="Human handoff">التحويل لموظف</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3d1" data-en="A small admin panel listing <code>wa_handoffs</code> with a &quot;give back to bot&quot; button that sets <code>human = false</code>.">شاشة صغيرة بلوحة التحكم تعرض <code>wa_handoffs</code> وزر «رجّع البوت» يحط <code>human = false</code>.</li>
+          <li data-i="l3d2" data-en="A scheduled function that resets <code>human</code> after 24 hours of silence.">دالة مجدولة ترجّع <code>human</code> لـ false بعد ٢٤ ساعة صمت.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3e">
+      <summary><span class="num">5</span><h3 data-i="l3eh" data-en="Rules you must know">القواعد اللي لازم تعرفها</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3e1" data-en="You can reply freely within <strong>24 hours</strong> of the customer’s last message. After that you need an approved <strong>template</strong> (fine for &quot;booking confirmed&quot;, not for chat).">ترد بحرية خلال <strong>٢٤ ساعة</strong> من آخر رسالة من العميل. بعدها تحتاج <strong>Template</strong> معتمد (مناسب لـ «تم تأكيد حجزك»، مو للدردشة).</li>
+          <li data-i="l3e2" data-en="The first 1,000 service conversations per month are free; beyond that Meta bills per conversation. AI cost with a small model is a fraction of a fils per message.">أول ١٠٠٠ محادثة خدمة بالشهر مجانية، بعدها Meta تحاسب على المحادثة. تكلفة الذكاء الاصطناعي بنموذج صغير أجزاء من الفلس للرسالة.</li>
+          <li data-i="l3e3" data-en="Keep <code>FACTS</code> to what you would publish on your website. Never let it invent prices — &quot;HANDOFF&quot; is cheaper than a wrong number.">خلّ <code>FACTS</code> معلومات تحطها بموقعك. لا تخليه يخترع أسعار — «HANDOFF» أرخص من رقم غلط.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Built it? Show me.">بنيته؟ ورّني.</h2>
+    <p data-i="finP" data-en="DM me a screenshot of your first automated WhatsApp reply and tell me what to automate next — bookings, reports, invoices.">أرسل لي سكرين شوت لأول رد أوتوماتيكي على واتساب وقل لي شنو نؤتمت بعدها — حجوزات، تقارير، فواتير.</p>
+    <a class="btn" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener" data-i="finBtn" data-en="Follow @eng.abd.alawadhi">تابع @eng.abd.alawadhi</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("wa-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    try { localStorage.setItem("wa-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { biz:$("#f-biz"), hours:$("#f-hours"), price:$("#f-price"), loc:$("#f-loc") };
+  function v(){ return { biz:F.biz.value.trim()||"[اسم الشركة]", hours:F.hours.value.trim()||"[الدوام]", price:F.price.value.trim()||"[السعر]", loc:F.loc.value.trim()||"[الموقع]" }; }
+  var S = {
+    ar: {
+      greet: function(x){ return "هلا وغلا 👋 حياك بـ " + x.biz + ".\nاكتب سؤالك وبنرد عليك بأقرب وقت 🙏\nدوامنا: " + x.hours; },
+      away:  function(x){ return "شكراً لتواصلك مع " + x.biz + " 🌙\nحالياً خارج الدوام (" + x.hours + ")، وبنرد عليك أول ما نرجع.\nلو مستعجل: اكتب «عاجل» 🚨"; },
+      qprice:function(x){ return "أسعارنا 💰\n" + x.price + "\nتبي تحجز؟ اكتب «حجز» 📅"; },
+      qloc:  function(x){ return "موقعنا 📍\n" + x.loc + "\n[رابط خرائط قوقل]"; },
+      qbook: function(x){ return "تمام 📅 عشان أحجز لك:\n١) اسمك\n٢) اليوم اللي يناسبك\n٣) الوقت المفضل"; },
+      menu:  function(x){ return "هلا 👋 حياك بـ " + x.biz + ". شلون أقدر أساعدك؟\n\n١ الأسعار\n٢ الموقع والدوام\n٣ حجز موعد\n٤ أكلم موظف\n\nاكتب الرقم بس 👇"; },
+      book:  function(x){ return "تمام 📅\nاكتب اسمك الكريم:\n\n(بعدها) واليوم اللي يناسبك؟\n\n(بعدها) تم ✅ سجّلت طلبك، بيتواصل معاك الفريق للتأكيد."; },
+      fallback: function(x){ return "ما فهمت عليك 🙏 اختر رقم:\n١ الأسعار · ٢ الموقع · ٣ حجز · ٤ موظف"; }
+    },
+    en: {
+      greet: function(x){ return "Hi 👋 welcome to " + x.biz + ".\nSend your question and we'll reply shortly 🙏\nHours: " + x.hours; },
+      away:  function(x){ return "Thanks for contacting " + x.biz + " 🌙\nWe're currently closed (" + x.hours + ") and will reply as soon as we're back.\nUrgent? Reply URGENT 🚨"; },
+      qprice:function(x){ return "Our prices 💰\n" + x.price + "\nWant to book? Reply BOOK 📅"; },
+      qloc:  function(x){ return "Find us 📍\n" + x.loc + "\n[Google Maps link]"; },
+      qbook: function(x){ return "Great 📅 to book you in:\n1) Your name\n2) Preferred day\n3) Preferred time"; },
+      menu:  function(x){ return "Hi 👋 welcome to " + x.biz + ". How can we help?\n\n1 Prices\n2 Location & hours\n3 Book an appointment\n4 Talk to a person\n\nJust reply with the number 👇"; },
+      book:  function(x){ return "Great 📅\nWhat's your name?\n\n(then) Which day suits you?\n\n(then) Done ✅ request saved, the team will confirm with you."; },
+      fallback: function(x){ return "Sorry, didn't catch that 🙏 pick a number:\n1 Prices · 2 Location · 3 Book · 4 Person"; }
+    }
+  };
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[lang][k]) return;
+      box.textContent = S[lang][k](x); box.setAttribute("dir", lang==="ar"?"rtl":"ltr");
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ الرسالة":"Copy message");
+      b.addEventListener("click", function(){
+        var txt = S[lang][k](v());
+        var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = lang==="ar"?"نسخ":"Copy"; },1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+      });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("wa-guide-form", JSON.stringify(x)); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("wa-guide-form")||"null"); if(saved){ F.biz.value=saved.biz; F.hours.value=saved.hours; F.price.value=saved.price; F.loc.value=saved.loc; } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); });
+
+  var route = "l1";
+  try { route = localStorage.getItem("wa-guide-route") || "l1"; } catch(e){}
+  function setRoute(r){
+    route = r;
+    ["l1","l2","l3"].forEach(function(id){ $("#route-"+id).classList.toggle("hidden", r!==id); $("#tab-"+id).setAttribute("aria-selected", r===id); });
+    try { localStorage.setItem("wa-guide-route", r); } catch(e){}
+    updateProgress();
+  }
+  ["l1","l2","l3"].forEach(function(id){ $("#tab-"+id).addEventListener("click", function(){ setRoute(id); }); });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("wa-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-"+route+" .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("wa-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); setRoute(route);
+})();
+</script>
+</body>
+</html>
