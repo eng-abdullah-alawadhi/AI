@@ -39,14 +39,15 @@ html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
 .hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
 .meta{display:flex;flex-wrap:wrap;gap:10px}
 .meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
-.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:1fr 1fr}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .setup h2{grid-column:1/-1;margin:0;font-size:18px}
 .setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
-.field{display:flex;flex-direction:column;gap:6px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field label{font-weight:600;font-size:15px}
-.field input{font:inherit;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input[dir=auto]{text-align:start}
 .field input:focus{border-color:var(--ink)}
-@media (max-width:600px){.setup{grid-template-columns:1fr}}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
 .routes{display:flex;gap:8px;margin:0 0 20px;border-bottom:2px solid var(--line)}
 .routes button{font:inherit;font-weight:700;font-size:17px;background:none;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:12px 6px;color:var(--mute);cursor:pointer;min-height:48px}
 .routes button[aria-selected=true]{color:var(--ink);border-color:var(--lime)}
@@ -109,10 +110,10 @@ footer{padding:0 0 48px;color:var(--mute);font-size:14px}
   <section class="setup" aria-labelledby="setup-h">
     <h2 id="setup-h" data-i="setupH">Personalize the scripts below</h2>
     <p class="hint" data-i="setupHint">Type your own values and every message script on this page updates.</p>
-    <div class="field"><label for="f-handle" data-i="fHandle">Your Instagram handle</label><input id="f-handle" value="eng.abd.alawadhi"></div>
-    <div class="field"><label for="f-kw" data-i="fKw">Trigger keyword</label><input id="f-kw" value="AI"></div>
-    <div class="field"><label for="f-gift" data-i="fGift">What they unlock</label><input id="f-gift" value="the full step-by-step setup guide"></div>
-    <div class="field"><label for="f-link" data-i="fLink">Link to it</label><input id="f-link" value="https://www.your-site.com"></div>
+    <div class="field"><label for="f-handle" data-i="fHandle">Your Instagram handle</label><input id="f-handle" dir="ltr" value="eng.abd.alawadhi"></div>
+    <div class="field"><label for="f-kw" data-i="fKw">Trigger keyword</label><input id="f-kw" dir="auto" value="AI"></div>
+    <div class="field"><label for="f-gift" data-i="fGift">What they unlock</label><input id="f-gift" dir="auto" value="الشرح الكامل خطوة بخطوة"></div>
+    <div class="field"><label for="f-link" data-i="fLink">Link to it</label><input id="f-link" dir="ltr" value="https://www.your-site.com"></div>
   </section>
 
   <div class="routes" role="tablist" aria-label="Setup route">
@@ -504,6 +505,8 @@ and WhatsApp number. Never invent prices.`;</pre>
     $("#btn-en").setAttribute("aria-pressed", l==="en");
     $("#btn-ar").setAttribute("aria-pressed", l==="ar");
     try { localStorage.setItem("dm-guide-lang-v2", l); } catch(e){}
+    var G = {en:"the full step-by-step setup guide", ar:"الشرح الكامل خطوة بخطوة"};
+    if (F.gift.value === G[l==="ar"?"en":"ar"]) F.gift.value = G[l];
     renderScripts();
   }
   $("#btn-en").addEventListener("click", function(){ setLang("en"); });
