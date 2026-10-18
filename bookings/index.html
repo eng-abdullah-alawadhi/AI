@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الحجز الأوتوماتيكي — ٣ مستويات</title>
+<meta name="description" content="Automated bookings in three levels: a free calendar link, a no-code booking page with WhatsApp confirmations, and your own system with slot checks, Tap payments and reminders. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:14ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.routes{display:flex;gap:8px;margin:0 0 20px;border-bottom:2px solid var(--line)}
+.routes button{font:inherit;font-weight:700;font-size:17px;background:none;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:12px 6px;color:var(--mute);cursor:pointer;min-height:48px}
+.routes button[aria-selected=true]{color:var(--ink);border-color:var(--lime)}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+pre{background:var(--ink);color:#E6EDF3;border-radius:12px;padding:16px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.5;margin:12px 0;direction:ltr;text-align:left}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+.hidden{display:none!important}
+.lvl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.lvl button{font:inherit;font-weight:700;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:14px 10px;cursor:pointer;min-height:64px;color:var(--mute);display:flex;flex-direction:column;gap:4px;align-items:center}
+.lvl button small{font-weight:500;font-size:13px}
+.lvl button[aria-selected=true]{border-color:var(--lime);color:var(--ink);background:var(--lime-soft)}
+@media (max-width:520px){.lvl{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener">
+      <svg width="34" height="21" viewBox="0 0 56 34" aria-hidden="true"><rect width="56" height="34" rx="4" fill="#FFFFFF"/><rect width="56" height="11.33" rx="4" fill="#007A3D"/><rect y="22.67" width="56" height="11.33" rx="4" fill="#CE1126"/><path d="M0 0h18l10 11.33v11.34L18 34H0z" fill="#10251B"/></svg>
+      @eng.abd.alawadhi <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 data-i="h1" data-en="Bookings on autopilot.">الحجز الأوتوماتيكي.</h1>
+    <p data-i="lead" data-en="The customer books, pays and gets a confirmation at 11 PM — and you wake up to a full calendar. Three levels: a free calendar link, a no-code booking page, or your own system with payments and reminders.">العميل يحجز، يدفع، ويوصله التأكيد الساعة ١١ بالليل… وأنت تصحى على جدول مليان. ثلاث مستويات: رابط تقويم مجاني، صفحة حجز بدون برمجة، أو نظامك الخاص بالدفع والتذكير.</p>
+    <div class="meta"><span data-i="m1" data-en="Level 1: 10 minutes, free">المستوى ١: ١٠ دقايق، مجاني</span><span data-i="m2" data-en="Level 2: no code">المستوى ٢: بدون برمجة</span><span data-i="m3" data-en="Level 3: payments + reminders">المستوى ٣: دفع + تذكير</span></div>
+  </section>
+
+  <section class="setup" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Personalize the messages below">عدّل الرسائل على مقاسك</h2>
+    <p class="hint" data-i="setupHint" data-en="Type your details and every ready message updates.">اكتب بياناتك وكل الرسائل الجاهزة تتغير.</p>
+    <div class="field"><label for="f-biz" data-i="fBiz" data-en="Business name">اسم الشركة / العيادة</label><input id="f-biz" dir="auto" value="[اسم الشركة]"></div>
+    <div class="field"><label for="f-link" data-i="fLink" data-en="Booking link (Level 1 / 2)">رابط الحجز (المستوى ١ / ٢)</label><input id="f-link" dir="ltr" value="https://calendar.app.google/XXXX"></div>
+    <div class="field"><label for="f-price" data-i="fPrice" data-en="Price per appointment">سعر الموعد</label><input id="f-price" dir="auto" value="٢٥ د.ك"></div>
+    <div class="field"><label for="f-loc" data-i="fLoc" data-en="Location">الموقع</label><input id="f-loc" dir="auto" value="[المنطقة]، الكويت"></div>
+  </section>
+
+  <div class="lvl" role="tablist" aria-label="Level">
+    <button type="button" role="tab" id="tab-l1" aria-selected="true" aria-controls="route-l1"><span data-i="t1" data-en="Level 1">المستوى ١</span><small data-i="t1s" data-en="Free · calendar link">مجاني · رابط تقويم</small></button>
+    <button type="button" role="tab" id="tab-l2" aria-selected="false" aria-controls="route-l2"><span data-i="t2" data-en="Level 2">المستوى ٢</span><small data-i="t2s" data-en="Booking page · no code">صفحة حجز · بدون برمجة</small></button>
+    <button type="button" role="tab" id="tab-l3" aria-selected="false" aria-controls="route-l3"><span data-i="t3" data-en="Level 3">المستوى ٣</span><small data-i="t3s" data-en="Your own · payments + reminders">نظامك الخاص · دفع + تذكير</small></button>
+  </div>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1" role="tabpanel" aria-labelledby="tab-l1">
+    <details class="step" data-step="l1a" open>
+      <summary><span class="num">1</span><h3 data-i="l1ah" data-en="Create a Google Calendar appointment page">سوّ صفحة مواعيد بتقويم قوقل</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1a1" data-en="calendar.google.com → &lt;strong&gt;Create&lt;/strong&gt; → &lt;strong&gt;Appointment schedule&lt;/strong&gt;. Free with a normal Gmail account.">calendar.google.com ← <strong>إنشاء</strong> ← <strong>جدول المواعيد</strong> (Appointment schedule). مجاني بحساب Gmail العادي.</li>
+          <li data-i="l1a2" data-en="Set the duration, working days and hours, and a buffer between slots. Booked times disappear automatically.">حدّد مدة الموعد، أيام وساعات الدوام، وفاصل بين المواعيد. الأوقات المحجوزة تختفي أوتوماتيك.</li>
+          <li data-i="l1a3" data-en="Turn on &lt;strong&gt;require phone number&lt;/strong&gt; in the booking form so you can reach them on WhatsApp.">فعّل <strong>طلب رقم الهاتف</strong> بنموذج الحجز عشان تقدر تتواصل على واتساب.</li>
+          <li data-i="l1a4" data-en="Copy the page link (calendar.app.google/…) and paste it in the “Booking link” box above.">انسخ رابط الصفحة (calendar.app.google/…) وحطه بخانة «رابط الحجز» فوق.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1b">
+      <summary><span class="num">2</span><h3 data-i="l1bh" data-en="Put the link in your auto-reply">اربط الرابط بالرد الأوتوماتيكي</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l1bp" data-en="In Level 1 of the WhatsApp guide (quick replies) or in the bot menu, make the “book” option send this:">بالمستوى ١ من شرح واتساب (الردود السريعة) أو بقائمة البوت، خلّ خيار «حجز موعد» يرسل هالرسالة:</p>
+        <div class="script" data-script="l1reply"></div>
+        <div class="tip" data-i="l1bt" data-en="At this level the confirmation and reminder arrive by &lt;strong&gt;email&lt;/strong&gt; from Google. If you want them on WhatsApp, move to Level 2.">التأكيد والتذكير بهالمستوى يوصلون على <strong>الإيميل</strong> من قوقل. لو تبيهم على واتساب، انتقل للمستوى ٢.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1c">
+      <summary><span class="num">3</span><h3 data-i="l1ch" data-en="Manual confirmation (optional)">رسالة تأكيد يدوية (اختياري)</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l1cp" data-en="When the booking notification arrives, send this as a quick reply — one second:">لما يوصلك إشعار الحجز، أرسل هالرسالة كرد سريع — ثانية وحدة:</p>
+        <div class="script" data-script="l1confirm"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1d">
+      <summary><span class="num">4</span><h3 data-i="l1dh" data-en="Test it yourself">جرّب بنفسك</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1d1" data-en="Open the link on your phone, book a test slot, and confirm it disappears from the available times.">افتح الرابط من جوالك، احجز موعد تجريبي، وتأكد إنه اختفى من الأوقات المتاحة.</li>
+          <li data-i="l1d2" data-en="Delete the test appointment from the calendar.">احذف الموعد التجريبي من التقويم.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section id="route-l2" role="tabpanel" aria-labelledby="tab-l2" class="hidden">
+    <details class="step" data-step="l2a" open>
+      <summary><span class="num">1</span><h3 data-i="l2ah" data-en="Pick a booking tool">اختر أداة الحجز</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2a1" data-en="&lt;strong&gt;Cal.com&lt;/strong&gt;: free for individuals, open source, supports Arabic and payments. &lt;strong&gt;Calendly&lt;/strong&gt;: easier, but WhatsApp reminders need a paid plan or an external integration."><strong>Cal.com</strong>: مجاني للفرد، مفتوح المصدر، يدعم العربية والدفع. <strong>Calendly</strong>: أسهل، بس التذكير على واتساب يحتاج خطة مدفوعة أو ربط خارجي.</li>
+          <li data-i="l2a2" data-en="Add your services as &lt;strong&gt;event types&lt;/strong&gt;: name, duration, price, and who receives the booking if you have several staff.">أضف خدماتك كـ <strong>Event types</strong>: الاسم، المدة، السعر، ومن يستقبل الحجز لو عندك أكثر من موظف.</li>
+          <li data-i="l2a3" data-en="Connect your calendar (Google/Outlook) so your own appointments block the slots automatically.">اربط التقويم (Google/Outlook) عشان مواعيدك الشخصية تحجب الأوقات أوتوماتيك.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2b">
+      <summary><span class="num">2</span><h3 data-i="l2bh" data-en="Payment at booking">الدفع عند الحجز</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2b1" data-en="Cal.com → Apps → &lt;strong&gt;Stripe&lt;/strong&gt; → set a price on each service. The customer pays before the slot is confirmed — goodbye no-shows.">Cal.com ← Apps ← <strong>Stripe</strong> ← حدّد السعر على كل خدمة. العميل يدفع قبل ما يتأكد الموعد — وداعاً للـ no-show.</li>
+          <li data-i="l2b2" data-en="If you need KNET: leave the booking unpaid and send a Tap or MyFatoorah link in the confirmation message (step 3).">لو تبي KNET: خلّ الحجز بدون دفع، وأرسل رابط Tap أو MyFatoorah برسالة التأكيد (الخطوة ٣).</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2c">
+      <summary><span class="num">3</span><h3 data-i="l2ch" data-en="WhatsApp confirmation and reminder">تأكيد وتذكير على واتساب</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l2cp" data-en="Cal.com → &lt;strong&gt;Workflows&lt;/strong&gt; → “when a booking is created” → send WhatsApp (needs a WhatsApp Business API number from the WhatsApp guide, Level 2). The message:">Cal.com ← <strong>Workflows</strong> ← «عند حجز جديد» ← أرسل واتساب (يحتاج رقم WhatsApp Business API من شرح واتساب، المستوى ٢). الرسالة:</p>
+        <div class="script" data-script="l2confirm"></div>
+        <p data-i="l2cp2" data-en="And a second workflow: “2 hours before the event”:">وثاني Workflow: «قبل الموعد بساعتين»:</p>
+        <div class="script" data-script="l2remind"></div>
+        <div class="tip" data-i="l2ct" data-en="No API number yet? Let the workflow send &lt;strong&gt;SMS&lt;/strong&gt; or email for now — better than nothing.">ما عندك رقم API؟ خلّ الـ Workflow يرسل <strong>SMS</strong> أو إيميل مؤقتاً — أفضل من لا شي.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2d">
+      <summary><span class="num">4</span><h3 data-i="l2dh" data-en="Put the link everywhere">حط الرابط بكل مكان</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2d1" data-en="Instagram bio, the “book” button in WhatsApp Business, and the auto-reply (the “Booking link” box above).">البايو بانستغرام، زر «حجز» بـ WhatsApp Business، والرد الأوتوماتيكي (خانة «رابط الحجز» فوق).</li>
+          <li data-i="l2d2" data-en="Book a test slot from your phone and confirm both messages arrive.">احجز موعد تجريبي من جوالك وتأكد التأكيد والتذكير وصلوا.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section id="route-l3" role="tabpanel" aria-labelledby="tab-l3" class="hidden">
+    <details class="step" data-step="l3a" open>
+      <summary><span class="num">1</span><h3 data-i="l3ah" data-en="The idea and the data">الفكرة والبيانات</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l3ap" data-en="The bot (from the WhatsApp guide, Level 3) asks the day → shows free slots → takes the time → sends a payment link → confirms and reminds after payment. The conversation:">البوت (من شرح واتساب، المستوى ٣) يسأل اليوم ← يعرض الأوقات المتاحة ← ياخذ الوقت ← يرسل رابط دفع ← بعد الدفع يأكّد ويذكّر. شكل المحادثة:</p>
+        <div class="script" data-script="l3flow"></div>
+        <p data-i="l3ap2" data-en="One Firestore collection: &lt;code&gt;bookings&lt;/code&gt; with &lt;code&gt;phone, name, date, time, status (pending | paid | cancelled), tapCharge, reminded&lt;/code&gt;.">مجموعة Firestore وحدة: <code>bookings</code> فيها <code>phone, name, date, time, status (pending | paid | cancelled), tapCharge, reminded</code>.</p>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3b">
+      <summary><span class="num">2</span><h3 data-i="l3bh" data-en="Functions: slots, payment, confirmation, reminder">الدوال: المتاح، الدفع، التأكيد، التذكير</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l3bp" data-en="Firebase Functions v2, Node 20. Secret: &lt;code&gt;firebase functions:secrets:set TAP_SECRET&lt;/code&gt;. Three HTTP functions and one scheduled:">Firebase Functions v2، Node 20. السر: <code>firebase functions:secrets:set TAP_SECRET</code>. ثلاث دوال HTTP ودالة مجدولة:</p>
+<pre>// functions/booking.js — slot check + Tap payment + confirmation + reminder
+const { onRequest } = require("firebase-functions/v2/https");
+const { onSchedule } = require("firebase-functions/v2/scheduler");
+const { defineSecret } = require("firebase-functions/params");
+const admin = require("firebase-admin");
+if (!admin.apps.length) admin.initializeApp();
+const db = admin.firestore();
+const TAP_SECRET = defineSecret("TAP_SECRET");
+
+// 1) Free slots for a day: working hours minus booked ones
+const HOURS = ["10:00", "11:30", "13:30", "16:00", "17:30"]; // your slots
+async function freeSlots(dateISO) {
+  const booked = await db.collection("bookings")
+    .where("date", "==", dateISO).where("status", "in", ["paid", "pending"]).get();
+  const taken = new Set(booked.docs.map(d =&gt; d.data().time));
+  return HOURS.filter(h =&gt; !taken.has(h));
+}
+
+// 2) Called by your WhatsApp/Instagram bot (Level 3 of the previous guides)
+//    POST { phone, name, date, time }  → returns a Tap payment link
+exports.createBooking = onRequest({ region: "us-central1", secrets: [TAP_SECRET] }, async (req, res) =&gt; {
+  const { phone, name, date, time } = req.body || {};
+  if (!(await freeSlots(date)).includes(time)) return res.status(409).json({ error: "slot_taken", free: await freeSlots(date) });
+  const ref = await db.collection("bookings").add({ phone, name, date, time, status: "pending", created: new Date() });
+
+  const r = await fetch("https://api.tap.company/v2/charges", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${TAP_SECRET.value()}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      amount: 25, currency: "KWD",                     // your price
+      customer: { first_name: name, phone: { country_code: "965", number: phone.replace(/^965/, "") } },
+      source: { id: "src_all" },
+      redirect: { url: `https://YOUR-SITE/thanks?b=${ref.id}` },
+      post: { url: "https://us-central1-YOUR-PROJECT.cloudfunctions.net/tapWebhook" },
+      metadata: { booking: ref.id },
+    }),
+  });
+  const charge = await r.json();
+  await ref.update({ tapCharge: charge.id });
+  res.json({ bookingId: ref.id, payUrl: charge.transaction.url });
+});
+
+// 3) Tap tells us when it's paid → confirm
+exports.tapWebhook = onRequest({ region: "us-central1" }, async (req, res) =&gt; {
+  const c = req.body;
+  if (c.status === "CAPTURED" &amp;&amp; c.metadata?.booking) {
+    await db.collection("bookings").doc(c.metadata.booking).update({ status: "paid", paidAt: new Date() });
+    // sendWhatsApp(phone, `تم الدفع ✅ موعدك ${date} ${time} — بنذكّرك قبلها بساعتين`)  ← reuse sendText() from the WhatsApp guide
+  }
+  res.sendStatus(200);
+});
+
+// 4) Reminder 2 hours before, every 15 minutes
+exports.reminders = onSchedule({ schedule: "every 15 minutes", region: "us-central1", timeZone: "Asia/Kuwait" }, async () =&gt; {
+  const now = new Date(); const soon = new Date(now.getTime() + 2 * 3600e3);
+  const snap = await db.collection("bookings").where("status", "==", "paid").where("reminded", "==", false).get();
+  for (const d of snap.docs) {
+    const b = d.data(); const at = new Date(`${b.date}T${b.time}:00+03:00`);
+    if (at &gt; now &amp;&amp; at &lt;= soon) {
+      // sendWhatsApp(b.phone, `تذكير 🔔 موعدك اليوم ${b.time}`)
+      await d.ref.update({ reminded: true });
+    }
+  }
+});
+</pre>
+<pre>firebase deploy --only functions:createBooking,functions:tapWebhook,functions:reminders</pre>
+        <div class="tip" data-i="l3bt" data-en="Change &lt;code&gt;HOURS&lt;/code&gt;, &lt;code&gt;amount&lt;/code&gt;, &lt;code&gt;YOUR-SITE&lt;/code&gt; and &lt;code&gt;YOUR-PROJECT&lt;/code&gt;. &lt;code&gt;sendWhatsApp&lt;/code&gt; is the same &lt;code&gt;sendText&lt;/code&gt; from the WhatsApp guide.">غيّر <code>HOURS</code> و<code>amount</code> و<code>YOUR-SITE</code> و<code>YOUR-PROJECT</code>. دالة <code>sendWhatsApp</code> هي نفس <code>sendText</code> من شرح واتساب.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3c">
+      <summary><span class="num">3</span><h3 data-i="l3ch" data-en="Wire the bot to the functions">اربط البوت بالدوال</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3c1" data-en="In the bot state (&lt;code&gt;wa_chats&lt;/code&gt;) add &lt;code&gt;stage: day | time | paying&lt;/code&gt; and store the chosen day and time.">بحالة البوت (<code>wa_chats</code>) أضف <code>stage: day | time | paying</code> وخزّن اليوم والوقت المختارين.</li>
+          <li data-i="l3c2" data-en="When they pick a time: call &lt;code&gt;createBooking&lt;/code&gt; and send &lt;code&gt;payUrl&lt;/code&gt; to the customer.">لما يختار الوقت: استدعِ <code>createBooking</code> وأرسل <code>payUrl</code> للعميل.</li>
+          <li data-i="l3c3" data-en="If it returns &lt;code&gt;slot_taken&lt;/code&gt;: show the new times from &lt;code&gt;free&lt;/code&gt; and ask again.">لو رجّعت <code>slot_taken</code>: اعرض الأوقات الجديدة من <code>free</code> واطلب يختار مرة ثانية.</li>
+          <li data-i="l3c4" data-en="&lt;code&gt;tapWebhook&lt;/code&gt; confirms and sends “Paid ✅” — the bot does nothing extra."><code>tapWebhook</code> يأكّد ويرسل رسالة «تم الدفع ✅» — البوت ما يحتاج يسوي شي.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3d">
+      <summary><span class="num">4</span><h3 data-i="l3dh" data-en="Tap Payments">Tap Payments</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3d1" data-en="Tap dashboard → &lt;strong&gt;Developers&lt;/strong&gt; → Secret key (test first, then live). KNET works with &lt;code&gt;src_all&lt;/code&gt; or &lt;code&gt;src_kw.knet&lt;/code&gt;.">لوحة Tap ← <strong>Developers</strong> ← Secret key (test أول، بعدين live). KNET يشتغل بـ <code>src_all</code> أو <code>src_kw.knet</code>.</li>
+          <li data-i="l3d2" data-en="The &lt;code&gt;post.url&lt;/code&gt; is how Tap notifies your function when payment completes. Trust &lt;code&gt;status === &quot;CAPTURED&quot;&lt;/code&gt; only.">الـ <code>post.url</code> هو اللي يخلي Tap يبلّغ دالتك لما ينتهي الدفع. تحقق من <code>status === "CAPTURED"</code> فقط.</li>
+          <li data-i="l3d3" data-en="&lt;code&gt;pending&lt;/code&gt; bookings unpaid after 30 minutes: a scheduled function sets them &lt;code&gt;cancelled&lt;/code&gt; so the slot frees up.">الحجوزات <code>pending</code> اللي ما اندفعت خلال ٣٠ دقيقة: دالة مجدولة تحولها <code>cancelled</code> عشان الوقت يرجع متاح.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3e">
+      <summary><span class="num">5</span><h3 data-i="l3eh" data-en="An owner view">لوحة للمالك</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3e1" data-en="A simple admin page: today’s bookings, paid, cancelled, and a “cancel” button that updates status and messages the customer.">صفحة بسيطة بلوحة التحكم: حجوزات اليوم، المدفوع، الملغي، وزر «إلغاء» يحدّث الحالة ويرسل رسالة للعميل.</li>
+          <li data-i="l3e2" data-en="A morning WhatsApp report for the owner: “6 appointments today, 4 paid” — that’s the next post.">تقرير صباحي على واتساب للمالك: «اليوم ٦ مواعيد، ٤ مدفوعة» — هذا موضوع البوست الجاي.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Built it? Show me.">بنيته؟ ورّني.</h2>
+    <p data-i="finP" data-en="DM me a screenshot of your first automated booking and tell me what to automate next — reports, invoices, follow-ups.">أرسل لي سكرين شوت لأول حجز أوتوماتيكي عندك وقل لي شنو نؤتمت بعدها — تقارير، فواتير، متابعة العملاء.</p>
+    <a class="btn" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener" data-i="finBtn" data-en="Follow @eng.abd.alawadhi">تابع @eng.abd.alawadhi</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("bk-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    try { localStorage.setItem("bk-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { biz:$("#f-biz"), link:$("#f-link"), price:$("#f-price"), loc:$("#f-loc") };
+  function v(){ return { biz:F.biz.value.trim()||"[اسم الشركة]", link:F.link.value.trim()||"[رابط الحجز]", price:F.price.value.trim()||"[السعر]", loc:F.loc.value.trim()||"[الموقع]" }; }
+  var S = {
+    ar: {
+      l1reply: function(x){ return "تفضل اختر الوقت اللي يناسبك 📅\n" + x.link + "\nبعد ما تحجز بيوصلك التأكيد على نفس الرقم ✅"; },
+      l1confirm: function(x){ return "تم حجزك ✅ " + x.biz + "\nالموعد: [اليوم] [الوقت]\nالمكان: " + x.loc + "\nبنذكّرك قبلها بساعتين 🔔"; },
+      l2confirm: function(x){ return "هلا {name} 👋 تم تأكيد موعدك مع " + x.biz + "\n📅 {date} ⏰ {time}\n📍 " + x.loc + "\nلو تبي تعدّل: {reschedule_link}"; },
+      l2remind: function(x){ return "تذكير 🔔 موعدك مع " + x.biz + " اليوم الساعة {time}\n📍 " + x.loc + "\nنشوفك على خير 🙏"; },
+      l3flow: function(x){ return "البوت: أي يوم يناسبك؟\nالعميل: بكرة\nالبوت: المتاح بكرة: ١٠:٠٠ · ١:٣٠ · ٤:٠٠ — أي وقت؟\nالعميل: ٤:٠٠\nالبوت: تمام 💳 المبلغ " + x.price + " — رابط الدفع: {payUrl}\n(بعد الدفع) البوت: تم الدفع ✅ موعدك بكرة ٤:٠٠ — بنذكّرك قبلها بساعتين"; }
+    },
+    en: {
+      l1reply: function(x){ return "Pick a time that suits you 📅\n" + x.link + "\nYou'll get the confirmation on this number ✅"; },
+      l1confirm: function(x){ return "Booked ✅ " + x.biz + "\nWhen: [day] [time]\nWhere: " + x.loc + "\nWe'll remind you 2 hours before 🔔"; },
+      l2confirm: function(x){ return "Hi {name} 👋 your appointment with " + x.biz + " is confirmed\n📅 {date} ⏰ {time}\n📍 " + x.loc + "\nNeed to change it? {reschedule_link}"; },
+      l2remind: function(x){ return "Reminder 🔔 your appointment with " + x.biz + " is today at {time}\n📍 " + x.loc + "\nSee you soon 🙏"; },
+      l3flow: function(x){ return "Bot: Which day suits you?\nCustomer: Tomorrow\nBot: Free tomorrow: 10:00 · 1:30 · 4:00 — which one?\nCustomer: 4:00\nBot: Great 💳 " + x.price + " — pay here: {payUrl}\n(after payment) Bot: Paid ✅ tomorrow at 4:00 — we'll remind you 2 hours before"; }
+    }
+  };
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[lang][k]) return;
+      box.textContent = S[lang][k](x); box.setAttribute("dir", lang==="ar"?"rtl":"ltr");
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ الرسالة":"Copy message");
+      b.addEventListener("click", function(){
+        var txt = S[lang][k](v());
+        var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = lang==="ar"?"نسخ":"Copy"; },1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+      });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("bk-guide-form", JSON.stringify(x)); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("bk-guide-form")||"null"); if(saved){ F.biz.value=saved.biz; F.link.value=saved.link; F.price.value=saved.price; F.loc.value=saved.loc; } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); });
+
+  var route = "l1";
+  try { route = localStorage.getItem("bk-guide-route") || "l1"; } catch(e){}
+  function setRoute(r){
+    route = r;
+    ["l1","l2","l3"].forEach(function(id){ $("#route-"+id).classList.toggle("hidden", r!==id); $("#tab-"+id).setAttribute("aria-selected", r===id); });
+    try { localStorage.setItem("bk-guide-route", r); } catch(e){}
+    updateProgress();
+  }
+  ["l1","l2","l3"].forEach(function(id){ $("#tab-"+id).addEventListener("click", function(){ setRoute(id); }); });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("bk-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-"+route+" .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("bk-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); setRoute(route);
+})();
+</script>
+</body>
+</html>
