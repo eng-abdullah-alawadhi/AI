@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>المحاسبة المتصلة بالدفع — ٣ مستويات</title>
+<meta name="description" content="Accounting connected to your payment gateway (KNET, Tap, UPayments, MyFatoorah) in three levels: Google Sheets, Make/Zapier + Zoho Books, or your own webhook + ledger. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:14ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.routes{display:flex;gap:8px;margin:0 0 20px;border-bottom:2px solid var(--line)}
+.routes button{font:inherit;font-weight:700;font-size:17px;background:none;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:12px 6px;color:var(--mute);cursor:pointer;min-height:48px}
+.routes button[aria-selected=true]{color:var(--ink);border-color:var(--lime)}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+pre{background:var(--ink);color:#E6EDF3;border-radius:12px;padding:16px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.5;margin:12px 0;direction:ltr;text-align:left}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+.hidden{display:none!important}
+.lvl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.lvl button{font:inherit;font-weight:700;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:14px 10px;cursor:pointer;min-height:64px;color:var(--mute);display:flex;flex-direction:column;gap:4px;align-items:center}
+.lvl button small{font-weight:500;font-size:13px}
+.lvl button[aria-selected=true]{border-color:var(--lime);color:var(--ink);background:var(--lime-soft)}
+@media (max-width:520px){.lvl{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../"><svg width="34" height="21" viewBox="0 0 56 34" aria-hidden="true"><rect width="56" height="34" rx="4" fill="#FFFFFF"/><rect width="56" height="11.33" rx="4" fill="#007A3D"/><rect y="22.67" width="56" height="11.33" rx="4" fill="#CE1126"/><path d="M0 0h18l10 11.33v11.34L18 34H0z" fill="#10251B"/></svg> <span data-i="by" data-en="All lessons">كل الدروس</span></a>
+    <div class="lang" role="group" aria-label="Language"><button type="button" id="btn-ar" aria-pressed="true">عربي</button><button type="button" id="btn-en" aria-pressed="false">EN</button></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 data-i="h1" data-en="Every payment books itself.">كل عملية دفع… تتسجل بالدفاتر بروحها.</h1>
+    <p data-i="lead" data-en="From the payment gateway (KNET, Tap, UPayments, MyFatoorah) to the journal entry, the invoice and the dashboard — with nobody typing invoices. Three levels, for any business.">من بوابة الدفع (كي نت، تاب، يو بيمنتس، ماي فاتورة) إلى القيد والفاتورة واللوحة — بدون محاسب يدخل فواتير. ثلاث مستويات، لأي نشاط: مطعم، عيادة، عطور، صالون.</p>
+    <div class="meta"><span data-i="m1" data-en="Level 1: Google Sheets">المستوى ١: شيت جوجل</span><span data-i="m2" data-en="Level 2: no code">المستوى ٢: بدون برمجة</span><span data-i="m3" data-en="Level 3: webhook + ledger">المستوى ٣: ويب هوك + قيود</span></div>
+    <p style="margin:14px 0 0"><a href="../demo/#accounting" data-i="demo" data-en="Try the live demo first →">جرّب التجربة الحيّة أول ←</a></p>
+  </section>
+
+  <section class="setup" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Personalize">عدّل على مقاسك</h2>
+    <p class="hint" data-i="setupHint" data-en="Type your details and every ready message or snippet updates.">اكتب بياناتك وكل الرسائل والمقاطع الجاهزة تتغير.</p>
+    <div class="field"><label for="f-biz" data-i="fbiz" data-en="Business name">اسم الشركة</label><input id="f-biz" dir="auto" value="[اسم الشركة]"></div>
+    <div class="field"><label for="f-gw" data-i="fgw" data-en="Main gateway">بوابة الدفع الأساسية</label><input id="f-gw" dir="ltr" value="Tap"></div>
+    <div class="field"><label for="f-fee" data-i="ffee" data-en="Gateway fee rate">نسبة رسوم البوابة</label><input id="f-fee" dir="ltr" value="2.5%"></div>
+    <div class="field"><label for="f-phone" data-i="fphone" data-en="Invoice WhatsApp number">رقم واتساب الفواتير</label><input id="f-phone" dir="ltr" value="+965 XXXX XXXX"></div>
+  </section>
+
+  <div class="lvl" role="tablist" aria-label="Level">
+    <button type="button" role="tab" id="tab-l1" aria-selected="true" aria-controls="route-l1"><span data-i="t1" data-en="Level 1">المستوى ١</span><small data-i="t1s" data-en="Google Sheets · free">شيت جوجل · مجاني</small></button>
+    <button type="button" role="tab" id="tab-l2" aria-selected="false" aria-controls="route-l2"><span data-i="t2" data-en="Level 2">المستوى ٢</span><small data-i="t2s" data-en="Make/Zapier + Zoho">Make/Zapier + Zoho</small></button>
+    <button type="button" role="tab" id="tab-l3" aria-selected="false" aria-controls="route-l3"><span data-i="t3" data-en="Level 3">المستوى ٣</span><small data-i="t3s" data-en="Webhook + database">ويب هوك + قاعدة بيانات</small></button>
+  </div>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1" role="tabpanel" aria-labelledby="tab-l1">
+    <details class="step" data-step="l1a" open>
+      <summary><span class="num">1</span><h3 data-i="l1ah" data-en="Export transactions from the gateway">صدّر العمليات من بوابة الدفع</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1a1" data-en="Tap / UPayments / MyFatoorah dashboard → &lt;strong&gt;Transactions&lt;/strong&gt; → filter “Captured” → &lt;strong&gt;Export CSV&lt;/strong&gt;. Once a week is enough.">لوحة Tap / UPayments / MyFatoorah ← <strong>Transactions</strong> ← فلتر «Captured» ← <strong>Export CSV</strong>. مرة بالأسبوع كافية.</li>
+          <li data-i="l1a2" data-en="Paste it into a Google Sheet tab named &lt;code&gt;Payments&lt;/code&gt; with columns: date · gateway · status · amount · fee · net.">الصق الملف بشيت جوجل اسمه <code>Payments</code> بالأعمدة: التاريخ · البوابة · الحالة · المبلغ · الرسوم · الصافي.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1b">
+      <summary><span class="num">2</span><h3 data-i="l1bh" data-en="Ready formulas for the report">صيغ جاهزة تطلع لك التقرير</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l1bp" data-en="In a &lt;code&gt;Report&lt;/code&gt; tab, cell A1:">بتبويب <code>Report</code>، الخلية A1:</p>
+<pre>=QUERY(Payments!A:F,"select B, sum(D), sum(E), sum(F) where C='paid' group by B label sum(D) 'المبيعات', sum(E) 'الرسوم', sum(F) 'الصافي'",1)</pre>
+        <div class="tip" data-i="l1bt" data-en="Fees: if the gateway doesn’t export them, compute a column: &lt;code&gt;=D2*0.025&lt;/code&gt; (your contract rate).">الرسوم: لو البوابة ما تصدّرها، احسبها بعمود: <code>=D2*0.025</code> (نسبة عقدك).</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1c">
+      <summary><span class="num">3</span><h3 data-i="l1ch" data-en="One-click customer invoice">فاتورة للعميل بضغطة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1c1" data-en="An &lt;code&gt;Invoice&lt;/code&gt; tab with a template (your name, invoice number, lines, total) that reads from the payment row.">تبويب <code>Invoice</code> بقالب فاتورة (اسمك، رقم الفاتورة، البنود، المجموع) يقرأ من صف العملية.</li>
+          <li data-i="l1c2" data-en="File → Download → PDF → send on WhatsApp. One minute per invoice instead of ten.">ملف ← تنزيل ← PDF ← أرسله على واتساب. دقيقة لكل فاتورة بدل عشر.</li>
+        </ul>
+        <div class="script" data-script="inv"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1d">
+      <summary><span class="num">4</span><h3 data-i="l1dh" data-en="Month end">آخر الشهر</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1d1" data-en="The &lt;code&gt;Report&lt;/code&gt; tab goes to the accountant. Never edit it by hand — edit &lt;code&gt;Payments&lt;/code&gt; only.">تبويب <code>Report</code> هو اللي يروح للمحاسب. لا تعدّل عليه يدوياً — عدّل بـ <code>Payments</code> بس.</li>
+          <li data-i="l1d2" data-en="When the weekly paste gets old… that’s the signal for Level 2.">لما تتعب من اللصق الأسبوعي… هذي إشارة للمستوى ٢.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section id="route-l2" role="tabpanel" aria-labelledby="tab-l2" class="hidden">
+    <details class="step" data-step="l2a" open>
+      <summary><span class="num">1</span><h3 data-i="l2ah" data-en="Connect the gateway to an automation tool">اربط البوابة بأداة الأتمتة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2a1" data-en="&lt;strong&gt;Make&lt;/strong&gt; (cheaper) or &lt;strong&gt;Zapier&lt;/strong&gt;. New scenario → Webhook → copy the URL."><strong>Make</strong> (أرخص) أو <strong>Zapier</strong>. سوّ سيناريو جديد ← Webhook ← انسخ الرابط.</li>
+          <li data-i="l2a2" data-en="Gateway dashboard → Webhooks → paste the URL → event “payment captured”. Tap, MyFatoorah and UPayments all support it.">لوحة البوابة ← Webhooks ← الصق الرابط ← حدث «Payment captured». Tap وMyFatoorah وUPayments كلهم يدعمون هذا.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2b">
+      <summary><span class="num">2</span><h3 data-i="l2bh" data-en="The entry in your accounting app">القيد ببرنامج المحاسبة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2b1" data-en="Add a &lt;strong&gt;Zoho Books&lt;/strong&gt; or &lt;strong&gt;QuickBooks&lt;/strong&gt; module → “Create Invoice” → map customer, amount, date.">أضف وحدة <strong>Zoho Books</strong> أو <strong>QuickBooks</strong> ← «Create Invoice» ← اربط الحقول: العميل، المبلغ، التاريخ.</li>
+          <li data-i="l2b2" data-en="Second module “Record Payment” → same invoice → account: bank → amount: net. And an “Expense” module for the fee.">وحدة ثانية «Record Payment» ← نفس الفاتورة ← الحساب: البنك ← المبلغ: الصافي. ووحدة «Expense» للرسوم.</li>
+          <li data-i="l2b3" data-en="A filter before everything: status = captured. Otherwise you log failed attempts.">فلتر قبل كل شي: الحالة = captured. وإلا بتسجّل محاولات فاشلة.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2c">
+      <summary><span class="num">3</span><h3 data-i="l2ch" data-en="Customer invoice on WhatsApp">الفاتورة للعميل على واتساب</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2c1" data-en="Zoho Books generates the PDF. “Get Invoice PDF” module → WhatsApp module (ManyChat / Twilio / WhatsApp Cloud API) → send the file.">Zoho Books يولّد PDF بنفسه. وحدة «Get Invoice PDF» ← وحدة WhatsApp (ManyChat / Twilio / WhatsApp Cloud API) ← أرسل الملف.</li>
+        </ul>
+        <div class="script" data-script="inv"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2d">
+      <summary><span class="num">4</span><h3 data-i="l2dh" data-en="Works for any business">يناسب أي نشاط</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2d1" data-en="Restaurant: each order → invoice + an inventory adjustment.">مطعم: كل طلب فاتورة + «Inventory adjustment» للمخزون.</li>
+          <li data-i="l2d2" data-en="Clinic: link the payment to the booking (bookings lesson) so the invoice carries the service name.">عيادة: اربط الدفع بالحجز (درس الحجوزات) عشان الفاتورة تحمل اسم الخدمة.</li>
+          <li data-i="l2d3" data-en="Salon: a “stylist” field on the invoice → one-click monthly commission report.">صالون: حقل «الموظفة» بالفاتورة ← تقرير عمولات شهري بضغطة.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section id="route-l3" role="tabpanel" aria-labelledby="tab-l3" class="hidden">
+    <details class="step" data-step="l3a" open>
+      <summary><span class="num">1</span><h3 data-i="l3ah" data-en="One webhook for every gateway">ويب هوك واحد لكل البوابات</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l3ap" data-en="Firebase Functions v2, Node 20. One function receives Tap, UPayments and MyFatoorah, normalises the payload, and posts a three-line journal entry:">Firebase Functions v2، Node 20. دالة وحدة تستقبل Tap وUPayments وMyFatoorah، توحّد الشكل، وتسجّل القيد بثلاثة أسطر:</p>
+<pre>// functions/payWebhook.js — one webhook, three gateways → one ledger
+const { onRequest } = require("firebase-functions/v2/https");
+const admin = require("firebase-admin");
+if (!admin.apps.length) admin.initializeApp();
+const db = admin.firestore();
+const FEE = { tap: 0.025, upayments: 0.025, myfatoorah: 0.02, knet: 0.015 }; // your contract rates
+
+// Normalise each gateway's payload to { ref, amount, gateway, customer, paid }
+function parse(gw, b) {
+  if (gw === "tap")        return { ref: b.id,            amount: +b.amount,         customer: b.customer?.first_name, paid: b.status === "CAPTURED" };
+  if (gw === "upayments")  return { ref: b.payment_id,    amount: +b.amount,         customer: b.customer_name,        paid: b.result === "CAPTURED" };
+  if (gw === "myfatoorah") return { ref: b.InvoiceId,     amount: +b.InvoiceValue,   customer: b.CustomerName,         paid: b.TransactionStatus === "SUCCESS" };
+}
+
+exports.payWebhook = onRequest({ region: "us-central1" }, async (req, res) =&gt; {
+  const gw = (req.query.gw || "").toLowerCase();           // …/payWebhook?gw=tap
+  const p = parse(gw, req.body); if (!p) return res.sendStatus(400);
+  res.sendStatus(200);                                     // ack fast
+  if (!p.paid) return;
+  const ref = db.collection("payments").doc(`${gw}_${p.ref}`);
+  if ((await ref.get()).exists) return;                    // idempotent: gateways retry
+  const fee = +(p.amount * FEE[gw]).toFixed(3), net = +(p.amount - fee).toFixed(3);
+  const batch = db.batch(); const at = new Date();
+  batch.set(ref, { ...p, gateway: gw, fee, net, at });
+  const je = db.collection("journal").doc();               // one journal entry, three lines
+  batch.set(je, { at, ref: ref.id, lines: [
+    { account: "4000-Revenue",       credit: p.amount },
+    { account: "6100-Gateway fees",  debit:  fee },
+    { account: "1010-Bank",          debit:  net },
+  ]});
+  await batch.commit();
+  // await makeInvoicePdf(ref.id) then sendText(customerPhone, "🧾 فاتورتك …")  ← see the WhatsApp guide
+});</pre>
+<pre>firebase deploy --only functions:payWebhook</pre>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3b">
+      <summary><span class="num">2</span><h3 data-i="l3bh" data-en="Register the URL with each gateway">سجّل الرابط عند كل بوابة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3b1" data-en="Tap: Developers → Webhooks → &lt;code&gt;…/payWebhook?gw=tap&lt;/code&gt;. Or pass it per charge in &lt;code&gt;post.url&lt;/code&gt;.">Tap: Developers ← Webhooks ← <code>…/payWebhook?gw=tap</code>. أو مرّره بكل charge بـ <code>post.url</code>.</li>
+          <li data-i="l3b2" data-en="UPayments: Settings → Webhook URL → &lt;code&gt;…?gw=upayments&lt;/code&gt;. MyFatoorah: Webhooks → &lt;code&gt;…?gw=myfatoorah&lt;/code&gt; → enable “TransactionsStatusChanged”.">UPayments: Settings ← Webhook URL ← <code>…?gw=upayments</code>. MyFatoorah: Webhooks ← <code>…?gw=myfatoorah</code> ← فعّل «TransactionsStatusChanged».</li>
+          <li data-i="l3b3" data-en="Verify each gateway’s signature (each has its own scheme) before trusting the request — same HMAC idea as the WhatsApp lesson.">تحقق من التوقيع لكل بوابة (كل وحدة لها طريقتها) قبل ما تثق بالطلب — نفس فكرة HMAC بدرس واتساب.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3c">
+      <summary><span class="num">3</span><h3 data-i="l3ch" data-en="The PDF invoice">الفاتورة PDF</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3c1" data-en="A &lt;code&gt;makeInvoicePdf&lt;/code&gt; function: Arabic HTML template (your site fonts) → Puppeteer/Chromium → PDF → Cloud Storage → signed URL.">دالة <code>makeInvoicePdf</code>: قالب HTML بالعربي (نفس خطوط موقعك) ← Puppeteer/Chromium ← PDF ← Cloud Storage ← رابط موقّع.</li>
+          <li data-i="l3c2" data-en="Send the link with &lt;code&gt;sendText&lt;/code&gt; from the WhatsApp lesson, or as a document via Cloud API (&lt;code&gt;type: &quot;document&quot;&lt;/code&gt;).">أرسل الرابط بـ <code>sendText</code> من درس واتساب، أو كمستند عبر Cloud API (<code>type: "document"</code>).</li>
+        </ul>
+        <div class="script" data-script="inv"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3d">
+      <summary><span class="num">4</span><h3 data-i="l3dh" data-en="Dashboard and report">اللوحة والتقرير</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3d1" data-en="A dashboard page reading &lt;code&gt;journal&lt;/code&gt;: today’s sales, fees, net, last 10 payments. (The live demo shows the same layout.)">صفحة بلوحتك تقرأ <code>journal</code>: مبيعات اليوم، الرسوم، الصافي، وآخر ١٠ عمليات. (التجربة الحيّة فيها نفس الشكل.)</li>
+          <li data-i="l3d2" data-en="A scheduled function on the 1st → CSV for the accountant: date, account, debit, credit, reference.">دالة مجدولة أول كل شهر ← CSV للمحاسب بأعمدة: التاريخ، الحساب، مدين، دائن، المرجع.</li>
+          <li data-i="l3d3" data-en="Don’t compute tax yourself before asking your accountant — rules vary by activity.">لا تحسب الضريبة بنفسك قبل ما تسأل محاسبك — القواعد تختلف حسب النشاط.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Built it? Show me.">بنيته؟ ورّني.</h2>
+    <p data-i="finP" data-en="DM me a screenshot of your first self-posted entry and tell me your business — and if you want us to build it for you, message me.">أرسل لي سكرين شوت لأول قيد تسجّل بروحه عندك، وقل لي نشاطك — وإذا تبي نسويلك اياه كامل، راسلني.</p>
+    <a class="btn" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener" data-i="finBtn" data-en="DM me on Instagram">راسلني على انستغرام</a>
+  </section>
+
+  <footer><span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span></footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("accounting-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    try { localStorage.setItem("accounting-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { biz:$("#f-biz"), gw:$("#f-gw"), fee:$("#f-fee"), phone:$("#f-phone") };
+  function v(){ return { biz:F.biz.value.trim()||"[اسم الشركة]", gw:F.gw.value.trim()||"Tap", fee:F.fee.value.trim()||"2.5%", phone:F.phone.value.trim()||"+965 XXXX XXXX" }; }
+  var S = {
+    ar:{ inv:function(x){ return "🧾 فاتورتك من " + x.biz + "\nرقم: INV-{number}\nالمبلغ: {amount} د.ك عبر " + x.gw + "\nالتاريخ: {date}\nشكراً لتعاملك معنا 🙏\n(PDF مرفق)"; } },
+    en:{ inv:function(x){ return "🧾 Your invoice from " + x.biz + "\nNo: INV-{number}\nAmount: {amount} KWD via " + x.gw + "\nDate: {date}\nThank you 🙏\n(PDF attached)"; } }
+  };
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[lang][k]) return;
+      box.textContent = S[lang][k](x); box.setAttribute("dir", lang==="ar"?"rtl":"ltr");
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ الرسالة":"Copy message");
+      b.addEventListener("click", function(){
+        var txt = S[lang][k](v());
+        var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = lang==="ar"?"نسخ":"Copy"; },1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+      });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("accounting-guide-form", JSON.stringify(x)); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("accounting-guide-form")||"null"); if(saved){ if(saved.biz!==undefined) F.biz.value=saved.biz; if(saved.gw!==undefined) F.gw.value=saved.gw; if(saved.fee!==undefined) F.fee.value=saved.fee; if(saved.phone!==undefined) F.phone.value=saved.phone; } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); });
+
+  var route = "l1";
+  try { route = localStorage.getItem("accounting-guide-route") || "l1"; } catch(e){}
+  function setRoute(r){
+    route = r;
+    ["l1","l2","l3"].forEach(function(id){ $("#route-"+id).classList.toggle("hidden", r!==id); $("#tab-"+id).setAttribute("aria-selected", r===id); });
+    try { localStorage.setItem("accounting-guide-route", r); } catch(e){}
+    updateProgress();
+  }
+  ["l1","l2","l3"].forEach(function(id){ $("#tab-"+id).addEventListener("click", function(){ setRoute(id); }); });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("accounting-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-"+route+" .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("accounting-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); setRoute(route);
+})();
+</script>
+</body>
+</html>

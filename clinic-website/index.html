@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>موقع واحد لعيادتك — ٣ مستويات</title>
+<meta name="description" content="One website for your clinic, salon or restaurant: booking, email notifications, a client database, and accounting connected to the payment gateway — in three levels. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:14ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.routes{display:flex;gap:8px;margin:0 0 20px;border-bottom:2px solid var(--line)}
+.routes button{font:inherit;font-weight:700;font-size:17px;background:none;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:12px 6px;color:var(--mute);cursor:pointer;min-height:48px}
+.routes button[aria-selected=true]{color:var(--ink);border-color:var(--lime)}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+pre{background:var(--ink);color:#E6EDF3;border-radius:12px;padding:16px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.5;margin:12px 0;direction:ltr;text-align:left}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+.hidden{display:none!important}
+.lvl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.lvl button{font:inherit;font-weight:700;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:14px 10px;cursor:pointer;min-height:64px;color:var(--mute);display:flex;flex-direction:column;gap:4px;align-items:center}
+.lvl button small{font-weight:500;font-size:13px}
+.lvl button[aria-selected=true]{border-color:var(--lime);color:var(--ink);background:var(--lime-soft)}
+@media (max-width:520px){.lvl{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../"><svg width="34" height="21" viewBox="0 0 56 34" aria-hidden="true"><rect width="56" height="34" rx="4" fill="#FFFFFF"/><rect width="56" height="11.33" rx="4" fill="#007A3D"/><rect y="22.67" width="56" height="11.33" rx="4" fill="#CE1126"/><path d="M0 0h18l10 11.33v11.34L18 34H0z" fill="#10251B"/></svg> <span data-i="by" data-en="All lessons">كل الدروس</span></a>
+    <div class="lang" role="group" aria-label="Language"><button type="button" id="btn-ar" aria-pressed="true">عربي</button><button type="button" id="btn-en" aria-pressed="false">EN</button></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 data-i="h1" data-en="Your whole clinic… on one website.">عيادتك كلها… بموقع واحد.</h1>
+    <p data-i="lead" data-en="Booking, email, a client database, and accounting with the payment gateway — under one website. It ties the previous lessons into one system, for any business.">الحجز، الإيميل، قاعدة بيانات العملاء، والمحاسبة مع بوابة الدفع — تحت موقع واحد. يجمع الدروس السابقة بنظام واحد، لأي نشاط: عيادة، صالون، مطعم.</p>
+    <div class="meta"><span data-i="m1" data-en="Level 1: Google tools">المستوى ١: أدوات جوجل</span><span data-i="m2" data-en="Level 2: no code">المستوى ٢: بدون برمجة</span><span data-i="m3" data-en="Level 3: GitHub Pages + Firebase">المستوى ٣: GitHub Pages + Firebase</span></div>
+    <p style="margin:14px 0 0"><a href="../demo/#clinic" data-i="demo" data-en="Try the live demo first →">جرّب التجربة الحيّة أول ←</a></p>
+  </section>
+
+  <section class="setup" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Personalize">عدّل على مقاسك</h2>
+    <p class="hint" data-i="setupHint" data-en="Type your details and every ready message or snippet updates.">اكتب بياناتك وكل الرسائل والمقاطع الجاهزة تتغير.</p>
+    <div class="field"><label for="f-biz" data-i="fbiz" data-en="Business name">اسم العيادة / المحل</label><input id="f-biz" dir="auto" value="عيادة النور"></div>
+    <div class="field"><label for="f-domain" data-i="fdomain" data-en="Domain">الدومين</label><input id="f-domain" dir="ltr" value="yourclinic.com"></div>
+    <div class="field"><label for="f-svc" data-i="fsvc" data-en="Main service">الخدمة الأساسية</label><input id="f-svc" dir="auto" value="تنظيف"></div>
+    <div class="field"><label for="f-loc" data-i="floc" data-en="Location">الموقع</label><input id="f-loc" dir="auto" value="حولي، الكويت"></div>
+  </section>
+
+  <div class="lvl" role="tablist" aria-label="Level">
+    <button type="button" role="tab" id="tab-l1" aria-selected="true" aria-controls="route-l1"><span data-i="t1" data-en="Level 1">المستوى ١</span><small data-i="t1s" data-en="Google tools · free">أدوات جوجل · مجاني</small></button>
+    <button type="button" role="tab" id="tab-l2" aria-selected="false" aria-controls="route-l2"><span data-i="t2" data-en="Level 2">المستوى ٢</span><small data-i="t2s" data-en="Wix/Webflow + Cal.com + Airtable">Wix/Webflow + Cal.com + Airtable</small></button>
+    <button type="button" role="tab" id="tab-l3" aria-selected="false" aria-controls="route-l3"><span data-i="t3" data-en="Level 3">المستوى ٣</span><small data-i="t3s" data-en="GitHub Pages + Firebase">GitHub Pages + Firebase</small></button>
+  </div>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1" role="tabpanel" aria-labelledby="tab-l1">
+    <details class="step" data-step="l1a" open>
+      <summary><span class="num">1</span><h3 data-i="l1ah" data-en="The site on Google Sites">الموقع بـ Google Sites</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1a1" data-en="sites.google.com → new site → “Business” template. One page: about, services, location, a “Book” button.">sites.google.com ← موقع جديد ← قالب «Business». صفحة وحدة: من نحن، الخدمات، الموقع، وزر «احجز».</li>
+          <li data-i="l1a2" data-en="Connect your domain (&lt;code&gt;yourclinic.com&lt;/code&gt;) from site settings — or use the free Google link.">اربط دومينك (<code>yourclinic.com</code>) من إعدادات الموقع — أو استخدم رابط جوجل المجاني.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1b">
+      <summary><span class="num">2</span><h3 data-i="l1bh" data-en="Booking: Google Calendar">الحجز: تقويم جوجل</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1b1" data-en="Bookings lesson → Level 1: a Google Calendar appointment schedule. “Embed” it inside Google Sites as a frame.">درس الحجوزات ← المستوى ١: جدول مواعيد بتقويم جوجل. «تضمين» الصفحة داخل Google Sites كإطار.</li>
+          <li data-i="l1b2" data-en="Email: confirmation and reminder go to the customer automatically from Google, and you get the calendar notification.">الإيميل: التأكيد والتذكير يروحون للعميل أوتوماتيك من جوجل، وأنت يوصلك إشعار التقويم.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1c">
+      <summary><span class="num">3</span><h3 data-i="l1ch" data-en="Client database: Forms + Sheets">قاعدة بيانات العملاء: Forms + Sheets</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1c1" data-en="A Google Form “your details” (name, phone, email, notes) linked to a Sheet. Put its link in the confirmation email.">نموذج جوجل «بياناتك» (الاسم، الجوال، الإيميل، ملاحظات) مربوط بشيت. ضع رابطه بإيميل التأكيد.</li>
+          <li data-i="l1c2" data-en="The Sheet is your database: one row per client, a “last visit” column you update from the calendar.">الشيت هو قاعدة بياناتك: كل صف عميل، وعمود «آخر زيارة» تحدّثه من التقويم.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l1d">
+      <summary><span class="num">4</span><h3 data-i="l1dh" data-en="Payment and accounting">الدفع والمحاسبة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l1d1" data-en="A fixed Tap/MyFatoorah payment link in the confirmation email: “pay to confirm your appointment”.">رابط دفع ثابت من Tap/MyFatoorah (Payment Link) بإيميل التأكيد: «ادفع لتأكيد موعدك».</li>
+          <li data-i="l1d2" data-en="Accounting: accounting lesson → Level 1 (export + Sheet). All free — just manual at the edges.">المحاسبة: درس المحاسبة ← المستوى ١ (تصدير + شيت). كل شي مجاني — بس يدوي بالأطراف.</li>
+        </ul>
+        <div class="script" data-script="confirm"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section id="route-l2" role="tabpanel" aria-labelledby="tab-l2" class="hidden">
+    <details class="step" data-step="l2a" open>
+      <summary><span class="num">1</span><h3 data-i="l2ah" data-en="The site on Wix or Webflow">الموقع بـ Wix أو Webflow</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2a1" data-en="A ready clinic/salon template → change colours and text → connect the domain. Wix is easier, Webflow is prettier.">قالب عيادة/صالون جاهز ← عدّل الألوان والنصوص ← اربط الدومين. Wix أسهل، Webflow أجمل.</li>
+          <li data-i="l2a2" data-en="Skip Wix’s built-in booking if you want WhatsApp — use Cal.com (step 2).">لا تستخدم حجز Wix المدمج إذا تبي واتساب — استخدم Cal.com (الخطوة ٢).</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2b">
+      <summary><span class="num">2</span><h3 data-i="l2bh" data-en="Booking + email + WhatsApp: Cal.com">الحجز + الإيميل + واتساب: Cal.com</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2b1" data-en="Bookings lesson → Level 2. Embed Cal.com on the booking page. Workflows: confirmation email, confirmation WhatsApp, 2-hour reminder.">درس الحجوزات ← المستوى ٢. «تضمين» Cal.com بصفحة الحجز. Workflows: إيميل تأكيد، واتساب تأكيد، تذكير قبلها بساعتين.</li>
+          <li data-i="l2b2" data-en="Your notification: “on new booking” workflow → email/WhatsApp to your number.">إشعار لك: Workflow «عند حجز جديد» ← إيميل/واتساب لرقمك.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2c">
+      <summary><span class="num">3</span><h3 data-i="l2ch" data-en="Client database: Airtable">قاعدة بيانات العملاء: Airtable</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2c1" data-en="Make/Zapier: new Cal.com booking → Airtable “find or create record” by phone → update “last visit” and “visits”.">Make/Zapier: حجز جديد بـ Cal.com ← «Find or create record» بـ Airtable حسب رقم الجوال ← حدّث «آخر زيارة» و«عدد المواعيد».</li>
+          <li data-i="l2c2" data-en="A &lt;code&gt;Clients&lt;/code&gt; table and a &lt;code&gt;Bookings&lt;/code&gt; table, linked. Airtable gives you a dashboard and filters free.">جدول <code>Clients</code> وجدول <code>Bookings</code> مربوطين. Airtable يعطيك لوحة وفلاتر مجاناً.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l2d">
+      <summary><span class="num">4</span><h3 data-i="l2dh" data-en="Payment and accounting">الدفع والمحاسبة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l2d1" data-en="Cal.com → Stripe if international; for KNET: send a Tap/MyFatoorah link in the confirmation (step 2).">Cal.com ← Stripe لو عالمي؛ لو KNET: أرسل رابط Tap/MyFatoorah برسالة التأكيد (الخطوة ٢).</li>
+          <li data-i="l2d2" data-en="Accounting lesson → Level 2: gateway webhook → Make → Zoho Books (invoice + payment + fee) → PDF to the customer.">درس المحاسبة ← المستوى ٢: webhook البوابة ← Make ← Zoho Books (فاتورة + دفعة + رسوم) ← PDF للعميل.</li>
+        </ul>
+        <div class="script" data-script="confirm"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section id="route-l3" role="tabpanel" aria-labelledby="tab-l3" class="hidden">
+    <details class="step" data-step="l3a" open>
+      <summary><span class="num">1</span><h3 data-i="l3ah" data-en="The architecture">الهيكل</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3a1" data-en="Site: HTML/CSS/JS on &lt;strong&gt;GitHub Pages&lt;/strong&gt; (free, fast, your domain). Everything else behind &lt;strong&gt;Firebase&lt;/strong&gt;.">الموقع: HTML/CSS/JS على <strong>GitHub Pages</strong> (مجاني، سريع، دومينك عليه). كل البيانات وراء <strong>Firebase</strong>.</li>
+          <li data-i="l3a2" data-en="Firestore: &lt;code&gt;clients&lt;/code&gt; · &lt;code&gt;bookings&lt;/code&gt; · &lt;code&gt;payments&lt;/code&gt; · &lt;code&gt;journal&lt;/code&gt;. Functions: &lt;code&gt;freeSlots&lt;/code&gt; · &lt;code&gt;createBooking&lt;/code&gt; · &lt;code&gt;onBooking&lt;/code&gt; (email) · &lt;code&gt;payWebhook&lt;/code&gt; (payment + entry) · &lt;code&gt;reminders&lt;/code&gt;.">Firestore: <code>clients</code> · <code>bookings</code> · <code>payments</code> · <code>journal</code>. Functions: <code>freeSlots</code> · <code>createBooking</code> · <code>onBooking</code> (إيميل) · <code>payWebhook</code> (دفع + قيد) · <code>reminders</code>.</li>
+          <li data-i="l3a3" data-en="Every function is from an earlier lesson: booking → bookings lesson (L3), payment + entry → accounting lesson (L3). Here we wire them together.">كل دالة شرحناها بدرس سابق: الحجز ← درس الحجوزات (المستوى ٣)، الدفع والقيد ← درس المحاسبة (المستوى ٣). هنا نربطهم.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3b">
+      <summary><span class="num">2</span><h3 data-i="l3bh" data-en="The booking page on the site">صفحة الحجز بالموقع</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l3bp" data-en="The form fetches free slots, posts the booking, and redirects the customer to checkout:">النموذج يجيب الأوقات المتاحة، يرسل الحجز، ويحوّل العميل لصفحة الدفع:</p>
+<pre>&lt;!-- index.html on GitHub Pages — the booking form posts to your createBooking function --&gt;
+&lt;form id="book" dir="rtl"&gt;
+  &lt;select name="service"&gt;&lt;option&gt;تنظيف&lt;/option&gt;&lt;option&gt;تبييض&lt;/option&gt;&lt;option&gt;فحص&lt;/option&gt;&lt;/select&gt;
+  &lt;input name="name" placeholder="الاسم" required&gt;
+  &lt;input name="phone" placeholder="رقم الواتساب" required&gt;
+  &lt;input name="email" type="email" placeholder="الإيميل (اختياري)"&gt;
+  &lt;input name="date" type="date" required&gt; &lt;select name="time" id="slots"&gt;&lt;/select&gt;
+  &lt;button&gt;احجز وادفع&lt;/button&gt;
+&lt;/form&gt;
+&lt;script&gt;
+const FN = "https://us-central1-YOUR-PROJECT.cloudfunctions.net";
+document.querySelector('[name=date]').addEventListener('change', async e =&gt; {
+  const r = await fetch(`${FN}/freeSlots?date=${e.target.value}`); const free = await r.json();
+  slots.innerHTML = free.map(t =&gt; `&lt;option&gt;${t}&lt;/option&gt;`).join('');
+});
+book.addEventListener('submit', async e =&gt; {
+  e.preventDefault();
+  const r = await fetch(`${FN}/createBooking`, { method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(Object.fromEntries(new FormData(book))) });
+  const { payUrl } = await r.json(); location.href = payUrl;      // Tap / MyFatoorah checkout
+});
+&lt;/script&gt;</pre>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3c">
+      <summary><span class="num">3</span><h3 data-i="l3ch" data-en="Email and the client database">الإيميل وقاعدة بيانات العملاء</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l3cp" data-en="A function that fires when a booking is written: upserts the client, emails them, notifies you:">دالة تشتغل لما يتسجل حجز: تحدّث سجل العميل، ترسل تأكيد له، وإشعار لك:</p>
+<pre>// functions/onBooking.js — fires when a booking doc is created (Level 3)
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { defineSecret } = require("firebase-functions/params");
+const admin = require("firebase-admin");
+if (!admin.apps.length) admin.initializeApp();
+const db = admin.firestore();
+const RESEND_KEY = defineSecret("RESEND_KEY");          // resend.com — 3,000 emails/month free
+const OWNER = "owner@yourclinic.com";
+
+async function email(to, subject, html) {
+  await fetch("https://api.resend.com/emails", { method: "POST",
+    headers: { Authorization: `Bearer ${RESEND_KEY.value()}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from: "عيادة النور &lt;book@yourclinic.com&gt;", to, subject, html }) });
+}
+
+exports.onBooking = onDocumentCreated({ document: "bookings/{id}", secrets: [RESEND_KEY] }, async (ev) =&gt; {
+  const b = ev.data.data(), id = ev.params.id;
+  // 1) one client record per phone — the "database for all client info"
+  const client = db.collection("clients").doc(b.phone);
+  await client.set({ name: b.name, phone: b.phone, email: b.email || null,
+    lastBooking: b.date, visits: admin.firestore.FieldValue.increment(1), updated: new Date() }, { merge: true });
+  // 2) email the customer + notify the owner
+  if (b.email) await email(b.email, `تأكيد حجزك — ${b.service} ${b.date} ${b.time}`,
+    `&lt;div dir="rtl" style="font-family:sans-serif"&gt;&lt;h2&gt;تم استلام حجزك ✅&lt;/h2&gt;&lt;p&gt;${b.service} — ${b.date} الساعة ${b.time}&lt;/p&gt;&lt;p&gt;أكمل الدفع هنا: &lt;a href="${b.payUrl}"&gt;رابط الدفع&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;`);
+  await email(OWNER, `حجز جديد: ${b.name} — ${b.service}`, `&lt;p&gt;${b.name} · ${b.phone} · ${b.date} ${b.time} · #${id}&lt;/p&gt;`);
+});</pre>
+        <div class="script" data-script="confirm"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3d">
+      <summary><span class="num">4</span><h3 data-i="l3dh" data-en="Payment → entry → invoice">الدفع ← القيد ← الفاتورة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="l3d1" data-en="&lt;code&gt;createBooking&lt;/code&gt; creates a Tap charge (bookings lesson) and returns &lt;code&gt;payUrl&lt;/code&gt;. The gateway calls &lt;code&gt;payWebhook&lt;/code&gt; (accounting lesson) → &lt;code&gt;bookings/{id}.status = paid&lt;/code&gt; + three-line entry + PDF."><code>createBooking</code> ينشئ charge بـ Tap (درس الحجوزات) ويرجّع <code>payUrl</code>. البوابة تنادي <code>payWebhook</code> (درس المحاسبة) ← <code>bookings/{id}.status = paid</code> + قيد بثلاثة أسطر + PDF.</li>
+          <li data-i="l3d2" data-en="In &lt;code&gt;payWebhook&lt;/code&gt; add: &lt;code&gt;metadata.booking&lt;/code&gt; → update the booking, then send “Paid ✅” on WhatsApp (&lt;code&gt;sendText&lt;/code&gt; from the WhatsApp lesson).">ضف بـ <code>payWebhook</code>: <code>metadata.booking</code> ← حدّث الحجز، ثم أرسل «تم الدفع ✅» على واتساب (<code>sendText</code> من درس واتساب).</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+    <details class="step" data-step="l3e">
+      <summary><span class="num">5</span><h3 data-i="l3eh" data-en="Security and the dashboard">الأمان واللوحة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="l3ep" data-en="The public site never writes to the database — only the functions do. Your dashboard needs a login (Firebase Auth):">الموقع العام ما يكتب بقاعدة البيانات أبداً — الدوال بس. ولوحتك تحتاج تسجيل دخول (Firebase Auth):</p>
+<pre>// firestore.rules — the website writes nothing directly; only your functions do
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    match /{document=**} { allow read, write: if false; }        // public site: no direct access
+    match /bookings/{id} { allow read: if request.auth != null; } // your dashboard (owner login)
+    match /clients/{id}  { allow read: if request.auth != null; }
+    match /journal/{id}  { allow read: if request.auth != null; }
+  }
+}</pre>
+        <ul>
+          <li data-i="l3e1" data-en="An &lt;code&gt;/admin&lt;/code&gt; page (same repo): today’s appointments, new clients, month income, latest invoices. Reads &lt;code&gt;bookings&lt;/code&gt; and &lt;code&gt;journal&lt;/code&gt; after login.">لوحة <code>/admin</code> (نفس الريبو، صفحة ثانية): مواعيد اليوم، عملاء جدد، دخل الشهر، آخر الفواتير. تقرأ <code>bookings</code> و<code>journal</code> بعد تسجيل الدخول.</li>
+          <li data-i="l3e2" data-en="Deploy: &lt;code&gt;firebase deploy --only functions&lt;/code&gt;, then push the site files to the repo. Domain from GitHub Pages settings.">نشر: <code>firebase deploy --only functions</code> ثم ارفع ملفات الموقع للريبو. الدومين من إعدادات GitHub Pages.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Built it? Show me.">بنيته؟ ورّني.</h2>
+    <p data-i="finP" data-en="Send me your site link once it’s up — and if you want us to build the whole thing on your own accounts (you own the code and data), message me.">أرسل لي رابط موقعك بعد ما تبنيه — وإذا تبي نسويلك اياه كامل على حسابك أنت (تملك الكود والبيانات)، راسلني.</p>
+    <a class="btn" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener" data-i="finBtn" data-en="DM me on Instagram">راسلني على انستغرام</a>
+  </section>
+
+  <footer><span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span></footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("clinic-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    try { localStorage.setItem("clinic-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { biz:$("#f-biz"), domain:$("#f-domain"), svc:$("#f-svc"), loc:$("#f-loc") };
+  function v(){ return { biz:F.biz.value.trim()||"عيادة النور", domain:F.domain.value.trim()||"yourclinic.com", svc:F.svc.value.trim()||"تنظيف", loc:F.loc.value.trim()||"حولي، الكويت" }; }
+  var S = {
+    ar:{ confirm:function(x){ return "تم استلام حجزك ✅ " + x.biz + "\nالخدمة: " + x.svc + "\nالموعد: {date} {time}\nالمكان: " + x.loc + "\nأكمل الدفع لتأكيد الموعد: {payUrl}\nبنذكّرك قبلها بساعتين 🔔"; } },
+    en:{ confirm:function(x){ return "Booking received ✅ " + x.biz + "\nService: " + x.svc + "\nWhen: {date} {time}\nWhere: " + x.loc + "\nComplete payment to confirm: {payUrl}\nWe'll remind you 2 hours before 🔔"; } }
+  };
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[lang][k]) return;
+      box.textContent = S[lang][k](x); box.setAttribute("dir", lang==="ar"?"rtl":"ltr");
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ الرسالة":"Copy message");
+      b.addEventListener("click", function(){
+        var txt = S[lang][k](v());
+        var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = lang==="ar"?"نسخ":"Copy"; },1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+      });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("clinic-guide-form", JSON.stringify(x)); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("clinic-guide-form")||"null"); if(saved){ if(saved.biz!==undefined) F.biz.value=saved.biz; if(saved.domain!==undefined) F.domain.value=saved.domain; if(saved.svc!==undefined) F.svc.value=saved.svc; if(saved.loc!==undefined) F.loc.value=saved.loc; } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); });
+
+  var route = "l1";
+  try { route = localStorage.getItem("clinic-guide-route") || "l1"; } catch(e){}
+  function setRoute(r){
+    route = r;
+    ["l1","l2","l3"].forEach(function(id){ $("#route-"+id).classList.toggle("hidden", r!==id); $("#tab-"+id).setAttribute("aria-selected", r===id); });
+    try { localStorage.setItem("clinic-guide-route", r); } catch(e){}
+    updateProgress();
+  }
+  ["l1","l2","l3"].forEach(function(id){ $("#tab-"+id).addEventListener("click", function(){ setRoute(id); }); });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("clinic-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-"+route+" .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("clinic-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); setRoute(route);
+})();
+</script>
+</body>
+</html>

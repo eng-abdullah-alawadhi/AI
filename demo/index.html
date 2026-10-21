@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>التجارب الحيّة — دروس الأتمتة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#10251B;--ink-2:#2E3F35;--mute:#5C6B62;--line:#DCD5C6;--ground:#F6F1E7;--panel:#fff;--g:#007A3D;--g-ink:#005C2E;--g-soft:#E3F2EA;--r:#CE1126;--ar:'IBM Plex Sans Arabic',system-ui,sans-serif;--en:'Space Grotesk',system-ui,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--ar);font-size:16px;line-height:1.55}
+a{color:var(--g)} button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--g-ink);outline-offset:3px}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(246,241,231,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:10px}
+.brand{font-weight:700;text-decoration:none;color:var(--ink);display:flex;gap:10px;align-items:center;white-space:nowrap}
+.back{font-weight:600;text-decoration:none;color:var(--g);font-size:15px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:16px 0 6px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;border:2px solid var(--line);background:var(--panel);border-radius:999px;padding:10px 16px;font-weight:700;color:var(--mute);min-height:44px}
+.tabs button[aria-selected=true]{border-color:var(--g);color:var(--g-ink);background:var(--g-soft)}
+.panel{display:none;padding:14px 0 48px}.panel.on{display:block}
+h1{font-size:26px;margin:14px 0 4px}.lead{margin:0 0 14px;color:var(--ink-2)}
+.note{background:var(--g-soft);color:var(--g-ink);border-radius:12px;padding:10px 14px;font-size:14px;margin:0 0 14px}
+.phone{max-width:420px;margin:0 auto;background:#ECE5DD;border:2px solid var(--line);border-radius:28px;overflow:hidden}
+.phone.ig{background:#fff}
+.ph-hd{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border-bottom:1px solid var(--line);direction:ltr}
+.ph-hd img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.ph-hd b{display:block;font-family:var(--en);font-size:15px}.ph-hd small{color:var(--g);font-weight:700;font-size:12px}
+.msgs{height:380px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:84%;padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.5;white-space:pre-wrap;animation:in .25s ease-out}
+.m.me{align-self:flex-end;background:#DCF8C6;border-bottom-right-radius:6px}
+.m.bot{align-self:flex-start;background:#fff;border:1px solid #E1E8E3;border-bottom-left-radius:6px}
+.phone.ig .m.me{background:#3797F0;color:#fff}.phone.ig .m.bot{background:#EFEFEF;border:0}
+.m .btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.m .btns button{border:2px solid var(--g);background:#fff;color:var(--g);border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px;min-height:36px}
+.phone.ig .m .btns button{border-color:#3797F0;color:#3797F0}
+.typing{align-self:flex-start;color:var(--mute);font-size:13px}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.inp{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid var(--line)}
+.inp input{flex:1;font:inherit;padding:10px 14px;border:2px solid var(--line);border-radius:999px;min-height:44px;min-width:0}
+.inp button{background:var(--g);color:#fff;border:0;border-radius:999px;padding:0 18px;font-weight:700;min-height:44px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px auto 0;max-width:420px}
+.chips button{border:2px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 12px;font-weight:600;font-size:14px;min-height:40px}
+.ctrl{display:flex;gap:10px;justify-content:center;margin:12px 0}
+.ctrl button{border:2px solid var(--ink);background:var(--panel);border-radius:999px;padding:8px 18px;font-weight:700;min-height:44px}
+.ctrl button.p{background:var(--g);color:#fff;border-color:var(--g)}
+/* booking */
+.book{max-width:520px;margin:0 auto;background:var(--panel);border:2px solid var(--line);border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.days,.slots,.svcs{display:flex;flex-wrap:wrap;gap:8px}
+.days button,.slots button,.svcs button{border:2px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 12px;font-weight:600;min-height:44px}
+.days button[aria-pressed=true],.slots button[aria-pressed=true],.svcs button[aria-pressed=true]{border-color:var(--g);background:var(--g-soft);color:var(--g-ink)}
+.slots button:disabled{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+.book input{font:inherit;padding:10px 14px;border:2px solid var(--line);border-radius:12px;min-height:44px;width:100%}
+.pay{background:var(--g);color:#fff;border:0;border-radius:999px;padding:14px;font-weight:700;font-size:16px;min-height:48px}
+.pay:disabled{opacity:.5}
+.steps{display:flex;gap:6px;justify-content:space-between;font-size:12px;color:var(--mute)}
+.steps span{flex:1;text-align:center;padding:6px 0;border-top:4px solid var(--line)}
+.steps span.on{border-color:var(--g);color:var(--g-ink);font-weight:700}
+.done{background:var(--g-soft);border:2px solid var(--g);border-radius:16px;padding:14px;color:var(--g-ink);font-weight:600}
+/* accounting */
+.acc{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.acc{grid-template-columns:1fr}}
+.box{background:var(--panel);border:2px solid var(--line);border-radius:20px;padding:16px}
+.box h3{margin:0 0 10px;font-size:17px}
+.gw{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.gw button{border:2px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 12px;font-weight:700;font-family:var(--en);min-height:40px}
+.gw button[aria-pressed=true]{border-color:var(--g);background:var(--g-soft);color:var(--g-ink)}
+.amt{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.amt input{font:inherit;font-family:var(--en);padding:10px 12px;border:2px solid var(--line);border-radius:12px;width:130px;min-height:44px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
+th{color:var(--mute);font-weight:600;font-size:13px}
+td.num{font-family:var(--en);direction:ltr;text-align:left}
+tr.new{background:var(--g-soft);animation:in .3s}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.kpi{background:var(--ground);border-radius:12px;padding:10px;text-align:center}
+.kpi b{display:block;font-family:var(--en);font-size:22px;color:var(--g)}.kpi span{font-size:12px;color:var(--mute)}
+.inv{margin-top:12px;background:var(--ground);border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:14px;display:none}
+.inv.on{display:block;animation:in .3s}
+/* clinic flow */
+.flow{display:flex;flex-direction:column;gap:10px;max-width:560px;margin:0 auto}
+.node{background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;opacity:.35;transition:.3s}
+.node.on{opacity:1;border-color:var(--g);box-shadow:0 0 0 4px rgba(0,122,61,.12)}
+.node .n{flex:none;width:36px;height:36px;border-radius:50%;background:var(--g);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.node b{display:block;font-size:15px}.node span{font-size:13px;color:var(--mute)}
+.log{max-width:560px;margin:12px auto 0;background:#10251B;color:#C9F5DB;font-family:var(--en);font-size:12.5px;border-radius:14px;padding:12px;direction:ltr;text-align:left;min-height:120px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="../"><svg width="30" height="18" viewBox="0 0 56 34" aria-hidden="true"><rect width="56" height="34" rx="4" fill="#FFFFFF"/><rect width="56" height="11.33" rx="4" fill="#007A3D"/><rect y="22.67" width="56" height="11.33" rx="4" fill="#CE1126"/><path d="M0 0h18l10 11.33v11.34L18 34H0z" fill="#10251B"/></svg>التجارب الحيّة</a><a class="back" href="../">← كل الدروس</a></div></header>
+<main class="wrap">
+  <div class="tabs" role="tablist">
+    <button role="tab" data-t="instagram">💬 انستغرام</button>
+    <button role="tab" data-t="whatsapp">📱 واتساب</button>
+    <button role="tab" data-t="bookings">📅 الحجز</button>
+    <button role="tab" data-t="accounting">📊 المحاسبة</button>
+    <button role="tab" data-t="clinic">🏥 موقع واحد</button>
+  </div>
+
+  <!-- IG -->
+  <section class="panel" id="p-instagram">
+    <h1>تجربة: انستغرام يرد بدالك</h1><p class="lead">اكتب الكلمة المفتاحية كأنك علّقت على البوست، وشوف شلون يمشي الدايركت.</p>
+    <div class="note">محاكاة — ما ترسل شي حقيقي. نفس المنطق اللي بالشرح: كلمة ← دايركت ← متابعة ← الملف.</div>
+    <div class="phone ig"><div class="ph-hd"><img src="../avatar.jpg" alt=""><div><b>eng.abd.alawadhi</b><small>Active now</small></div></div><div class="msgs" id="ig-m"></div><div class="inp"><input id="ig-in" placeholder="اكتب AI…" dir="auto"><button id="ig-send">إرسال</button></div></div>
+    <div class="chips"><button data-ig="AI">AI</button><button data-ig="مرحبا">مرحبا</button><button data-ig="كم السعر؟">كم السعر؟</button></div>
+    <p class="lead" style="text-align:center;margin-top:12px"><a href="../instagram/">الشرح الكامل خطوة بخطوة ←</a></p>
+  </section>
+
+  <!-- WA -->
+  <section class="panel" id="p-whatsapp">
+    <h1>تجربة: واتساب الشركة يرد بروحه</h1><p class="lead">بدّل بين المستويات الثلاثة وشوف الفرق بنفس السؤال.</p>
+    <div class="ctrl"><button data-wl="1" class="p">المستوى ١</button><button data-wl="2">المستوى ٢</button><button data-wl="3">المستوى ٣ (AI)</button></div>
+    <div class="phone"><div class="ph-hd"><img src="../avatar.jpg" alt=""><div><b>Cash Clinic</b><small>online</small></div></div><div class="msgs" id="wa-m"></div><div class="inp"><input id="wa-in" placeholder="اكتب رسالتك…" dir="auto"><button id="wa-send">إرسال</button></div></div>
+    <div class="chips"><button data-wa="مرحبا">مرحبا</button><button data-wa="كم الأسعار؟">كم الأسعار؟</button><button data-wa="وين موقعكم">وين موقعكم</button><button data-wa="عندكم فرع بالجهراء؟ وكم تاخذ الاستشارة">سؤال مركّب</button><button data-wa="أبي أكلم موظف">أبي أكلم موظف</button></div>
+    <p class="lead" style="text-align:center;margin-top:12px"><a href="../whatsapp/">الشرح الكامل ←</a></p>
+  </section>
+
+  <!-- BOOK -->
+  <section class="panel" id="p-bookings">
+    <h1>تجربة: الحجز الأوتوماتيكي</h1><p class="lead">احجز موعد تجريبي: الأوقات المحجوزة تختفي، والدفع والتأكيد يمشون بروحهم.</p>
+    <div class="book" id="bk">
+      <div class="steps"><span class="on">الخدمة</span><span>اليوم</span><span>الوقت</span><span>بياناتك</span><span>الدفع</span></div>
+      <div><b>الخدمة</b><div class="svcs" id="bk-svc"></div></div>
+      <div><b>اليوم</b><div class="days" id="bk-days"></div></div>
+      <div><b>الوقت المتاح</b><div class="slots" id="bk-slots"></div></div>
+      <input id="bk-name" placeholder="اسمك" dir="auto"><input id="bk-phone" placeholder="رقم الواتساب" dir="ltr" inputmode="tel">
+      <button class="pay" id="bk-pay" disabled>ادفع ٢٥ د.ك بـ KNET (تجريبي)</button>
+      <div id="bk-done"></div>
+    </div>
+    <div class="phone" style="margin-top:14px"><div class="ph-hd"><img src="../avatar.jpg" alt=""><div><b>Cash Clinic</b><small>online</small></div></div><div class="msgs" id="bk-m" style="height:220px"></div></div>
+    <p class="lead" style="text-align:center;margin-top:12px"><a href="../bookings/">الشرح الكامل ←</a></p>
+  </section>
+
+  <!-- ACC -->
+  <section class="panel" id="p-accounting">
+    <h1>تجربة: المحاسبة المتصلة بالدفع</h1><p class="lead">اختر بوابة ومبلغ واضغط «ادفع». القيد يتسجل، الفاتورة تطلع، واللوحة تتحدث — بدون محاسب.</p>
+    <div class="acc">
+      <div class="box"><h3>بوابة الدفع (محاكاة)</h3>
+        <div class="gw" id="ac-gw"><button data-gw="KNET" aria-pressed="true">KNET</button><button data-gw="Tap">Tap</button><button data-gw="UPayments">UPayments</button><button data-gw="MyFatoorah">MyFatoorah</button></div>
+        <div class="amt"><input id="ac-amt" value="25.000" inputmode="decimal"> <span>د.ك</span></div>
+        <input id="ac-who" placeholder="اسم العميل" dir="auto" style="font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:12px;width:100%;min-height:44px;margin-bottom:10px">
+        <button class="pay" id="ac-pay" style="width:100%">ادفع الحين</button>
+        <div class="inv" id="ac-inv"></div>
+      </div>
+      <div class="box"><h3>دفتر القيود — يتسجل بروحه</h3>
+        <table><thead><tr><th>القيد</th><th>مدين</th><th>دائن</th></tr></thead><tbody id="ac-led"></tbody></table>
+        <div class="kpis"><div class="kpi"><b id="k-sales">0.000</b><span>مبيعات اليوم</span></div><div class="kpi"><b id="k-fees">0.000</b><span>رسوم البوابات</span></div><div class="kpi"><b id="k-net">0.000</b><span>الصافي بالبنك</span></div></div>
+      </div>
+    </div>
+    <p class="lead" style="text-align:center;margin-top:12px"><a href="../accounting/">الشرح الكامل ←</a></p>
+  </section>
+
+  <!-- CLINIC -->
+  <section class="panel" id="p-clinic">
+    <h1>تجربة: موقع واحد لكل شي</h1><p class="lead">اضغط «حجز من الموقع» وشوف شلون الحجز يمرّ على الإيميل، قاعدة البيانات، الدفع، والمحاسبة — بدون أي تدخل.</p>
+    <div class="ctrl"><button class="p" id="cl-go">🧑‍💻 حجز من الموقع</button><button id="cl-reset">إعادة</button></div>
+    <div class="flow">
+      <div class="node" id="c1"><div class="n">١</div><div><b>العميل يحجز من موقعك</b><span>تنظيف · الخميس ٤:٠٠</span></div></div>
+      <div class="node" id="c2"><div class="n">٢</div><div><b>إيميل تأكيد للعميل + إشعار لك</b><span>Cloud Function → Resend/SendGrid</span></div></div>
+      <div class="node" id="c3"><div class="n">٣</div><div><b>بياناته بقاعدة البيانات</b><span>Firestore: clients / bookings</span></div></div>
+      <div class="node" id="c4"><div class="n">٤</div><div><b>الدفع عبر البوابة</b><span>Tap webhook → status: paid</span></div></div>
+      <div class="node" id="c5"><div class="n">٥</div><div><b>القيد بالمحاسبة + الفاتورة</b><span>إيراد / رسوم / صافي → PDF للعميل</span></div></div>
+      <div class="node" id="c6"><div class="n">٦</div><div><b>لوحتك تتحدث</b><span>مواعيد اليوم · العملاء · الدخل</span></div></div>
+    </div>
+    <div class="log" id="cl-log">// اضغط «حجز من الموقع» لبدء التجربة</div>
+    <p class="lead" style="text-align:center;margin-top:12px"><a href="../clinic-website/">الشرح الكامل ←</a></p>
+  </section>
+</main>
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var sleep=function(ms){return new Promise(function(r){setTimeout(r,ms)})};
+/* tabs */
+var tabs=$$('.tabs button'); function show(t){ tabs.forEach(function(b){b.setAttribute('aria-selected',b.dataset.t===t)}); $$('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+t)}); try{history.replaceState(null,'','#'+t)}catch(e){} }
+tabs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.t)})});
+var h=(location.hash||'').replace('#',''); show(['instagram','whatsapp','bookings','accounting','clinic'].indexOf(h)>=0?h:'instagram');
+/* chat helpers */
+function msg(box,text,who,btns,onBtn){ var d=document.createElement('div'); d.className='m '+who; d.textContent=text; if(btns){var w=document.createElement('div');w.className='btns';btns.forEach(function(l){var b=document.createElement('button');b.type='button';b.textContent=l;b.addEventListener('click',function(){onBtn(l)});w.appendChild(b)});d.appendChild(w)} box.appendChild(d); box.scrollTop=box.scrollHeight; return d }
+async function bot(box,text,btns,onBtn,delay){ var t=document.createElement('div');t.className='typing';t.textContent='يكتب…';box.appendChild(t);box.scrollTop=box.scrollHeight; await sleep(delay||700); t.remove(); return msg(box,text,'bot',btns,onBtn) }
+/* ---------- IG ---------- */
+var igm=$('#ig-m'), igState='new';
+function igStart(){ igm.innerHTML=''; igState='new'; msg(igm,'💡 علّق على البوست (اكتب AI تحت) وشوف شنو يصير','bot') }
+async function igHandle(text){ var t=text.trim(); if(!t) return; msg(igm,t,'me');
+  if(/^(ai|اي|ذكاء)/i.test(t)){ igState='opened'; await bot(igm,'هلا 👋 هالرد وصلك بأقل من ثانيتين، بدون أي تدخل بشري. هذا النظام اللي أبنيه.',['أبي الشرح 👇'],igBtn); }
+  else if(igState==='new'){ await bot(igm,'ياهلا 👋 عبدالله معاك. رد برقم:\n١ شرح الدايركت · ٢ شرح واتساب · ٣ عندي شركة وأبي نظام',['١','٢','٣'],igBtn); igState='menu' }
+  else if(igState==='menu'&&/^[١١123٢٣]$/.test(t)){ await igBtn(t) }
+  else { await bot(igm,'تمام 🙏 وصلتني — بيرد عليك عبدالله بنفسه قريب.') }
+}
+async function igBtn(l){ if(l.indexOf('أبي الشرح')===0){ await bot(igm,'تبي الشرح الكامل خطوة بخطوة؟ تابعني أول وبعدين اضغط الزر 👇',['أنا متابع ✅'],igBtn) }
+  else if(l.indexOf('متابع')>=0){ await bot(igm,'تفضل، الشرح الكامل 👇\nشنو تبيني أؤتمت بعدها؟',['ردود واتساب','حجوزات','تقارير'],igBtn); setTimeout(function(){msg(igm,'📖 افتح الشرح: '+location.origin+location.pathname.replace('demo/','instagram/'),'bot')},400) }
+  else if(/^[١1]$/.test(l)){ await bot(igm,'تفضل شرح الدايركت 👇 '+location.pathname.replace('demo/','instagram/')) }
+  else if(/^[٢2]$/.test(l)){ await bot(igm,'تفضل شرح واتساب 👇 '+location.pathname.replace('demo/','whatsapp/')) }
+  else if(/^[٣3]$/.test(l)){ await bot(igm,'ممتاز 🙌 اكتب اسم الشركة ورقم الواتساب وبتواصل معاك.') }
+  else { await bot(igm,'تمام، سجّلت اهتمامك بـ «'+l+'» ✅ بيكون البوست الجاي.') }
+}
+$('#ig-send').addEventListener('click',function(){igHandle($('#ig-in').value);$('#ig-in').value=''}); $('#ig-in').addEventListener('keydown',function(e){if(e.key==='Enter'){igHandle($('#ig-in').value);$('#ig-in').value=''}});
+$$('[data-ig]').forEach(function(b){b.addEventListener('click',function(){igHandle(b.dataset.ig)})}); igStart();
+/* ---------- WA ---------- */
+var wam=$('#wa-m'), waL=1, waHuman=false, waMenuSent=false;
+var FACTS={price:'الاستشارة الأولى مجانية، والجلسة بعدها ٢٥ د.ك',loc:'فرعنا بحولي — شارع تونس، بناية ٧، الدور ٢',hours:'من ٩ الصبح لـ ٩ بالليل، السبت للخميس'};
+function waStart(){ wam.innerHTML=''; waHuman=false; waMenuSent=false; if(waL===1) msg(wam,'هلا وغلا 👋 حياك بـ Cash Clinic.\nاكتب سؤالك وبنرد عليك بأقرب وقت 🙏\nدوامنا: '+FACTS.hours,'bot'); else if(waL===2) waMenu(); else msg(wam,'هلا 👋 اسألني أي شي عن Cash Clinic — أرد من معلوماتنا بس، ولو ما عرفت أحوّلك لموظف.','bot') }
+function waMenu(){ waMenuSent=true; msg(wam,'هلا 👋 حياك بـ Cash Clinic. شلون أقدر أساعدك؟\n\n١ الأسعار\n٢ الموقع والدوام\n٣ حجز موعد\n٤ أكلم موظف\n\nاكتب الرقم بس 👇','bot') }
+async function waHandle(text){ var t=text.trim(); if(!t) return; msg(wam,t,'me'); if(waHuman){ return }
+  if(waL===1){ await bot(wam,'(المستوى ١: ما فيه رد أوتوماتيكي على الأسئلة — الموظف يرد بيده بالردود السريعة /price /location)',null,null,500); return }
+  if(waL===2){ var n=t.replace(/[١]/g,'1').replace(/[٢]/g,'2').replace(/[٣]/g,'3').replace(/[٤]/g,'4');
+    if(n==='1') await bot(wam,'أسعارنا 💰\n'+FACTS.price+'\nتبي تحجز؟ اكتب ٣');
+    else if(n==='2') await bot(wam,'موقعنا 📍 '+FACTS.loc+'\nالدوام: '+FACTS.hours);
+    else if(n==='3') await bot(wam,'تمام 📅 اكتب اسمك واليوم اللي يناسبك');
+    else if(n==='4'){ waHuman=true; await bot(wam,'تمام، بيتواصل معاك أحد الفريق خلال ساعة 🙏 (البوت وقف لهالمحادثة)') }
+    else await bot(wam,'ما فهمت عليك 🙏 اختر رقم:\n١ الأسعار · ٢ الموقع · ٣ حجز · ٤ موظف'); return }
+  /* level 3: tiny rule-based "AI" from FACTS */
+  var low=t.toLowerCase(), parts=[];
+  if(/سعر|اسعار|أسعار|كم|تكلف|تاخذ الاستشارة/.test(t)) parts.push(FACTS.price);
+  if(/وين|موقع|فرع|عنوان|جهراء|حولي/.test(t)) parts.push(/جهراء/.test(t)?'حالياً فرعنا بحولي بس، ما عندنا بالجهراء 🙏':FACTS.loc);
+  if(/دوام|ساعات|متى|تفتحون/.test(t)) parts.push('دوامنا '+FACTS.hours);
+  if(/موظف|انسان|إنسان|شخص|أكلم/.test(t)){ waHuman=true; await bot(wam,'تمام، بيتواصل معاك أحد الفريق خلال ساعة 🙏'); return }
+  if(/حجز|موعد|أحجز/.test(t)) parts.push('تبي أحجز لك؟ اكتب اليوم اللي يناسبك 📅');
+  if(/مرحبا|هلا|السلام/.test(t)&&!parts.length) parts.push('هلا فيك 👋 شلون أقدر أساعدك؟');
+  if(!parts.length){ waHuman=true; await bot(wam,'هالسؤال خارج معلوماتي 🙏 حوّلتك لموظف وبيرد عليك خلال ساعة. (HANDOFF)'); return }
+  await bot(wam,parts.join('\n')+(parts.length>1?' 👌':''),null,null,900);
+}
+$$('[data-wl]').forEach(function(b){b.addEventListener('click',function(){$$('[data-wl]').forEach(function(x){x.classList.remove('p')});b.classList.add('p');waL=+b.dataset.wl;waStart()})});
+$('#wa-send').addEventListener('click',function(){waHandle($('#wa-in').value);$('#wa-in').value=''}); $('#wa-in').addEventListener('keydown',function(e){if(e.key==='Enter'){waHandle($('#wa-in').value);$('#wa-in').value=''}});
+$$('[data-wa]').forEach(function(b){b.addEventListener('click',function(){waHandle(b.dataset.wa)})}); waStart();
+/* ---------- BOOKINGS ---------- */
+var HOURS=['10:00','11:30','13:30','16:00','17:30'], booked={}, bk={svc:null,day:null,time:null};
+var DAYS=[]; (function(){var n=new Date(); for(var i=1;i<=4;i++){var d=new Date(n); d.setDate(n.getDate()+i); DAYS.push(d)}})();
+var fmt=function(d){return d.toLocaleDateString('ar-KW',{weekday:'short',day:'numeric',month:'short'})}, key=function(d){return d.toISOString().slice(0,10)};
+booked[key(DAYS[0])]=['11:30','16:00']; booked[key(DAYS[1])]=['10:00'];
+function bkRender(){ var s=$('#bk-svc');s.innerHTML='';['تنظيف','تبييض','فحص'].forEach(function(v){var b=document.createElement('button');b.type='button';b.textContent=v;b.setAttribute('aria-pressed',bk.svc===v);b.addEventListener('click',function(){bk.svc=v;bkRender()});s.appendChild(b)});
+  var dd=$('#bk-days');dd.innerHTML='';DAYS.forEach(function(d){var b=document.createElement('button');b.type='button';b.textContent=fmt(d);b.setAttribute('aria-pressed',bk.day===key(d));b.addEventListener('click',function(){bk.day=key(d);bk.time=null;bkRender()});dd.appendChild(b)});
+  var sl=$('#bk-slots');sl.innerHTML='';if(!bk.day){sl.innerHTML='<span style="color:var(--mute);font-size:14px">اختر اليوم أول</span>'}else HOURS.forEach(function(h){var b=document.createElement('button');b.type='button';b.textContent=h;b.disabled=(booked[bk.day]||[]).indexOf(h)>=0;b.setAttribute('aria-pressed',bk.time===h);b.addEventListener('click',function(){bk.time=h;bkRender()});sl.appendChild(b)});
+  var st=$$('.steps span'); var i=!bk.svc?0:!bk.day?1:!bk.time?2:!($('#bk-name').value&&$('#bk-phone').value)?3:4; st.forEach(function(x,k){x.classList.toggle('on',k===i)});
+  $('#bk-pay').disabled=i<4 }
+['#bk-name','#bk-phone'].forEach(function(s){$(s).addEventListener('input',bkRender)});
+$('#bk-pay').addEventListener('click',async function(){ var b=$('#bk-pay'); b.disabled=true; b.textContent='جاري الدفع…'; await sleep(1200); (booked[bk.day]=booked[bk.day]||[]).push(bk.time);
+  var dstr=fmt(new Date(bk.day+'T12:00:00'));
+  $('#bk-done').innerHTML='<div class="done">تم الدفع ✅ موعدك: '+bk.svc+' — '+dstr+' '+bk.time+'<br><small>الوقت اختفى من المتاح، والتأكيد وصل على واتساب 👇</small></div>';
+  var m=$('#bk-m'); m.innerHTML=''; await bot(m,'تم الدفع ✅ موعدك '+dstr+' الساعة '+bk.time+' — '+bk.svc+'.\nبنذكّرك قبلها بساعتين 🔔'); await sleep(900); await bot(m,'🧾 فاتورتك: INV-'+Math.floor(1000+Math.random()*9000)+' · ٢٥.٠٠٠ د.ك (PDF)');
+  b.textContent='احجز موعد ثاني'; b.disabled=false; bk={svc:null,day:null,time:null}; $('#bk-name').value='';$('#bk-phone').value=''; bkRender() });
+bkRender();
+/* ---------- ACCOUNTING ---------- */
+var FEES={KNET:0.015,Tap:0.025,UPayments:0.025,MyFatoorah:0.02}, gw='KNET', tot={s:0,f:0,n:0};
+$$('#ac-gw button').forEach(function(b){b.addEventListener('click',function(){$$('#ac-gw button').forEach(function(x){x.setAttribute('aria-pressed',false)});b.setAttribute('aria-pressed',true);gw=b.dataset.gw})});
+var f3=function(x){return x.toFixed(3)};
+$('#ac-pay').addEventListener('click',async function(){ var amt=parseFloat($('#ac-amt').value)||0; if(!amt) return; var who=$('#ac-who').value.trim()||'عميل'; var b=$('#ac-pay'); b.disabled=true; b.textContent=gw+' … جاري الدفع'; await sleep(900);
+  var fee=+(amt*FEES[gw]).toFixed(3), net=+(amt-fee).toFixed(3); var led=$('#ac-led');
+  var rows=[['إيراد — '+who+' ('+gw+')','',f3(amt)],['رسوم بوابة '+gw,f3(fee),''],['البنك — الصافي',f3(net),'']];
+  for(var i=0;i<rows.length;i++){ var tr=document.createElement('tr'); tr.className='new'; tr.innerHTML='<td>'+rows[i][0]+'</td><td class="num">'+rows[i][1]+'</td><td class="num">'+rows[i][2]+'</td>'; led.prepend(tr); await sleep(250) }
+  tot.s+=amt; tot.f+=fee; tot.n+=net; $('#k-sales').textContent=f3(tot.s); $('#k-fees').textContent=f3(tot.f); $('#k-net').textContent=f3(tot.n);
+  var inv=$('#ac-inv'); inv.className='inv on'; inv.innerHTML='🧾 <b>فاتورة INV-'+Math.floor(1000+Math.random()*9000)+'</b> — '+who+' — '+f3(amt)+' د.ك عبر '+gw+'<br><small>أُرسلت PDF على واتساب والإيميل خلال ثانيتين ✅</small>';
+  b.textContent='ادفع الحين'; b.disabled=false });
+/* ---------- CLINIC ---------- */
+var clLog=$('#cl-log'); function log(t){ clLog.textContent+='\n'+t; clLog.scrollTop=clLog.scrollHeight }
+function clReset(){ for(var i=1;i<=6;i++) $('#c'+i).classList.remove('on'); clLog.textContent='// اضغط «حجز من الموقع» لبدء التجربة' }
+$('#cl-reset').addEventListener('click',clReset);
+$('#cl-go').addEventListener('click',async function(){ clReset(); var b=$('#cl-go'); b.disabled=true; var id='bk_'+Math.random().toString(36).slice(2,8);
+  var steps=[[1,'POST /createBooking {service:"cleaning", day:"thu", time:"16:00"} → 201 '+id],
+   [2,'sendEmail(customer) ✓   notify(owner) ✓   (Resend)'],
+   [3,'firestore.clients.upsert(phone) ✓   bookings/'+id+' {status:"pending"}'],
+   [4,'tap.charges.create → pay link → webhook CAPTURED → bookings/'+id+' {status:"paid"}'],
+   [5,'ledger: revenue 25.000 | fee 0.375 | bank 24.625   invoice PDF → WhatsApp + email'],
+   [6,'dashboard.today = 14 → 15   newClients++   income += 24.625']];
+  for(var i=0;i<steps.length;i++){ $('#c'+steps[i][0]).classList.add('on'); log('['+(i+1)+'/6] '+steps[i][1]); await sleep(1100) }
+  log('\n✅ done in 6.6s — no human involved'); b.disabled=false });
+})();
+</script>
+</body>
+</html>
