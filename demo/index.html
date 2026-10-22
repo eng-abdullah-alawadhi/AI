@@ -87,6 +87,24 @@ tr.new{background:var(--g-soft);animation:in .3s}
 .node .n{flex:none;width:36px;height:36px;border-radius:50%;background:var(--g);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
 .node b{display:block;font-size:15px}.node span{font-size:13px;color:var(--mute)}
 .log{max-width:560px;margin:12px auto 0;background:#10251B;color:#C9F5DB;font-family:var(--en);font-size:12.5px;border-radius:14px;padding:12px;direction:ltr;text-align:left;min-height:120px;white-space:pre-wrap}
+
+.st-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:560px;margin:0 auto}
+.st-p{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:10px;text-align:right}
+.st-p .im{height:64px;border-radius:10px;margin-bottom:8px}
+.st-p b{display:block;font-size:14px}.st-p span{font-size:13px;color:var(--g);font-weight:700;direction:ltr;display:inline-block}
+.st-p small{display:block;font-size:12px;color:var(--mute)}.st-p small.low{color:#CE1126;font-weight:700}
+.st-p button{font:inherit;font-size:13px;font-weight:700;margin-top:8px;width:100%;border:0;border-radius:9px;background:var(--g);color:#fff;padding:8px;cursor:pointer;min-height:36px}
+.st-p button:disabled{background:var(--line);color:var(--mute)}
+.st-cart{max-width:560px;margin:12px auto 0;display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-size:14px}
+.st-cart button{font:inherit;font-weight:700;border:0;border-radius:10px;background:var(--g);color:#fff;padding:10px 16px;cursor:pointer;min-height:40px}
+.st-cart button:disabled{background:var(--line);color:var(--mute)}
+.st-track{max-width:560px;margin:12px auto 0;display:flex;justify-content:space-between;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:12px 10px}
+.st-s{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--mute);flex:1;text-align:center}
+.st-s i{width:18px;height:18px;border-radius:50%;background:var(--line);display:block}
+.st-s.on{color:var(--g);font-weight:700}.st-s.on i{background:var(--g)}
+.st-dash{max-width:560px;margin:12px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.st-dash div{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.st-dash b{display:block;font-size:22px;color:var(--g);direction:ltr}.st-dash span{font-size:12px;color:var(--mute)}
 </style>
 </head>
 <body>
@@ -98,6 +116,7 @@ tr.new{background:var(--g-soft);animation:in .3s}
     <button role="tab" data-t="bookings">📅 الحجز</button>
     <button role="tab" data-t="accounting">📊 المحاسبة</button>
     <button role="tab" data-t="clinic">🏥 موقع واحد</button>
+<button role="tab" data-t="store">🛍️ المتجر</button>
   </div>
 
   <!-- IG -->
@@ -168,6 +187,18 @@ tr.new{background:var(--g-soft);animation:in .3s}
     <div class="log" id="cl-log">// اضغط «حجز من الموقع» لبدء التجربة</div>
     <p class="lead" style="text-align:center;margin-top:12px"><a href="../clinic-website/">الشرح الكامل ←</a></p>
   </section>
+
+  <!-- STORE -->
+  <section class="panel" id="p-store">
+    <h1>تجربة: متجرك — موقع ولوحة</h1><p class="lead">اشترِ كعميل، وشوف شنو يصير عندك بنفس اللحظة: المخزون ينقص، التنبيه يوصل، الطلب يتتبّع، والربح يتحدّث.</p>
+    <div class="st-grid" id="st-grid"></div>
+    <div class="st-cart" id="st-cart"><span>🛒 السلة: <b id="st-n">0</b> · الإجمالي <b id="st-t">0.000</b> د.ك</span><button class="p" id="st-pay" disabled>ادفع KNET</button></div>
+    <div class="st-track" id="st-track"><div class="st-s" data-s="0"><i></i>تم الطلب</div><div class="st-s" data-s="1"><i></i>قيد التجهيز</div><div class="st-s" data-s="2"><i></i>مع المندوب</div><div class="st-s" data-s="3"><i></i>وصل</div></div>
+    <div class="st-dash"><div><b id="st-sales">412</b><span>مبيعات اليوم</span></div><div><b id="st-orders">18</b><span>طلبات</span></div><div><b id="st-net">148</b><span>صافي الربح</span></div></div>
+    <div class="log" id="st-log">// أضف منتج للسلة وادفع — وراقب اللوحة</div>
+    <div class="ctrl"><button id="st-reset">إعادة</button></div>
+    <p class="lead" style="text-align:center;margin-top:12px"><a href="../store/">الشرح الكامل ←</a></p>
+  </section>
 </main>
 <script>
 (function(){
@@ -177,7 +208,7 @@ var sleep=function(ms){return new Promise(function(r){setTimeout(r,ms)})};
 /* tabs */
 var tabs=$$('.tabs button'); function show(t){ tabs.forEach(function(b){b.setAttribute('aria-selected',b.dataset.t===t)}); $$('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+t)}); try{history.replaceState(null,'','#'+t)}catch(e){} }
 tabs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.t)})});
-var h=(location.hash||'').replace('#',''); show(['instagram','whatsapp','bookings','accounting','clinic'].indexOf(h)>=0?h:'instagram');
+var h=(location.hash||'').replace('#',''); show(['instagram','whatsapp','bookings','accounting','clinic','store'].indexOf(h)>=0?h:'instagram');
 /* chat helpers */
 function msg(box,text,who,btns,onBtn){ var d=document.createElement('div'); d.className='m '+who; d.textContent=text; if(btns){var w=document.createElement('div');w.className='btns';btns.forEach(function(l){var b=document.createElement('button');b.type='button';b.textContent=l;b.addEventListener('click',function(){onBtn(l)});w.appendChild(b)});d.appendChild(w)} box.appendChild(d); box.scrollTop=box.scrollHeight; return d }
 async function bot(box,text,btns,onBtn,delay){ var t=document.createElement('div');t.className='typing';t.textContent='يكتب…';box.appendChild(t);box.scrollTop=box.scrollHeight; await sleep(delay||700); t.remove(); return msg(box,text,'bot',btns,onBtn) }
@@ -267,6 +298,30 @@ $('#cl-go').addEventListener('click',async function(){ clReset(); var b=$('#cl-g
    [6,'dashboard.today = 14 → 15   newClients++   income += 24.625']];
   for(var i=0;i<steps.length;i++){ $('#c'+steps[i][0]).classList.add('on'); log('['+(i+1)+'/6] '+steps[i][1]); await sleep(1100) }
   log('\n✅ done in 6.6s — no human involved'); b.disabled=false });
+
+/* ---------- STORE ---------- */
+var stP=[{sku:'shirt',n:'قميص كتان',p:12,c:'#C9D8CF',s:12},{sku:'abaya',n:'عباية',p:35,c:'#E8D9C3',s:8},{sku:'bag',n:'حقيبة',p:22,c:'#D6CCE0',s:4}];
+var stCart=[], stLog=$('#st-log'), stSales=412, stOrders=18, stNet=148, stBusy=false;
+function slog(t){ stLog.textContent+='\n'+t; stLog.scrollTop=stLog.scrollHeight }
+function stRender(){ var g=$('#st-grid'); g.innerHTML=''; stP.forEach(function(p){ var d=document.createElement('div'); d.className='st-p';
+  d.innerHTML='<div class="im" style="background:'+p.c+'"></div><b>'+p.n+'</b><span>'+p.p.toFixed(3)+' KD</span><small class="'+(p.s<5?'low':'')+'">المخزون: '+p.s+(p.s<5?' ⚠️':'')+'</small><button type="button" '+(p.s<=0||stBusy?'disabled':'')+'>'+(p.s<=0?'نفد':'أضف للسلة')+'</button>';
+  d.querySelector('button').addEventListener('click',function(){ stCart.push(p); stUpdate(); slog('cart.add('+p.sku+')  → items: '+stCart.length) }); g.appendChild(d) });
+  $('#st-n').textContent=stCart.length; var t=stCart.reduce(function(a,p){return a+p.p},0); $('#st-t').textContent=(t+(stCart.length?2:0)).toFixed(3); $('#st-pay').disabled=!stCart.length||stBusy;
+  $('#st-sales').textContent=stSales; $('#st-orders').textContent=stOrders; $('#st-net').textContent=stNet; }
+function stUpdate(){ stRender() }
+$('#st-pay').addEventListener('click',async function(){ if(!stCart.length) return; stBusy=true; stRender(); var id=1042+stOrders-18; var total=stCart.reduce(function(a,p){return a+p.p},0)+2;
+  $$('.st-s').forEach(function(e){e.classList.remove('on')});
+  slog('tap.charges.create → pay link → webhook CAPTURED  order #'+id+'  '+total.toFixed(3)+' KD'); await sleep(900);
+  stCart.forEach(function(p){ p.s-=1 }); stSales+=total; stOrders+=1; stNet+=Math.round(total*0.36); stRender();
+  slog('stock: '+stCart.map(function(p){return p.sku+'='+p.s}).join(', ')+'   ledger: net '+(total*0.99).toFixed(3)); await sleep(700);
+  var low=stP.filter(function(p){return p.s<5}); if(low.length){ slog('⚠️ low stock → WhatsApp owner  |  purchase_orders.add('+low[0].sku+' × 50 → supplier email)'); await sleep(900) }
+  slog('WhatsApp customer: تم استلام طلبك #'+id+' ✅  track: /t/'+id); await sleep(800);
+  var names=['pending','preparing','with_driver','delivered'];
+  for(var i=0;i<4;i++){ $$('.st-s')[i].classList.add('on'); slog('setStage('+names[i]+')'); await sleep(900) }
+  slog('delivered → customers.points += '+Math.floor(total)+'  |  review request sent 💬'); await sleep(600);
+  slog('✅ order #'+id+' complete — no human involved'); stCart=[]; stBusy=false; stRender() });
+$('#st-reset').addEventListener('click',function(){ stP[0].s=12;stP[1].s=8;stP[2].s=4; stCart=[]; stSales=412; stOrders=18; stNet=148; stBusy=false; $$('.st-s').forEach(function(e){e.classList.remove('on')}); stLog.textContent='// أضف منتج للسلة وادفع — وراقب اللوحة'; stRender() });
+stRender();
 })();
 </script>
 </body>

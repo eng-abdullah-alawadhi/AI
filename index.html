@@ -53,12 +53,34 @@ h2.sec{font-size:30px;margin:36px 0 16px}
 .build a{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 26px;border-radius:999px;background:#fff;color:var(--g);font-weight:700;text-decoration:none;font-size:17px}
 @media (max-width:640px){.build{grid-template-columns:1fr}}
 footer{padding:16px 0 56px;color:var(--mute);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* services */
+.svc-head{display:flex;flex-direction:column;gap:8px;margin:44px 0 18px}
+.svc-head h2{font-size:30px;margin:0}
+.svc-head p{margin:0;color:var(--ink-2);font-size:18px;max-width:70ch}
+.svc{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.sv{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:22px 22px 20px;display:flex;flex-direction:column;gap:10px;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.sv:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(16,37,27,.08)}
+.sv::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:6px;background:var(--g)}
+.sv .num{font-family:var(--en);font-weight:700;color:var(--g);font-size:13px;letter-spacing:.08em}
+.sv .ico{width:46px;height:46px;border-radius:14px;background:var(--g-soft);display:flex;align-items:center;justify-content:center;font-size:24px}
+.sv h3{margin:0;font-size:20px;line-height:1.35}
+.sv p{margin:0;color:var(--ink-2);font-size:15.5px;line-height:1.65}
+.sv .who{font-size:13.5px;color:var(--mute);background:var(--ground);border-radius:999px;padding:5px 12px;align-self:flex-start}
+.sv.big{grid-column:span 2}
+@media (max-width:680px){.sv.big{grid-column:auto}}
+.how{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:22px}
+.how h3{margin:0 0 14px;font-size:20px}
+.how ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;counter-reset:st}
+.how li{counter-increment:st;background:var(--ground);border-radius:16px;padding:14px 14px 14px;font-size:14.5px;line-height:1.5;position:relative}
+.how li::before{content:counter(st);display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--g);color:#fff;font-family:var(--en);font-weight:700;align-items:center;justify-content:center;margin-bottom:8px}
+.how .dur{margin:14px 0 0;color:var(--mute);font-size:14px}
 </style>
 </head>
 <body>
 <header><div class="wrap">
   <a class="brand" href="#"><svg width="34" height="21" viewBox="0 0 56 34" aria-hidden="true"><rect width="56" height="34" rx="4" fill="#FFFFFF"/><rect width="56" height="11.33" rx="4" fill="#007A3D"/><rect y="22.67" width="56" height="11.33" rx="4" fill="#CE1126"/><path d="M0 0h18l10 11.33v11.34L18 34H0z" fill="#10251B"/></svg>دروس الأتمتة <small>· م. عبدالله العوضي</small></a>
-  <nav class="nav"><a href="#lessons">الدروس</a><a href="demo/">التجارب الحيّة</a><a href="#build">نسويلك اياه</a><a href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener">انستغرام</a></nav>
+  <nav class="nav"><a href="#lessons">الدروس</a><a href="#services">الخدمات</a><a href="demo/">التجارب الحيّة</a><a href="#build">نسويلك اياه</a><a href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener">انستغرام</a></nav>
 </div></header>
 
 <main class="wrap">
@@ -88,9 +110,57 @@ footer{padding:16px 0 56px;color:var(--mute);font-size:14px;display:flex;justify
     <article class="card"><span class="n">05</span><div class="ic">🏥</div><h3>موقع واحد لعيادتك… لكل شي</h3><p>الحجز، الإيميل، قاعدة بيانات العملاء، والمحاسبة مع بوابة الدفع — تحت موقع واحد تملكه.</p>
       <div class="lv"><span>Google Sites</span><span>Wix + Cal.com</span><span>GitHub Pages + Firebase</span></div>
       <div class="acts"><a class="btn p" href="clinic-website/">الشرح</a><a class="btn s" href="demo/#clinic">جرّب</a></div></article>
-    <article class="card"><span class="n">06</span><div class="ic">📰</div><h3>أخبار الذكاء الاصطناعي — كل أربعاء</h3><p>٣ أخبار بسطر… وشنو تعني لشغلك بالكويت. على انستغرام.</p>
+<article class="card"><span class="n">06</span><div class="ic">🏥</div><h3>موقع واحد لعيادتك… لكل شي</h3><p>الحجز، الإيميل، قاعدة بيانات العملاء، والمحاسبة مع بوابة الدفع — تحت موقع واحد تملكه.</p>
+      <div class="lv"><span>Google Sites</span><span>Wix + Cal.com</span><span>GitHub Pages + Firebase</span></div>
+      <div class="acts"><a class="btn p" href="store/">الشرح</a><a class="btn s" href="demo/#store">جرّب</a></div></article>
+    <article class="card"><span class="n">07</span><div class="ic">📰</div><h3>أخبار الذكاء الاصطناعي — كل أربعاء</h3><p>٣ أخبار بسطر… وشنو تعني لشغلك بالكويت. على انستغرام.</p>
       <div class="lv"><span>كل أربعاء</span></div>
       <div class="acts"><a class="btn p" href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener">على انستغرام</a></div></article>
+  </section>
+
+
+  <section id="services">
+    <div class="svc-head">
+      <h2>خدمات التحول الرقمي</h2>
+      <p>نبني لك الأنظمة اللي تخلي شغلك يمشي بروحه: أقل أخطاء، أقل موظفين على مهام مكررة، وأرقام واضحة لصاحب العمل. كل نظام على مقاسك، وتملكه بالكامل — الكود والبيانات باسمك — مع تدريب وتسليم ودعم.</p>
+    </div>
+    <div class="svc">
+      <article class="sv big"><span class="num">01</span><div class="ico">🛍️</div><h3>موقع المتجر الإلكتروني + لوحة الإدارة</h3>
+        <p><b>للعميل:</b> كتالوج بالصور والمقاسات، سلة ودفع (كي نت، تاب، ماي فاتورة)، تأكيد الطلب على واتساب، وصفحة تتبع الطلب.<br><b>لك:</b> إدارة المنتجات والمخزون، تنبيه إعادة الطلب، طلبات الشراء للمورّد، المبيعات والربح الحقيقي بعد المصاريف، الرواتب والعمولات، المندوبين، السلة المتروكة، أكواد الخصم، نقاط الولاء، الإرجاع، مخزون الفروع، وتقرير صباحي يومي على واتساب.</p>
+        <span class="who">ملابس · مجوهرات · عطور · إلكترونيات · بقالة</span></article>
+      <article class="sv"><span class="num">02</span><div class="ico">🏥</div><h3>موقع العيادة / الصالون / المركز — نظام واحد</h3>
+        <p>حجز إلكتروني مع تأكيد وتذكير على واتساب والإيميل، ملف لكل عميل (مواعيده، مدفوعاته، ملاحظاته)، دفع إلكتروني، ربط تلقائي بالمحاسبة، ولوحة للمالك: مواعيد اليوم، العملاء الجدد، الإيرادات.</p>
+        <span class="who">عيادات · صالونات · مراكز · مكاتب</span></article>
+      <article class="sv"><span class="num">03</span><div class="ico">📊</div><h3>نظام المحاسبة المتصل بالدفع</h3>
+        <p>كل عملية دفع من البوابة تُسجَّل قيدًا تلقائيًا (إيراد، رسوم، صافي)، فاتورة PDF للعميل على واتساب، لوحة حيّة للمبيعات والمصاريف والربح، وتقرير شهري جاهز للمحاسب.</p>
+        <span class="who">أي نشاط عنده بوابة دفع</span></article>
+      <article class="sv"><span class="num">04</span><div class="ico">🤖</div><h3>الرد الآلي والذكاء الاصطناعي على واتساب وانستغرام</h3>
+        <p>رد فوري ٢٤ ساعة على استفسارات العملاء من معلومات شركتك فقط (أسعار، مواعيد، موقع)، تحويل للموظف عند الحاجة، حجز مباشر من المحادثة، وجمع بيانات العملاء المهتمين تلقائيًا. انستغرام: رد على التعليقات والدايركت لزيادة المتابعين والعملاء.</p>
+        <span class="who">واتساب · انستغرام</span></article>
+      <article class="sv"><span class="num">05</span><div class="ico">📅</div><h3>الحجز الأوتوماتيكي</h3>
+        <p>عرض الأوقات المتاحة، الحجز، الدفع، التأكيد، والتذكير قبل الموعد — بدون موظف استقبال. نظام مستقل أو ضمن موقعك.</p>
+        <span class="who">مواعيد · جلسات · استشارات</span></article>
+      <article class="sv"><span class="num">06</span><div class="ico">📈</div><h3>لوحات التقارير لصاحب العمل</h3>
+        <p>لوحة واحدة من الجوال تجمع أرقامك من مصادرها (المبيعات، الحجوزات، المخزون، البنك): اليوم، الأسبوع، الشهر — مع تقرير آلي يومي أو أسبوعي على واتساب.</p>
+        <span class="who">قرارات بالأرقام مو بالتخمين</span></article>
+      <article class="sv"><span class="num">07</span><div class="ico">🔗</div><h3>أتمتة العمليات الداخلية</h3>
+        <p>ربط الأدوات اللي تستخدمها أصلًا (شيتات، إيميل، واتساب، برامج المحاسبة) بحيث تنتقل البيانات بينها تلقائيًا: فواتير، رواتب، متابعة عملاء، طلبات مورّدين.</p>
+        <span class="who">بدون تغيير أدواتك الحالية</span></article>
+      <article class="sv"><span class="num">08</span><div class="ico">🧩</div><h3>تطبيقات ويب مخصصة</h3>
+        <p>أي نظام داخلي تحتاجه ولا يوجد له منتج جاهز — بنيناه سابقًا لجهات معينة مثل جامعات وأكاديميات ومدارس وغيرها.</p>
+        <span class="who">جامعات · أكاديميات · مدارس · شركات</span></article>
+    </div>
+    <div class="how">
+      <h3>كيف نشتغل</h3>
+      <ol>
+        <li>جلسة تشخيص (ساعة) نفهم فيها شغلك ومشكلتك</li>
+        <li>عرض مكتوب بالنطاق والمدة والسعر</li>
+        <li>البناء على مراحل تشوفها أول بأول</li>
+        <li>التسليم والتدريب على نظامك</li>
+        <li>دعم بعد التسليم</li>
+      </ol>
+      <p class="dur">المدة النموذجية: من أسبوع (رد آلي / حجز) إلى ٦–٨ أسابيع (متجر كامل أو نظام محاسبة).</p>
+    </div>
   </section>
 
   <section class="build" id="build">
