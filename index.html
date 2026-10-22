@@ -6,7 +6,7 @@
 <title>دروس الأتمتة — م. عبدالله العوضي</title>
 <meta name="description" content="دروس عملية بالكويتي: ردود انستغرام، واتساب، الحجوزات، المحاسبة المتصلة بالدفع، وموقع واحد لعيادتك — كل درس بثلاث مستويات وتجربة حيّة.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#10251B;--ink-2:#2E3F35;--mute:#5C6B62;--line:#DCD5C6;--ground:#F6F1E7;--panel:#fff;--g:#007A3D;--g-ink:#005C2E;--g-soft:#E3F2EA;--r:#CE1126;
  --ar:'IBM Plex Sans Arabic',system-ui,sans-serif;--en:'Space Grotesk',system-ui,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -75,17 +75,33 @@ footer{padding:16px 0 56px;color:var(--mute);font-size:14px;display:flex;justify
 .how li{counter-increment:st;background:var(--ground);border-radius:16px;padding:14px 14px 14px;font-size:14.5px;line-height:1.5;position:relative}
 .how li::before{content:counter(st);display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--g);color:#fff;font-family:var(--en);font-weight:700;align-items:center;justify-content:center;margin-bottom:8px}
 .how .dur{margin:14px 0 0;color:var(--mute);font-size:14px}
+
+/* brand system */
+body{background:var(--ground) radial-gradient(circle,rgba(220,213,198,.9) 1.1px,transparent 1.3px) 0 0/28px 28px}
+.brand .lk{display:flex;flex-direction:column;line-height:1.05;font-family:var(--en);text-align:left;direction:ltr}
+.brand .lk b{font-size:16px}.brand .lk span{font-size:16px;font-weight:500;color:var(--ink)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;font-size:12px;color:var(--mute);text-transform:lowercase}
+.cash-badge{display:inline-flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:700}
+.cb-mark{width:24px;height:24px;border-radius:50%;background:#2B1B3D;display:inline-flex;align-items:center;justify-content:center}
+.cb-mark span{width:11px;height:11px;border-radius:50%;border:2.5px solid #E8D7A0;display:block}
+.hero-tags{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.build{background:var(--ink) radial-gradient(circle,rgba(246,241,231,.08) 1.1px,transparent 1.3px) 0 0/28px 28px!important;color:#F6F1E7!important}
+.build h2{color:#F6F1E7}.build p{color:#CFE6D8}
+.build a{background:var(--g)!important;color:#fff!important}
+footer{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.card .num,.sv .num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
 </style>
 </head>
 <body>
 <header><div class="wrap">
-  <a class="brand" href="#"><svg width="34" height="21" viewBox="0 0 56 34" aria-hidden="true"><rect width="56" height="34" rx="4" fill="#FFFFFF"/><rect width="56" height="11.33" rx="4" fill="#007A3D"/><rect y="22.67" width="56" height="11.33" rx="4" fill="#CE1126"/><path d="M0 0h18l10 11.33v11.34L18 34H0z" fill="#10251B"/></svg>دروس الأتمتة <small>· م. عبدالله العوضي</small></a>
+  <a class="brand" href="#"><svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#007A3D"/><path d="M20 20l14 12-14 12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 46h12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round"/></svg><span class="lk"><b>Abdullah</b><span>Alawadhi</span></span><small>· دروس الأتمتة</small></a>
   <nav class="nav"><a href="#lessons">الدروس</a><a href="#services">الخدمات</a><a href="demo/">التجارب الحيّة</a><a href="#build">نسويلك اياه</a><a href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener">انستغرام</a></nav>
 </div></header>
 
 <main class="wrap">
   <section class="hero">
     <div>
+      <div class="hero-tags"><span class="mono">automation / lessons</span><span class="cash-badge"><span class="cb-mark"><span></span></span>الشريك التقني لكاش كلينك</span></div>
       <h1>كل درس شرحته بانستغرام… <span>هنا كامل، وبتجربة حيّة</span></h1>
       <p>خطوة بخطوة بالكويتي. كل درس بثلاث مستويات: مجاني، بدون برمجة، ونظامك الخاص بالكود. جرّب النظام قبل ما تبنيه.</p>
       <div class="pills"><span>بدون تعقيد</span><span>٣ مستويات لكل درس</span><span>تجربة حيّة</span><span>الكود جاهز للنسخ</span></div>
@@ -168,7 +184,7 @@ footer{padding:16px 0 56px;color:var(--mute);font-size:14px;display:flex;justify
     <a href="https://instagram.com/eng.abd.alawadhi" target="_blank" rel="noopener">راسلنا على انستغرام 📩</a>
   </section>
 
-  <footer><span>عبدالله العوضي · الكويت</span><span>الدروس مجانية للاستخدام الشخصي والتجاري</span></footer>
+  <footer><span>عبدالله العوضي · الكويت</span><span class="cash-badge"><span class="cb-mark"><span></span></span>الشريك التقني لكاش كلينك</span><span class="mono">@eng.abd.alawadhi</span></footer>
 </main>
 </body>
 </html>
