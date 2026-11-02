@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>رابط واتساب ورسالته جاهزة — حيلة ٥ دقايق</title>
+<meta name="description" content="A WhatsApp link that opens a chat with the message already typed — a different one for Instagram, your story, your site and your counter QR, so you know where every customer came from. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero .mono{font-family:var(--mono);letter-spacing:.08em;font-size:12px;color:var(--mute);text-transform:lowercase;display:block;margin-bottom:12px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:16ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.script.link{font-family:var(--mono);font-size:13.5px;word-break:break-all;padding-top:52px}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+.src{font-weight:700;color:var(--ink);margin:18px 0 0}
+.try{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:2px solid var(--ink);font-weight:700;text-decoration:none;font-size:14px}
+.try:hover{background:var(--ink);color:#fff}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#007A3D"/><path d="M20 20l14 12-14 12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 46h12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round"/></svg>
+      @eng.abd.alawadhi <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="mono">5-minute trick / 01</span>
+    <h1 data-i="h1" data-en="One tap… and the message is already typed.">ضغطة وحدة… والرسالة مكتوبة جاهزة.</h1>
+    <p data-i="lead" data-en="A WhatsApp link that opens a chat with your business and the customer’s message already written. One link for Instagram, one for your story, one for your site, and a QR on the counter — and every message tells you where the customer came from.">رابط واتساب يفتح المحادثة وياك، ورسالة العميل مكتوبة له جاهزة. رابط حق الانستغرام، ورابط حق الستوري، ورابط حق الموقع، وكود QR على الكاونتر… وكل رسالة تقول لك العميل من وين جاك.</p>
+    <div class="meta"><span data-i="m1" data-en="5 minutes">٥ دقايق</span><span data-i="m2" data-en="Free">مجاني</span><span data-i="m3" data-en="No app needed">بدون أي تطبيق</span></div>
+  </section>
+
+  <section class="setup" id="make" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Make your links">سوّ روابطك</h2>
+    <p class="hint" data-i="setupHint" data-en="Type your details and the links in step 2 are ready to copy.">اكتب بياناتك والروابط بالخطوة ٢ تطلع لك جاهزة للنسخ.</p>
+    <div class="field"><label for="f-biz" data-i="fBiz" data-en="Business name">اسم المحل / الشركة</label><input id="f-biz" dir="auto" value="[اسم المحل]"></div>
+    <div class="field"><label for="f-phone" data-i="fPhone" data-en="WhatsApp number">رقم الواتساب</label><input id="f-phone" dir="ltr" inputmode="tel" value="9XXXXXXX"></div>
+    <div class="field full"><label for="f-want" data-i="fWant" data-en="What the customer usually wants">شنو العميل يبي عادةً؟</label><input id="f-want" dir="auto" value="أحجز موعد"></div>
+  </section>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1">
+    <details class="step" data-step="a" open>
+      <summary><span class="num">1</span><h3 data-i="ah" data-en="How the link works">شلون يشتغل الرابط</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="ap" data-en="WhatsApp has an official link format: &lt;code&gt;wa.me/&lt;/code&gt; + your number with the country code + &lt;code&gt;?text=&lt;/code&gt; + the message. Anyone who taps it gets a chat with you and the message ready in the box — they only press send.">واتساب عنده رابط رسمي: <code>wa.me/</code> + رقمك مع مفتاح الدولة + <code>?text=</code> + الرسالة. أي أحد يضغطه، تنفتح له محادثة وياك والرسالة مكتوبة بالخانة… بس يضغط إرسال.</p>
+        <ul>
+          <li data-i="a1" data-en="Kuwait’s code is &lt;code&gt;965&lt;/code&gt;. Type your 8-digit number in the box above and the page adds it for you.">مفتاح الكويت <code>965</code>. اكتب رقمك (٨ أرقام) بالخانة فوق والصفحة تضيفه بروحها.</li>
+          <li data-i="a2" data-en="Works with normal WhatsApp and WhatsApp Business, on phone and desktop.">يشتغل مع واتساب العادي و WhatsApp Business، بالجوال والكمبيوتر.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="b">
+      <summary><span class="num">2</span><h3 data-i="bh" data-en="A different link for each place">رابط مختلف لكل مكان</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="bp" data-en="Each link has a different first line. When the message arrives, you know straight away which one brought the customer.">كل رابط أول سطر فيه مختلف. لما توصلك الرسالة، تعرف على طول أي واحد جاب العميل.</p>
+        <p class="src" data-i="sIg" data-en="Instagram bio">بايو الانستغرام</p>
+        <div class="script link" data-script="ig" dir="ltr"></div>
+        <p class="src" data-i="sSt" data-en="Story link sticker">ملصق الرابط بالستوري</p>
+        <div class="script link" data-script="story" dir="ltr"></div>
+        <p class="src" data-i="sWeb" data-en="Your website button">زر بموقعك</p>
+        <div class="script link" data-script="web" dir="ltr"></div>
+        <p class="src" data-i="sShop" data-en="Counter QR (step 4)">QR الكاونتر (الخطوة ٤)</p>
+        <div class="script link" data-script="shop" dir="ltr"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="c">
+      <summary><span class="num">3</span><h3 data-i="ch" data-en="Put it on Instagram">حطه بالانستغرام</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="c1" data-en="Bio: &lt;strong&gt;Edit profile&lt;/strong&gt; → &lt;strong&gt;Links&lt;/strong&gt; → &lt;strong&gt;Add external link&lt;/strong&gt; → paste the “Instagram bio” link, title it “WhatsApp”.">البايو: <strong>تعديل الملف</strong> ← <strong>الروابط</strong> ← <strong>إضافة رابط خارجي</strong> ← الصق رابط «بايو الانستغرام» وسمّه «واتساب».</li>
+          <li data-i="c2" data-en="Story: add the &lt;strong&gt;Link&lt;/strong&gt; sticker → paste the “Story” link → write “Order on WhatsApp” on the sticker.">الستوري: ملصق <strong>الرابط</strong> ← الصق رابط «الستوري» ← واكتب على الملصق «اطلب على الواتساب».</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="d">
+      <summary><span class="num">4</span><h3 data-i="dh" data-en="A QR on the counter">كود QR على الكاونتر</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dp" data-en="WhatsApp Business makes the QR for you, with the message already written:">WhatsApp Business يسوي لك الـ QR بروحه، والرسالة مكتوبة فيه:</p>
+        <ul>
+          <li data-i="d1" data-en="&lt;strong&gt;Settings&lt;/strong&gt; → &lt;strong&gt;Business tools&lt;/strong&gt; → &lt;strong&gt;Short link&lt;/strong&gt;."><strong>الإعدادات</strong> ← <strong>أدوات الأعمال</strong> ← <strong>الرابط القصير</strong>.</li>
+          <li data-i="d2" data-en="Turn on the &lt;strong&gt;default message&lt;/strong&gt; and paste the “Counter QR” message:">فعّل <strong>الرسالة الافتراضية</strong> والصق رسالة «الكاونتر»:</li>
+        </ul>
+        <div class="script" data-script="shopMsg"></div>
+        <ul>
+          <li data-i="d3" data-en="Tap &lt;strong&gt;View QR code&lt;/strong&gt; → share it to yourself → print it next to the till.">اضغط <strong>عرض رمز QR</strong> ← أرسله لنفسك ← واطبعه جنب الكاشير.</li>
+        </ul>
+        <div class="tip" data-i="dt" data-en="Using normal WhatsApp? Any free QR maker works — paste the “Counter QR” link from step 2 into it.">تستخدم واتساب العادي؟ أي موقع QR مجاني يمشي الحال: الصق فيه رابط «QR الكاونتر» من الخطوة ٢.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="e">
+      <summary><span class="num">5</span><h3 data-i="eh" data-en="Test it">جرّبه</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="ep" data-en="Open it from a phone with a different number. The chat should open with the message ready.">افتحه من جوال برقم ثاني. المفروض تنفتح المحادثة والرسالة جاهزة.</p>
+        <p><a class="try" id="try" href="#" target="_blank" rel="noopener" data-i="eBtn" data-en="Open the Instagram link">افتح رابط الانستغرام</a></p>
+        <div class="tip" data-i="et" data-en="Have WhatsApp Business? Give each source a &lt;strong&gt;label&lt;/strong&gt; (Instagram · Story · Site · Counter). After a month you’ll know which one brings the most customers.">عندك WhatsApp Business؟ حط <strong>تصنيف</strong> لكل مصدر (انستغرام · ستوري · موقع · كاونتر). عقب شهر تعرف أي واحد يجيب لك أكثر عملاء.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Done in 5 minutes? Next: the reply.">خلصت بـ ٥ دقايق؟ الخطوة الجاية: الرد.</h2>
+    <p data-i="finP" data-en="Now the messages come in ready — make WhatsApp answer them by itself, even after closing time. And if you don’t have time… we’ll build it for you.">الحين الرسايل توصلك جاهزة… خلّ الواتساب يرد عليها بروحه، حتى عقب الدوام. ولو ما عندك وقت… إحنا نسويلك اياه.</p>
+    <a class="btn" href="../whatsapp/" data-i="finBtn" data-en="WhatsApp auto-reply guide">شرح الرد الأوتوماتيكي بالواتساب</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("wl-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    try { localStorage.setItem("wl-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { biz:$("#f-biz"), phone:$("#f-phone"), want:$("#f-want") };
+  // Arabic-Indic digits → Latin, keep digits only, add Kuwait's 965 to an 8-digit number
+  function phone(raw){
+    var d = raw.replace(/[٠-٩]/g, function(c){ return String(c.charCodeAt(0) - 0x660); }).replace(/\D/g, "");
+    if (d.indexOf("00") === 0) d = d.slice(2);
+    return d.length === 8 ? "965" + d : d;
+  }
+  function v(){ return { biz:F.biz.value.trim()||"[اسم المحل]", phone:phone(F.phone.value)||"965XXXXXXXX", want:F.want.value.trim()||"[شنو يبي]" }; }
+  var MSG = {
+    ar: {
+      ig:    function(x){ return "هلا " + x.biz + " 👋 شفتكم بالانستغرام، وأبي " + x.want; },
+      story: function(x){ return "هلا " + x.biz + " 👋 جيتكم من الستوري، وأبي " + x.want; },
+      web:   function(x){ return "هلا " + x.biz + " 👋 جيتكم من الموقع، وأبي " + x.want; },
+      shop:  function(x){ return "هلا " + x.biz + " 👋 أنا بالمحل الحين، وأبي " + x.want; }
+    },
+    en: {
+      ig:    function(x){ return "Hi " + x.biz + " 👋 I saw you on Instagram, I'd like to " + x.want; },
+      story: function(x){ return "Hi " + x.biz + " 👋 I came from your story, I'd like to " + x.want; },
+      web:   function(x){ return "Hi " + x.biz + " 👋 I came from your website, I'd like to " + x.want; },
+      shop:  function(x){ return "Hi " + x.biz + " 👋 I'm at the shop now, I'd like to " + x.want; }
+    }
+  };
+  function link(k, x){ return "https://wa.me/" + x.phone + "?text=" + encodeURIComponent(MSG[lang][k](x)); }
+  var S = {
+    ig:      function(x){ return link("ig", x); },
+    story:   function(x){ return link("story", x); },
+    web:     function(x){ return link("web", x); },
+    shop:    function(x){ return link("shop", x); },
+    shopMsg: function(x){ return MSG[lang].shop(x); }
+  };
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[k]) return;
+      box.textContent = S[k](x);
+      if (!box.classList.contains("link")) box.setAttribute("dir", lang==="ar"?"rtl":"ltr");
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ":"Copy");
+      b.addEventListener("click", function(){
+        var txt = S[k](v());
+        var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = lang==="ar"?"نسخ":"Copy"; },1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+      });
+      box.appendChild(b);
+    });
+    $("#try").href = link("ig", x);
+    try { localStorage.setItem("wl-guide-form", JSON.stringify({ biz:F.biz.value, phone:F.phone.value, want:F.want.value })); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("wl-guide-form")||"null"); if(saved){ F.biz.value=saved.biz; F.phone.value=saved.phone; F.want.value=saved.want; } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("wl-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-l1 .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("wl-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); updateProgress();
+})();
+</script>
+</body>
+</html>

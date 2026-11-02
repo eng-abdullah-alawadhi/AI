@@ -12,6 +12,7 @@ Owner: م. عبدالله العوضي, IT Manager at Cash Clinic Kuwait. Servic
   - header: `>_` logo lockup, nav (الدروس · الخدمات)
   - hero: mono label `automation / lessons`, Cash Clinic badge, headline, owner card
   - `#lessons` — lesson cards 01–07, each with **الشرح** (guide) and **جرّب** (demo) buttons
+  - `#tricks` — «حيل ٥ دقايق»: one card per quick trick (numbered 01…), **الشرح** + **جرّب** both point at the trick page (جرّب → `#make`)
   - `#services` — 8 service cards + «كيف نشتغل» strip
   - `#build` — dark CTA «ما عندك وقت تبنيه؟ نسويلك اياه» → Instagram DMs
   - footer with badge and `@eng.abd.alawadhi`
@@ -19,6 +20,10 @@ Owner: م. عبدالله العوضي, IT Manager at Cash Clinic Kuwait. Servic
 - Lesson guides (same template everywhere):
   `instagram/` `whatsapp/` `bookings/` `accounting/` `clinic-website/` `store/`
   Layout: header → hero → personalize box (inputs that rewrite the message scripts) → 3 level tabs (المستوى ١ مجاني/جاهز · ٢ بدون برمجة · ٣ نظامك الخاص) → steps as `<details class="step">` with a checkbox (progress saved in localStorage) → copyable `.script` blocks → finish block → footer
+- Quick-trick pages (one per reel in the «5-minute trick» format, like nadr.ai's free guides):
+  `wa-link/` — WhatsApp link with a pre-filled message per source + counter QR.
+  Same template as the guides but a single route (no level tabs, no demo tab); the personalize box is `#make` and doubles as the live tool. Mono label `5-minute trick / 01`.
+  Adding one: copy `wa-link/`, give its localStorage keys a new prefix, add a card to `#tricks`, update this file.
 - `cash-mark.png` — Cash Clinic knot mark, transparent. Use as-is. Never redraw, recolor, or stretch it.
 
 ## Brand — do not change without being asked
