@@ -3,7 +3,7 @@
 Static site on GitHub Pages, served at https://eng-abdullah-alawadhi.github.io/AI/ from the `main` branch root.
 No build step, no framework. Pure HTML/CSS/JS, one `index.html` per folder. Keep `.nojekyll` in the root.
 
-The site is the bio link of Instagram @eng.abd.alawadhi. Every Instagram reel/post points people here.
+The site is the bio link of Instagram @eng.abdullah.ai. Every Instagram reel/post points people here.
 Owner: م. عبدالله العوضي, IT Manager at Cash Clinic Kuwait. Services are sold through Cash Clinic ("الشريك التقني لكاش كلينك").
 
 ## Structure
@@ -15,13 +15,14 @@ Owner: م. عبدالله العوضي, IT Manager at Cash Clinic Kuwait. Servic
   - `#tricks` — «حيل ٥ دقايق»: one card per quick trick (numbered 01…), **الشرح** + **جرّب** both point at the trick page (جرّب → `#make`)
   - `#services` — 8 service cards + «كيف نشتغل» strip
   - `#build` — dark CTA «ما عندك وقت تبنيه؟ نسويلك اياه» → Instagram DMs
-  - footer with badge and `@eng.abd.alawadhi`
+  - footer with badge and `@eng.abdullah.ai`
 - `demo/index.html` — interactive demos, one tab per lesson, hash routed (`#instagram #whatsapp #bookings #accounting #clinic #store`). Each demo is a simulation that logs to a `.log` box; no network calls.
 - Lesson guides (same template everywhere):
   `instagram/` `whatsapp/` `bookings/` `accounting/` `clinic-website/` `store/`
   Layout: header → hero → personalize box (inputs that rewrite the message scripts) → 3 level tabs (المستوى ١ مجاني/جاهز · ٢ بدون برمجة · ٣ نظامك الخاص) → steps as `<details class="step">` with a checkbox (progress saved in localStorage) → copyable `.script` blocks → finish block → footer
 - Quick-trick pages (one per reel in the «5-minute trick» format, like nadr.ai's free guides):
   `wa-link/` — WhatsApp link with a pre-filled message per source + counter QR.
+  `post-prompt/` — a ready prompt (shop name, what you sell, tone, how to order) that turns a product photo into a Kuwaiti caption, story line, hashtags and comment replies in ChatGPT/Claude. Mono label `5-minute trick / 02`, localStorage prefix `pp-guide-`.
   Same template as the guides but a single route (no level tabs, no demo tab); the personalize box is `#make` and doubles as the live tool. Mono label `5-minute trick / 01`.
   Adding one: copy `wa-link/`, give its localStorage keys a new prefix, add a card to `#tricks`, update this file.
 - `cash-mark.png` — Cash Clinic knot mark, transparent. Use as-is. Never redraw, recolor, or stretch it.

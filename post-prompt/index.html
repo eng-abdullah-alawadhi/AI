@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>صوّر المنتج… والبوست يطلع جاهز — حيلة ٥ دقايق</title>
+<meta name="description" content="One ready prompt: send a product photo to ChatGPT or Claude and get an Instagram caption in Kuwaiti dialect, a story line, hashtags and ready replies to comments. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero .mono{font-family:var(--mono);letter-spacing:.08em;font-size:12px;color:var(--mute);text-transform:lowercase;display:block;margin-bottom:12px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:16ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field select{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px;color:var(--ink)}
+.field select:focus{border-color:var(--ink)}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.script.prompt{padding-top:52px;font-size:15.5px}
+.go{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+.src{font-weight:700;color:var(--ink);margin:18px 0 0}
+.try{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:2px solid var(--ink);font-weight:700;text-decoration:none;font-size:14px}
+.try:hover{background:var(--ink);color:#fff}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#007A3D"/><path d="M20 20l14 12-14 12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 46h12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round"/></svg>
+      @eng.abdullah.ai <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="mono"><bdi dir="ltr">5-minute trick / 02</bdi></span>
+    <h1 data-i="h1" data-en="Snap the product… and the post writes itself.">صوّر المنتج… والبوست يطلع جاهز.</h1>
+    <p data-i="lead" data-en="The hardest part of a post isn’t the photo — it’s the words under it. One prompt with your shop’s name and style: send the photo to ChatGPT or Claude and get a caption in Kuwaiti dialect, a story line, hashtags and ready replies for the comments.">أصعب شي بالبوست مو الصورة… الكلام اللي تحته. برومبت واحد فيه اسم محلك وأسلوبك: ترسل الصورة لـ ChatGPT أو Claude، ويطلع لك كابشن باللهجة الكويتية، وسطر للستوري، وهاشتاقات، وردود جاهزة للكومنتات.</p>
+    <div class="meta"><span data-i="m1" data-en="5 minutes">٥ دقايق</span><span data-i="m2" data-en="Free">مجاني</span><span data-i="m3" data-en="ChatGPT or Claude">ChatGPT أو Claude</span></div>
+  </section>
+
+  <section class="setup" id="make" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Make your prompt">سوّ البرومبت مالك</h2>
+    <p class="hint" data-i="setupHint" data-en="Type your details and the prompt in step 1 is ready to copy.">اكتب بياناتك والبرومبت بالخطوة ١ يطلع لك جاهز للنسخ.</p>
+    <div class="field"><label for="f-biz" data-i="fBiz" data-en="Business name">اسم المحل / الشركة</label><input id="f-biz" dir="auto" value="[اسم المحل]"></div>
+    <div class="field"><label for="f-what" data-i="fWhat" data-en="What you sell">شنو تبيع؟</label><input id="f-what" dir="auto" value="عطور وبخور"></div>
+    <div class="field"><label for="f-tone" data-i="fTone" data-en="Your style">أسلوبك</label>
+      <select id="f-tone">
+        <option value="fun" data-i="tFun" data-en="Fun and friendly">مرح وقريب</option>
+        <option value="classy" data-i="tClassy" data-en="Classy and calm">راقي وهادي</option>
+        <option value="plain" data-i="tPlain" data-en="Simple and direct">بسيط ومباشر</option>
+      </select></div>
+    <div class="field"><label for="f-order" data-i="fOrder" data-en="How customers order">شلون العميل يطلب؟</label><input id="f-order" dir="auto" value="الطلب بالواتساب، الرابط بالبايو"></div>
+  </section>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1">
+    <details class="step" data-step="a" open>
+      <summary><span class="num">1</span><h3 data-i="ah" data-en="Copy your prompt">انسخ البرومبت</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="ap" data-en="This prompt has your name, what you sell and your style in it — so every post sounds like you wrote it.">هالبرومبت فيه اسم محلك، وشنو تبيع، وأسلوبك… فكل بوست يطلع كأنك كاتبه.</p>
+        <div class="script prompt" data-script="prompt"></div>
+        <div class="tip" data-i="at" data-en="It tells the AI never to invent a price or an offer. Anything it doesn’t know goes in [ ] for you to fill.">البرومبت يقول للذكاء الاصطناعي لا يخترع سعر أو عرض. أي شي ما يعرفه يحطه بين [ ] وإنت تعبيه.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="b">
+      <summary><span class="num">2</span><h3 data-i="bh" data-en="Send the photo with the prompt">ارسل الصورة ويا البرومبت</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="b1" data-en="Open ChatGPT or Claude (the free version works).">افتح ChatGPT أو Claude (النسخة المجانية تمشي).</li>
+          <li data-i="b2" data-en="Tap &lt;strong&gt;+&lt;/strong&gt; → choose the product photo.">اضغط <strong>+</strong> ← اختار صورة المنتج.</li>
+          <li data-i="b3" data-en="Paste the prompt → send.">الصق البرومبت ← إرسال.</li>
+        </ul>
+        <div class="go"><a class="try" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a><a class="try" href="https://claude.ai/" target="_blank" rel="noopener">Claude</a></div>
+        <div class="tip" data-i="bt" data-en="A clear photo in daylight gives a better caption. One product per photo.">صورة واضحة بإضاءة النهار تعطيك كابشن أحسن. منتج واحد بكل صورة.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="c">
+      <summary><span class="num">3</span><h3 data-i="ch" data-en="Fix it with one line">عدّله بسطر واحد</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="cp" data-en="Don’t like something? Don’t rewrite it — just reply with one of these:">ما عجبك شي؟ لا تعيد الكتابة… بس رد بوحدة من هذي:</p>
+        <div class="script" data-script="fix1"></div>
+        <div class="script" data-script="fix2"></div>
+        <div class="script" data-script="fix3"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="d">
+      <summary><span class="num">4</span><h3 data-i="dh" data-en="Save it — next time just send the photo">احفظه… والمرة الجاية بس الصورة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dp" data-en="Put the prompt in a project once, and every photo you send there gets a post straight away:">حط البرومبت بمشروع مرة وحدة، وأي صورة ترسلها هناك يطلع لها بوست على طول:</p>
+        <ul>
+          <li data-i="d1" data-en="ChatGPT: &lt;strong&gt;Projects&lt;/strong&gt; → &lt;strong&gt;New project&lt;/strong&gt; → &lt;strong&gt;Instructions&lt;/strong&gt; → paste the prompt.">ChatGPT: <strong>Projects</strong> ← <strong>New project</strong> ← <strong>Instructions</strong> ← الصق البرومبت.</li>
+          <li data-i="d2" data-en="Claude: &lt;strong&gt;Projects&lt;/strong&gt; → &lt;strong&gt;Create project&lt;/strong&gt; → &lt;strong&gt;Project instructions&lt;/strong&gt; → paste the prompt.">Claude: <strong>Projects</strong> ← <strong>Create project</strong> ← <strong>Project instructions</strong> ← الصق البرومبت.</li>
+          <li data-i="d3" data-en="Name the project after your shop. From now on: open it, send the photo, done.">سمّ المشروع باسم محلك. من الحين: تفتحه، ترسل الصورة، وخلاص.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="e">
+      <summary><span class="num">5</span><h3 data-i="eh" data-en="Try it on 3 products">جرّبه على ٣ منتجات</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="ep" data-en="Take 3 photos today and write a week of posts in 5 minutes. Read each caption once before you post — you know your shop better than the AI.">صوّر ٣ منتجات اليوم، وتطلع لك بوستات أسبوع بـ ٥ دقايق. اقرا كل كابشن مرة قبل لا تنشر… إنت تعرف محلك أكثر من الذكاء الاصطناعي.</p>
+        <div class="tip" data-i="et" data-en="Keep the two comment replies in WhatsApp Business &lt;strong&gt;quick replies&lt;/strong&gt; or your keyboard shortcuts.">احفظ ردود الكومنتات بـ <strong>الردود السريعة</strong> في WhatsApp Business أو اختصارات الكيبورد.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Done in 5 minutes? Next: the comments.">خلصت بـ ٥ دقايق؟ الخطوة الجاية: الكومنتات.</h2>
+    <p data-i="finP" data-en="Now the posts are easy — make Instagram answer every comment and DM by itself. And if you don’t have time… we’ll build it for you.">الحين البوست صار سهل… خلّ الانستغرام يرد على كل كومنت ورسالة بروحه. ولو ما عندك وقت… إحنا نسويلك اياه.</p>
+    <a class="btn" href="../instagram/" data-i="finBtn" data-en="Instagram auto-reply guide">شرح الرد الأوتوماتيكي بالانستغرام</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("pp-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    try { localStorage.setItem("pp-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { biz:$("#f-biz"), what:$("#f-what"), tone:$("#f-tone"), order:$("#f-order") };
+  var TONE = {
+    ar: { fun:"مرح وقريب، كأنك تكلم ربعك", classy:"راقي وهادي، كلام قليل وفخم", plain:"بسيط ومباشر، المعلومة أول" },
+    en: { fun:"fun and friendly, like talking to friends", classy:"classy and calm, few words, premium feel", plain:"simple and direct, the facts first" }
+  };
+  function v(){ return { biz:F.biz.value.trim()||"[اسم المحل]", what:F.what.value.trim()||"[شنو تبيع]", tone:F.tone.value, order:F.order.value.trim()||"[شلون يطلب]" }; }
+  // the prompt the customer copies into ChatGPT / Claude
+  var S = {
+    prompt: function(x){
+      if (lang === "ar") return [
+        "إنت كاتب محتوى حق محل «" + x.biz + "» في الكويت. نبيع: " + x.what + ".",
+        "الأسلوب: " + TONE.ar[x.tone] + ".",
+        "",
+        "بعطيك صورة منتج. اكتب لي:",
+        "١. كابشن انستغرام باللهجة الكويتية (٣ إلى ٥ أسطر). أول سطر يشد، وآخر سطر يقول للعميل شلون يطلب: " + x.order + ".",
+        "٢. سطر واحد قصير حق الستوري.",
+        "٣. ١٠ هاشتاقات عربي وإنجليزي تناسب الكويت.",
+        "٤. ردين جاهزين للكومنتات: واحد حق «كم السعر؟» وواحد حق «وين موقعكم؟».",
+        "",
+        "القواعد:",
+        "- لهجة كويتية، مو فصحى ولا مصري.",
+        "- لا تخترع سعر أو عرض أو أي معلومة مو بالصورة. إذا تحتاجها اكتب [  ].",
+        "- إيموجي قليل.",
+        "- إذا الصورة مو واضحة، اسألني قبل لا تكتب."
+      ].join("\n");
+      return [
+        "You write content for “" + x.biz + "”, a shop in Kuwait. We sell: " + x.what + ".",
+        "Style: " + TONE.en[x.tone] + ".",
+        "",
+        "I’ll send you a product photo. Write:",
+        "1. An Instagram caption in Kuwaiti Arabic dialect (3–5 lines). A strong first line; the last line tells the customer how to order: " + x.order + ".",
+        "2. One short line for the story.",
+        "3. 10 Arabic and English hashtags that suit Kuwait.",
+        "4. Two ready replies for comments: one for “How much?” and one for “Where are you?”.",
+        "",
+        "Rules:",
+        "- Kuwaiti dialect, not formal Arabic and not Egyptian.",
+        "- Never invent a price, an offer or anything not in the photo. If you need it, write [  ].",
+        "- Few emojis.",
+        "- If the photo isn’t clear, ask me before writing."
+      ].join("\n");
+    },
+    fix1: function(){ return lang==="ar" ? "أقصر، سطرين بس." : "Shorter — two lines only."; },
+    fix2: function(){ return lang==="ar" ? "أبي ٣ بدايات مختلفة للكابشن، أختار منها." : "Give me 3 different first lines to choose from."; },
+    fix3: function(){ return lang==="ar" ? "نفس الكابشن بس بالإنجليزي حق الزباين الأجانب." : "Same caption in English for non-Arabic customers."; }
+  };
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[k]) return;
+      box.textContent = S[k](x);
+      box.setAttribute("dir", lang==="ar"?"rtl":"ltr");
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ":"Copy");
+      b.addEventListener("click", function(){
+        var txt = S[k](v());
+        var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = lang==="ar"?"نسخ":"Copy"; },1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+      });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("pp-guide-form", JSON.stringify({ biz:F.biz.value, what:F.what.value, tone:F.tone.value, order:F.order.value })); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("pp-guide-form")||"null"); if(saved){ F.biz.value=saved.biz; F.what.value=saved.what; F.tone.value=saved.tone||"fun"; F.order.value=saved.order; } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); F[k].addEventListener("change", renderScripts); });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("pp-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-l1 .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("pp-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); updateProgress();
+})();
+</script>
+</body>
+</html>
