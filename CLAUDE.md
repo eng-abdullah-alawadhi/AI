@@ -25,6 +25,7 @@ Owner: م. عبدالله العوضي, IT Manager at Cash Clinic Kuwait. Servic
   `post-prompt/` — a ready prompt (shop name, what you sell, tone, how to order) that turns a product photo into a Kuwaiti caption, story line, hashtags and comment replies in ChatGPT/Claude. Mono label `5-minute trick / 02`, localStorage prefix `pp-guide-`.
   Same template as the guides but a single route (no level tabs, no demo tab); the personalize box is `#make` and doubles as the live tool. Mono label `5-minute trick / 01`.
   Adding one: copy `wa-link/`, give its localStorage keys a new prefix, add a card to `#tricks`, update this file.
+- `cv-skill/` — «سكيلات Claude» card 01 (`#skills` on the hub): the `ats-cv` Claude skill (score a CV against a job ad, tailor it truthfully, ATS-safe Word file, cover letter, LinkedIn). Source `cv-skill/skills/ats-cv/SKILL.md`, zip `cv-skill/zips/ats-cv.zip` (folder `ats-cv/SKILL.md` inside) — rebuild the zip after editing. localStorage prefix `cv-guide-`. Adding a skill page: copy `cv-skill/`, new prefix, new card in `#skills`.
 - `cash-mark.png` — Cash Clinic knot mark, transparent. Use as-is. Never redraw, recolor, or stretch it.
 
 ## Brand — do not change without being asked

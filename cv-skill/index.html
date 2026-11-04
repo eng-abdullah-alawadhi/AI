@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سيفي يعدّي فلتر الشركات — سكيل Claude</title>
+<meta name="description" content="A free Claude skill that scores your CV against a job ad out of 100, lists missing keywords, tailors it truthfully and gives you an ATS-safe Word file, a cover letter and a LinkedIn summary. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero .mono{font-family:var(--mono);letter-spacing:.08em;font-size:12px;color:var(--mute);text-transform:lowercase;display:block;margin-bottom:12px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:16ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field select{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px;color:var(--ink)}
+.field select:focus{border-color:var(--ink)}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.script.prompt{padding-top:52px;font-size:15.5px}
+.go{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.try.big{min-height:52px;padding:0 24px;font-size:16px;background:var(--lime);border-color:var(--lime);color:#fff}
+.try.big:hover{background:var(--lime-ink);border-color:var(--lime-ink)}
+.sks{display:grid;gap:10px;margin:12px 0}
+.sk{display:flex;align-items:center;gap:14px;background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:12px 14px;flex-wrap:wrap}
+.sk>i{flex:none;font-style:normal;font-size:26px;width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center}
+.sk .t{flex:1;min-width:0}
+.sk .t b{display:block;color:var(--ink)}
+.sk .t span{font-size:14px;color:var(--mute)}
+.sk .acts{display:flex;gap:8px;flex:none}
+.sbtn{font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.sbtn:hover{background:var(--ink);color:#fff}
+@media (max-width:520px){.sk .acts{width:100%}.sk .acts .sbtn{flex:1;justify-content:center}}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+.src{font-weight:700;color:var(--ink);margin:18px 0 0}
+.try{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:2px solid var(--ink);font-weight:700;text-decoration:none;font-size:14px}
+.try:hover{background:var(--ink);color:#fff}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#007A3D"/><path d="M20 20l14 12-14 12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 46h12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round"/></svg>
+      @eng.abdullah.ai <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="mono"><bdi dir="ltr">claude skills / 01</bdi></span>
+    <h1 data-i="h1" data-en="Your CV gets rejected… before anyone sees it.">سيفيك ينرفض… قبل لا يشوفه أحد.</h1>
+    <p data-i="lead" data-en="Many companies and banks filter CVs with an ATS before a person reads them — if your CV doesn’t use the job’s words, it’s dropped. This Claude skill scores your CV against the job out of 100, tells you what’s missing, tailors it without inventing anything, and gives you a clean Word file, a cover letter and a LinkedIn summary.">وايد شركات وبنوك تفلتر السيفيات بنظام ATS قبل لا يقراها أحد… وإذا سيفيك ما فيه كلمات الوظيفة، ينشال. هالسكيل لكلود يعطي سيفيك درجة من ١٠٠ على الوظيفة، ويقول لك شنو ناقص، ويعدّله بدون ما يخترع شي، ويطلع لك ملف وورد نظيف، ورسالة تقديم، وملخص لنكدإن.</p>
+    <div class="meta"><span data-i="m1" data-en="1 skill">سكيل واحد</span><span data-i="m2" data-en="Free">مجاني</span><span data-i="m3" data-en="Arabic & English">عربي وإنجليزي</span></div>
+  </section>
+
+  <section class="setup" id="make" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Your message to Claude">رسالتك لكلود</h2>
+    <p class="hint" data-i="setupHint" data-en="Fill these and step 3 gives you the exact message to send with your CV and the job ad.">عبّي هذي والخطوة ٣ تعطيك الرسالة اللي ترسلها ويا سيفيك وإعلان الوظيفة.</p>
+    <div class="field"><label for="f-job" data-i="fJob" data-en="Job you’re applying for">الوظيفة اللي تقدم عليها</label><input id="f-job" dir="auto" value="Data Analyst"></div>
+    <div class="field"><label for="f-co" data-i="fCo" data-en="Company (optional)">الشركة (اختياري)</label><input id="f-co" dir="auto" value=""></div>
+    <div class="field"><label for="f-yrs" data-i="fYrs" data-en="Years of experience">سنوات الخبرة</label><input id="f-yrs" dir="ltr" inputmode="numeric" value="3"></div>
+    <div class="field"><label for="f-lang" data-i="fLang" data-en="CV language">لغة السيفي</label>
+      <select id="f-lang">
+        <option value="en" data-i="lEn" data-en="English">إنجليزي</option>
+        <option value="ar" data-i="lAr" data-en="Arabic">عربي</option>
+      </select></div>
+  </section>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1">
+    <details class="step" data-step="a" open>
+      <summary><span class="num">1</span><h3 data-i="ah" data-en="Download the skill">حمّل السكيل</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <div class="sks">
+          <div class="sk"><i>📄</i><div class="t"><b>ats-cv</b><span data-i="s1d" data-en="Score · missing keywords · tailored Word CV · cover letter · LinkedIn">درجة · الكلمات الناقصة · سيفي وورد معدّل · رسالة تقديم · لنكدإن</span></div><div class="acts"><a class="sbtn" href="zips/ats-cv.zip" download data-i="dl" data-en="Download">تحميل</a><button type="button" class="sbtn cp" data-skill="ats-cv" data-i="cpb" data-en="Copy as prompt">نسخ كبرومبت</button></div></div>
+        </div>
+        <div class="tip" data-i="at" data-en="Only have ChatGPT? Tap &lt;strong&gt;Copy as prompt&lt;/strong&gt; and paste it at the start of your chat.">عندك ChatGPT بس؟ اضغط <strong>نسخ كبرومبت</strong> والصقه بأول المحادثة.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="b">
+      <summary><span class="num">2</span><h3 data-i="bh" data-en="Install it in Claude">ركّبه بكلود</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p class="src" data-i="bA" data-en="On claude.ai or the Claude app">بموقع claude.ai أو التطبيق</p>
+        <ul>
+          <li data-i="b1" data-en="&lt;strong&gt;Settings&lt;/strong&gt; → &lt;strong&gt;Capabilities&lt;/strong&gt; → &lt;strong&gt;Skills&lt;/strong&gt;."><strong>Settings</strong> ← <strong>Capabilities</strong> ← <strong>Skills</strong>.</li>
+          <li data-i="b2" data-en="&lt;strong&gt;Upload skill&lt;/strong&gt; → choose &lt;code&gt;ats-cv.zip&lt;/code&gt;.">اضغط <strong>Upload skill</strong> ← اختار <code>ats-cv.zip</code>.</li>
+          <li data-i="b3" data-en="Turn on &lt;strong&gt;Code execution&lt;/strong&gt; on the same page — that’s what lets Claude hand you the Word file.">فعّل <strong>Code execution</strong> بنفس الصفحة… هذا اللي يخلي كلود يعطيك ملف الوورد.</li>
+        </ul>
+        <p class="src" data-i="bB" data-en="On Claude Code — paste this install prompt">بـ Claude Code… الصق برومبت التثبيت</p>
+        <div class="script" data-script="install"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="c">
+      <summary><span class="num">3</span><h3 data-i="ch" data-en="Send your CV + the job ad">ارسل سيفيك + إعلان الوظيفة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="c1" data-en="Attach your current CV (PDF or Word).">أرفق سيفيك الحالي (PDF أو Word).</li>
+          <li data-i="c2" data-en="Paste the full job ad — from LinkedIn, the company site, or a screenshot.">الصق إعلان الوظيفة كامل… من لنكدإن، أو موقع الشركة، أو سكرين شوت.</li>
+          <li data-i="c3" data-en="Then send this:">وعقبها ارسل هذا:</li>
+        </ul>
+        <div class="script" data-script="ask"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="d">
+      <summary><span class="num">4</span><h3 data-i="dh" data-en="Answer its questions">جاوب على أسئلته</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dp" data-en="You first get a score out of 100 and the missing keywords. Before rewriting, Claude asks whether you actually have each missing skill — it never adds anything you didn’t confirm.">أول شي تطلع لك درجة من ١٠٠ والكلمات الناقصة. وقبل لا يعدّل، كلود يسألك إذا عندك كل مهارة ناقصة فعلاً… وما يضيف شي إنت ما أكدته.</p>
+        <div class="tip" data-i="dt" data-en="Have numbers? Give them: “cut reporting time by 40%”, “handled 60 clients”. Numbers are what makes a bullet stand out.">عندك أرقام؟ عطه اياها: «قللت وقت التقارير ٤٠٪»، «تعاملت ويا ٦٠ عميل». الأرقام هي اللي تميز سيفيك.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="e">
+      <summary><span class="num">5</span><h3 data-i="eh" data-en="Before you apply">قبل لا تقدّم</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="e1" data-en="Open the Word file and read it once — your name, phone and dates.">افتح ملف الوورد واقراه مرة… اسمك، رقمك، والتواريخ.</li>
+          <li data-i="e2" data-en="Send the Word file unless the company asks for PDF.">ارسل ملف الوورد إلا إذا الشركة طلبت PDF.</li>
+          <li data-i="e3" data-en="New job = new version. Paste the next job ad in the same chat.">وظيفة جديدة = نسخة جديدة. الصق الإعلان الجاي بنفس المحادثة.</li>
+          <li data-i="e4" data-en="Update your LinkedIn headline and About with the text it gave you.">حدّث عنوان لنكدإن والـ About بالنص اللي عطاك اياه.</li>
+        </ul>
+        <div class="tip" data-i="et" data-en="The score measures how well your CV matches the job ad — not a promise of an interview.">الدرجة تقيس شكثر سيفيك يطابق الإعلان… مو وعد بمقابلة.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Done? Now apply — one tailored CV per job.">خلصت؟ الحين قدّم… سيفي معدّل لكل وظيفة.</h2>
+    <p data-i="finP" data-en="And if you can’t do it yourself… we’ll do it for you.">ولو ما تقدر تسويه… إحنا نسويلك اياه.</p>
+    <a class="btn" href="https://instagram.com/eng.abdullah.ai" target="_blank" rel="noopener" data-i="finBtn" data-en="Message me on Instagram">راسلني على الانستغرام</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("cv-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    try { localStorage.setItem("cv-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { job:$("#f-job"), co:$("#f-co"), yrs:$("#f-yrs"), cvl:$("#f-lang") };
+  function v(){
+    var y = F.yrs.value.replace(/[٠-٩]/g, function(c){ return String(c.charCodeAt(0) - 0x660); }).replace(/\D/g, "");
+    return { job:F.job.value.trim()||"[الوظيفة]", co:F.co.value.trim(), yrs:y||"[  ]", cvl:F.cvl.value };
+  }
+  var BASE = location.href.replace(/[#?].*$/, "").replace(/index\.html$/, "");
+  var S = {
+    ask: function(x){
+      if (lang === "ar") return [
+        "هذا سيفيي وإعلان وظيفة " + x.job + (x.co ? " في " + x.co : "") + ". عندي " + x.yrs.replace(/\d/g, function(d){ return "٠١٢٣٤٥٦٧٨٩"[d]; }) + " سنوات خبرة.",
+        "استخدم سكيل ats-cv:",
+        "١. عطني الدرجة من ١٠٠ قبل التعديل، والكلمات الناقصة.",
+        "٢. اسألني عن أي مهارة ناقصة قبل لا تضيفها.",
+        "٣. سوّ لي السيفي " + (x.cvl==="en" ? "بالإنجليزي" : "بالعربي") + " كملف وورد، ورسالة تقديم، وملخص لنكدإن."
+      ].join("\n");
+      return [
+        "Here’s my CV and a job ad for " + x.job + (x.co ? " at " + x.co : "") + ". I have " + x.yrs + " years of experience.",
+        "Use the ats-cv skill:",
+        "1. Give me the score out of 100 before any changes, and the missing keywords.",
+        "2. Ask me about any missing skill before adding it.",
+        "3. Make my CV in " + (x.cvl==="en" ? "English" : "Arabic") + " as a Word file, plus a cover letter and a LinkedIn summary."
+      ].join("\n");
+    },
+    install: function(){
+      return "Install this skill for me in ~/.claude/skills/ats-cv/ — create the folder and download its SKILL.md into it, then confirm:\n\n" + BASE + "skills/ats-cv/SKILL.md";
+    }
+  };
+  function copy(txt, b, label){
+    var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = label; },1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+  }
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[k]) return;
+      box.textContent = S[k](x);
+      box.setAttribute("dir", k==="install" ? "ltr" : (lang==="ar"?"rtl":"ltr"));
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ":"Copy");
+      b.addEventListener("click", function(){ copy(S[k](v()), b, lang==="ar"?"نسخ":"Copy"); });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("cv-guide-form", JSON.stringify({ job:F.job.value, co:F.co.value, yrs:F.yrs.value, cvl:F.cvl.value })); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("cv-guide-form")||"null"); if(saved){ Object.keys(F).forEach(function(k){ if(saved[k]!==undefined) F[k].value=saved[k]; }); } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); F[k].addEventListener("change", renderScripts); });
+
+  // "Copy as prompt": fetch the skill file, drop its front matter
+  document.addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest(".sbtn.cp"); if(!b) return;
+    var label = b.textContent;
+    fetch("skills/" + b.getAttribute("data-skill") + "/SKILL.md").then(function(r){ if(!r.ok) throw 0; return r.text(); })
+      .then(function(t){ copy(t.replace(/^---[\s\S]*?---\s*/, ""), b, label); })
+      .catch(function(){ b.textContent = lang==="ar"?"ما قدرت أنسخ":"Couldn’t copy"; setTimeout(function(){ b.textContent = label; },1800); });
+  });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("cv-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-l1 .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("cv-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); updateProgress();
+})();
+</script>
+</body>
+</html>
