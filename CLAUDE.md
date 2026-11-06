@@ -26,6 +26,7 @@ Owner: م. عبدالله العوضي, IT Manager at Cash Clinic Kuwait. Servic
   Same template as the guides but a single route (no level tabs, no demo tab); the personalize box is `#make` and doubles as the live tool. Mono label `5-minute trick / 01`.
   Adding one: copy `wa-link/`, give its localStorage keys a new prefix, add a card to `#tricks`, update this file.
 - `cv-skill/` — «سكيلات Claude» card 01 (`#skills` on the hub): the `ats-cv` Claude skill (score a CV against a job ad, tailor it truthfully, ATS-safe Word file, cover letter, LinkedIn). Source `cv-skill/skills/ats-cv/SKILL.md`, zip `cv-skill/zips/ats-cv.zip` (folder `ats-cv/SKILL.md` inside) — rebuild the zip after editing. localStorage prefix `cv-guide-`. Adding a skill page: copy `cv-skill/`, new prefix, new card in `#skills`.
+- `excel-report/` — «سكيلات Claude» card 02: the `excel-report` skill (messy Excel/CSV → cleaned data with a cleaning log, key numbers that reconcile, charts, clean .xlsx with Summary sheet, Word/PDF/PowerPoint report, ready message to the manager). Source `excel-report/skills/excel-report/SKILL.md`, zip `excel-report/zips/excel-report.zip`. localStorage prefix `xl-guide-`.
 - `cash-mark.png` — Cash Clinic knot mark, transparent. Use as-is. Never redraw, recolor, or stretch it.
 
 ## Brand — do not change without being asked
