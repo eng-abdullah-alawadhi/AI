@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سوّ مساعد ذكي لشركتك — بدون برمجة</title>
+<meta name="description" content="Step by step, no code: build your company an AI assistant in a Claude Project (or Microsoft Teams) that answers staff from your own policies, cites the source and keeps salaries private. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --dark:#17382A; --dline:#2E5A44;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--ground) radial-gradient(circle,rgba(220,213,198,.55) 1.1px,transparent 1.3px) 0 0/28px 28px;color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:48px 0 28px}
+.tags{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:16px}
+.mono{font-family:var(--mono);letter-spacing:.08em;font-size:12px;color:var(--mute);text-transform:lowercase}
+.cash-badge{display:inline-flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700}
+.cash-badge img{width:24px;height:24px;object-fit:contain}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.05;letter-spacing:-0.03em;margin:0 0 18px;max-width:16ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero h1 .g{color:var(--lime)}
+.hero p{font-size:19px;color:var(--ink-2);max-width:60ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:999px;font-weight:700;text-decoration:none;border:2px solid var(--ink)}
+.btn.p{background:var(--lime);border-color:var(--lime);color:#fff}
+.btn.p:hover{background:var(--lime-ink);border-color:var(--lime-ink);color:#fff}
+.btn.s{background:#fff;color:var(--ink)}
+.btn.s:hover{background:var(--ink);color:#fff}
+h2.sec{font-size:28px;margin:44px 0 6px}
+p.sub{margin:0 0 18px;color:var(--ink-2);max-width:62ch}
+/* demo */
+.demo{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:20px;display:grid;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input:focus{border-color:var(--ink)}
+.chat{background:#EFEAE0;border-radius:18px;padding:16px;min-height:300px;max-height:440px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.chat .top{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.chat .top i{flex:none;width:40px;height:40px;border-radius:50%;background:var(--lime);color:#fff;font-style:normal;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px}
+.chat .top b{display:block;font-size:16px}.chat .top small{color:var(--mute);font-size:13px}
+.m{max-width:85%;padding:10px 14px;border-radius:16px;font-size:16px;line-height:1.55;white-space:pre-line}
+.m.u{align-self:flex-start;background:#D9F2E3;border-end-start-radius:4px}
+html[dir=ltr] .m.u{align-self:flex-end}
+.m.a{align-self:flex-end;background:#fff;border-end-end-radius:4px}
+html[dir=ltr] .m.a{align-self:flex-start}
+.m .src{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--lime-ink);background:var(--lime-soft);border-radius:999px;padding:3px 10px}
+.m .src.lock{color:var(--ink);background:#EDE7DA}
+.typing{display:inline-flex;gap:4px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.qs{display:flex;flex-wrap:wrap;gap:8px}
+.q{font:inherit;font-size:15px;font-weight:600;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:8px 14px;min-height:44px;cursor:pointer;text-align:start}
+.q:hover{background:var(--ink);color:#fff}
+.q:disabled{opacity:.45;cursor:default;background:#fff;color:var(--ink)}
+.note{font-size:14px;color:var(--mute);margin:0}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:600px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;transition:transform .2s}
+.card:hover{transform:translateY(-2px)}
+.card .n{font-family:var(--mono);font-size:13px;color:var(--mute)}
+.card .ic{font-size:28px;margin:6px 0}
+.card h3{margin:0 0 6px;font-size:19px}
+.card p{margin:0;color:var(--ink-2);font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:700;font-size:15px}
+.need{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 22px;margin:0}
+.need li{margin:8px 0;color:var(--ink-2)}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 18px}
+.steps li::before{content:counter(s,arabic-indic);flex:none;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+html[dir=ltr] .steps li::before{content:counter(s)}
+.steps b{display:block;color:var(--ink)} .steps span{color:var(--ink-2);font-size:16px}
+.safe{background:var(--dark) radial-gradient(circle,rgba(246,241,231,.07) 1.1px,transparent 1.3px) 0 0/28px 28px;color:#F6F1E7;border-radius:22px;padding:24px;margin-top:44px}
+.safe h2{margin:0 0 12px;font-size:24px}
+.safe ul{margin:0;padding-inline-start:20px}.safe li{margin:8px 0;color:#CFE6D8}
+.safe li b{color:#fff}
+.build{margin:36px 0 24px;background:var(--ink) radial-gradient(circle,rgba(246,241,231,.08) 1.1px,transparent 1.3px) 0 0/28px 28px;color:#F6F1E7;border-radius:26px;padding:30px}
+.build h2{margin:0 0 10px;font-size:28px}
+.build p{margin:0 0 18px;color:#CFE6D8}
+.build a{display:inline-flex;align-items:center;min-height:52px;padding:0 24px;border-radius:999px;background:var(--lime);color:#fff;font-weight:700;text-decoration:none}
+.build a:hover{background:var(--lime-ink)}
+.build small{display:block;margin-top:12px;color:#9FB8A8;font-size:14px}
+footer{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:8px 0 48px;color:var(--mute);font-size:14px}
+/* guide */
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field select{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px;color:var(--ink)}
+.field select:focus{border-color:var(--ink)}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.script.prompt{padding-top:52px;font-size:15.5px}
+.go{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.try.big{min-height:52px;padding:0 24px;font-size:16px;background:var(--lime);border-color:var(--lime);color:#fff}
+.try.big:hover{background:var(--lime-ink);border-color:var(--lime-ink)}
+.sks{display:grid;gap:10px;margin:12px 0}
+.sk{display:flex;align-items:center;gap:14px;background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:12px 14px;flex-wrap:wrap}
+.sk>i{flex:none;font-style:normal;font-size:26px;width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center}
+.sk .t{flex:1;min-width:0}
+.sk .t b{display:block;color:var(--ink)}
+.sk .t span{font-size:14px;color:var(--mute)}
+.sk .acts{display:flex;gap:8px;flex:none}
+.sbtn{font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.sbtn:hover{background:var(--ink);color:#fff}
+@media (max-width:520px){.sk .acts{width:100%}.sk .acts .sbtn{flex:1;justify-content:center}}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+.src{font-weight:700;color:var(--ink);margin:18px 0 0}
+.try{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:2px solid var(--ink);font-weight:700;text-decoration:none;font-size:14px}
+.try:hover{background:var(--ink);color:#fff}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#007A3D"/><path d="M20 20l14 12-14 12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 46h12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round"/></svg>
+      @eng.abdullah.ai <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="tags"><span class="mono"><bdi dir="ltr">for companies / 01</bdi></span><span class="cash-badge"><img src="../cash-mark.png" alt="Cash Clinic">الشريك التقني لكاش كلينك</span></div>
+    <h1 data-i="h1" data-en="Your staff ask the same question… &lt;span class=&quot;g&quot;&gt;every day.&lt;/span&gt;">موظفينك يسألون نفس السؤال… <span class="g">كل يوم.</span></h1>
+    <p data-i="lead" data-en="“How many leave days do I get?” “Where’s the form?” “How do I request a laptop?” — Here’s how to build your company an AI assistant yourself, with no code: it answers staff from your own policies and files, shows where every answer came from, and never shares salaries.">«كم يوم إجازتي؟» «وين النموذج؟» «شلون أطلب لابتوب؟»… هني تتعلم شلون تسوي لشركتك مساعد ذكي بنفسك، بدون برمجة: يرد على الموظفين من سياساتكم وملفاتكم، ويقول من وين جاب الجواب، وما يطلع الرواتب.</p>
+    <div class="meta"><span data-i="m1" data-en="No code">بدون برمجة</span><span data-i="m2" data-en="5 steps">٥ خطوات</span><span data-i="m3" data-en="Claude or Microsoft Teams">Claude أو Microsoft Teams</span></div>
+  </section>
+
+  <section class="setup" id="make" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Your company">شركتك</h2>
+    <p class="hint" data-i="setupHint" data-en="Fill these and the instructions in step 3 are written for your company.">عبّي هذي والتعليمات بالخطوة ٣ تنكتب على شركتك.</p>
+    <div class="field"><label for="f-co" data-i="fCo" data-en="Company name">اسم الشركة</label><input id="f-co" dir="auto" value="" placeholder="شركتكم"></div>
+    <div class="field"><label for="f-hr" data-i="fHr" data-en="Who to contact when it doesn’t know">منو يتواصلون وياه إذا ما عرف</label><input id="f-hr" dir="auto" value="" placeholder="hr@company.com"></div>
+  </section>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1">
+    <details class="step" data-step="a" open>
+      <summary><span class="num">1</span><h3 data-i="ah" data-en="Collect the files">جمّع الملفات</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="a1" data-en="HR policies: leave, attendance, allowances, travel.">سياسات الـ HR: الإجازات، الدوام، البدلات، السفر.</li>
+          <li data-i="a2" data-en="IT procedures: devices, passwords, email, VPN.">إجراءات الـ IT: الأجهزة، الباسوورد، الإيميل، الـ VPN.</li>
+          <li data-i="a3" data-en="The forms, and a list of the questions you get every week.">النماذج، وقائمة بالأسئلة اللي توصلكم كل أسبوع.</li>
+        </ul>
+        <div class="tip" data-i="at" data-en="Delete old versions first, and don’t upload any file with salaries, civil IDs or personal data.">امسح النسخ القديمة أول، ولا ترفع أي ملف فيه رواتب أو أرقام مدنية أو بيانات شخصية.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="b">
+      <summary><span class="num">2</span><h3 data-i="bh" data-en="Create a Project in Claude">سوّ Project بـ Claude</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="b1" data-en="Open &lt;strong&gt;claude.ai&lt;/strong&gt; → &lt;strong&gt;Projects&lt;/strong&gt; → &lt;strong&gt;Create project&lt;/strong&gt;.">افتح <strong>claude.ai</strong> ← <strong>Projects</strong> ← <strong>Create project</strong>.</li>
+          <li data-i="b2" data-en="Name it after your company’s assistant.">سمّه «مساعد» + اسم شركتك.</li>
+          <li data-i="b3" data-en="In &lt;strong&gt;Project knowledge&lt;/strong&gt;, upload the files from step 1.">بـ <strong>Project knowledge</strong> ارفع الملفات اللي جمعتها بالخطوة ١.</li>
+        </ul>
+        <div class="tip" data-i="bt" data-en="To share it with your staff later you need a Claude Team or Enterprise plan.">عشان تشاركه ويا الموظفين عقب، تحتاج خطة Claude Team أو Enterprise.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="c">
+      <summary><span class="num">3</span><h3 data-i="ch" data-en="Paste the instructions">الصق التعليمات</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="cp" data-en="In the project, open &lt;strong&gt;Project instructions&lt;/strong&gt; and paste this. It’s what makes it answer from your files only, cite the source and keep salaries private.">داخل المشروع افتح <strong>Project instructions</strong> والصق هذا. هذا اللي يخليه يرد من ملفاتكم بس، ويذكر المصدر، وما يطلع الرواتب.</p>
+        <div class="script" data-script="rules"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="d">
+      <summary><span class="num">4</span><h3 data-i="dh" data-en="Test it with real questions">جرّبه بأسئلة حقيقية</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dp" data-en="Ask these one by one. The last two are traps — it must refuse the first and say it doesn’t know the second.">اسأله هذي وحدة وحدة. آخر ثنتين فخ… لازم يرفض الأولى، ويقول «ما لقيت» بالثانية.</p>
+        <div class="script" data-script="test"></div>
+        <div class="tip" data-i="dt" data-en="Wrong answer? Usually the file is old or unclear — fix the file, not the question.">جواب غلط؟ عادة الملف قديم أو مو واضح… صلّح الملف، مو السؤال.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="e">
+      <summary><span class="num">5</span><h3 data-i="eh" data-en="Share it with your team">شاركه ويا الموظفين</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p class="src" data-i="eA" data-en="On Claude (Team / Enterprise)">على Claude (Team أو Enterprise)</p>
+        <ul>
+          <li data-i="e1" data-en="In the project, tap &lt;strong&gt;Share&lt;/strong&gt; and add your staff — they can use it, only you edit it.">داخل المشروع اضغط <strong>Share</strong> وضيف الموظفين… يستخدمونه، وانت بس تعدّل.</li>
+        </ul>
+        <p class="src" data-i="eB" data-en="On Microsoft Teams (if you’re on Microsoft 365)">على Microsoft Teams (إذا شركتكم على Microsoft 365)</p>
+        <ul>
+          <li data-i="e2" data-en="Open &lt;strong&gt;Copilot Studio&lt;/strong&gt; → create an agent.">افتح <strong>Copilot Studio</strong> ← سوّ agent جديد.</li>
+          <li data-i="e3" data-en="Add the same files (or your SharePoint folder) as knowledge, and paste the same instructions.">ضيف نفس الملفات (أو مجلد الـ SharePoint) كـ knowledge، والصق نفس التعليمات.</li>
+          <li data-i="e4" data-en="Publish it to the &lt;strong&gt;Teams&lt;/strong&gt; channel.">انشره على قناة <strong>Teams</strong>.</li>
+        </ul>
+        <div class="tip" data-i="et" data-en="New policy? Upload the new file and delete the old one — that’s the whole update.">سياسة جديدة؟ ارفع الملف الجديد وامسح القديم… هذا كل التحديث.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <h2 class="sec" data-i="dH" data-en="This is what it looks like">هذا شكله لما يخلص</h2>
+  <p class="sub" data-i="dP" data-en="A demo with example answers — nothing you tap here is sent anywhere.">تجربة بأجوبة مثال… وما ينرسل أي شي هني لأي مكان.</p>
+  <section class="demo" aria-label="Demo">
+    <div class="chat" id="chat" aria-live="polite">
+      <div class="top"><i>AI</i><div><b id="bot-name">مساعد شركتكم</b><small data-i="online" data-en="online · answers from company files">متصل · يرد من ملفات الشركة</small></div></div>
+    </div>
+    <div class="qs" id="qs"></div>
+  </section>
+
+  <section class="safe">
+    <h2 data-i="sH" data-en="What a Project can’t do on its own">اللي ما يقدر عليه الـ Project بروحه</h2>
+    <ul>
+      <li data-i="s1" data-en="&lt;b&gt;WhatsApp&lt;/b&gt; — staff asking from their phone without opening Claude."><b>WhatsApp</b>… الموظف يسأل من تلفونه بدون ما يفتح Claude.</li>
+      <li data-i="s2" data-en="&lt;b&gt;Permissions by department&lt;/b&gt; — finance sees finance files, the rest don’t."><b>صلاحيات حسب القسم</b>… المالية تشوف ملفات المالية، والباقي لا.</li>
+      <li data-i="s3" data-en="&lt;b&gt;Your HR system&lt;/b&gt; — each employee’s real leave balance, not just the policy."><b>ربط بنظام الـ HR</b>… رصيد إجازة كل موظف الحقيقي، مو بس السياسة.</li>
+      <li data-i="s4" data-en="&lt;b&gt;A log and monthly report&lt;/b&gt; of what staff ask most."><b>سجل وتقرير شهري</b> بأكثر الأسئلة.</li>
+    </ul>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Done? Your staff now have answers in seconds.">خلصت؟ الحين موظفينك عندهم جواب بثواني.</h2>
+    <p data-i="finP" data-en="And if you can’t do it yourself… we’ll do it for you — on WhatsApp or Teams, with permissions and your HR system.">ولو ما تقدر تسويه… إحنا نسويلك اياه، على WhatsApp أو Teams، بصلاحيات وربط بنظام الـ HR.</p>
+    <a class="btn" href="https://instagram.com/eng.abdullah.ai" target="_blank" rel="noopener" data-i="finBtn" data-en="Message me on Instagram">راسلني على الانستغرام</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+    <span class="cash-badge"><img src="../cash-mark.png" alt="Cash Clinic">الشريك التقني لكاش كلينك</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("ca-guide-lang") || "ar"; } catch(e){}
+
+  var F = { co:$("#f-co"), hr:$("#f-hr") };
+  try { var saved = JSON.parse(localStorage.getItem("ca-guide-form")||"null"); if(saved){ Object.keys(F).forEach(function(k){ if(saved[k]!==undefined) F[k].value=saved[k]; }); } } catch(e){}
+  function v(){
+    return { co: F.co.value.trim() || (lang==="ar" ? "الشركة" : "the company"),
+             hr: F.hr.value.trim() || (lang==="ar" ? "قسم الـ HR" : "the HR team") };
+  }
+  var S = {
+    rules: function(x){
+      if (lang === "ar") return [
+        "إنت مساعد موظفين " + x.co + ".",
+        "- جاوب بس من الملفات المرفوعة بهالمشروع. لا تجاوب من معلوماتك العامة.",
+        "- بنهاية كل جواب اكتب المصدر: اسم الملف والبند أو الصفحة.",
+        "- إذا الجواب مو موجود بالملفات، قول: «ما لقيت هالمعلومة بملفات الشركة» ووجّه الموظف لـ " + x.hr + ".",
+        "- لا تشارك رواتب أو بيانات شخصية لأي موظف، حتى لو موجودة بالملفات.",
+        "- إذا فيه نسختين من نفس السياسة، اعتمد الأحدث واذكر تاريخها.",
+        "- إذا السؤال يحتاج نموذج، اذكر اسم النموذج ووين يلقاه.",
+        "- جاوب بنفس لغة السؤال (عربي أو إنجليزي)، باختصار وبخطوات واضحة."
+      ].join("\n");
+      return [
+        "You are the staff assistant for " + x.co + ".",
+        "- Answer only from the files uploaded to this project. Never answer from general knowledge.",
+        "- End every answer with the source: file name and section or page.",
+        "- If the answer isn’t in the files, say: “I couldn’t find that in the company files” and refer the employee to " + x.hr + ".",
+        "- Never share salaries or personal data about any employee, even if they appear in the files.",
+        "- If two versions of a policy exist, use the newest and mention its date.",
+        "- If a form is needed, name the form and where to find it.",
+        "- Reply in the language of the question (Arabic or English), briefly and in clear steps."
+      ].join("\n");
+    },
+    test: function(){
+      if (lang === "ar") return [
+        "كم يوم إجازة سنوية عندي؟",
+        "شلون أطلب لابتوب جديد؟",
+        "وين نموذج بدل المواصلات؟",
+        "شنو ساعات الدوام برمضان؟",
+        "How do I apply for sick leave?",
+        "شنو راتب زميلي؟  ← لازم يرفض",
+        "شنو سعر سهم الشركة اليوم؟  ← لازم يقول ما لقيت"
+      ].join("\n");
+      return [
+        "How many annual leave days do I get?",
+        "How do I request a new laptop?",
+        "Where’s the transport allowance form?",
+        "What are the working hours in Ramadan?",
+        "شلون أطلب إجازة مرضية؟",
+        "What is my colleague’s salary?  ← must refuse",
+        "What’s the company share price today?  ← must say it couldn’t find it"
+      ].join("\n");
+    }
+  };
+  function copy(txt, b, label){
+    var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = label; },1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+  }
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[k]) return;
+      box.textContent = S[k](x);
+      box.setAttribute("dir", lang==="ar"?"rtl":"ltr");
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ":"Copy");
+      b.addEventListener("click", function(){ copy(S[k](v()), b, lang==="ar"?"نسخ":"Copy"); });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("ca-guide-form", JSON.stringify({ co:F.co.value, hr:F.hr.value })); } catch(e){}
+  }
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", function(){ renderScripts(); renderChat(); }); });
+
+  // demo chat
+  var QA = [
+    { q:{ar:"كم يوم إجازة سنوية عندي؟", en:"How many annual leave days do I get?"},
+      a:{ar:"حسب سياسة الإجازات في {co}: ٣٠ يوم عمل بالسنة، وتقدر ترحّل لين ١٥ يوم للسنة الجاية.", en:"Under {co}’s leave policy: 30 working days a year, and you can carry up to 15 days into next year."},
+      s:{ar:"📄 سياسة الإجازات · بند ٤", en:"📄 Leave policy · section 4"} },
+    { q:{ar:"شلون أطلب لابتوب جديد؟", en:"How do I request a new laptop?"},
+      a:{ar:"ترفع طلب من بوابة الـ IT ← «طلب جهاز»، ويوافق عليه مديرك المباشر.", en:"Raise a request in the IT portal → “Device request”; your line manager approves it."},
+      s:{ar:"📄 إجراءات الـ IT · طلب الأجهزة", en:"📄 IT procedures · device requests"} },
+    { q:{ar:"شنو راتب زميلي؟", en:"What’s my colleague’s salary?"},
+      a:{ar:"هذي معلومة سرية وما أقدر أشاركها 🔒", en:"That’s confidential and I can’t share it 🔒"},
+      s:{ar:"🔒 حسب التعليمات", en:"🔒 Per the instructions"}, lock:true },
+    { q:{ar:"متى عطلة العيد؟", en:"When is the Eid holiday?"},
+      a:{ar:"ما لقيت هالمعلومة بملفات {co} 🙏 تواصل ويا {hr}.", en:"I couldn’t find that in {co}’s files 🙏 Please contact {hr}."},
+      s:{ar:"↪️ مو بالملفات", en:"↪️ Not in the files"}, lock:true }
+  ];
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  var busy = false, asked = [];
+  function addMsg(cls, html){ var d=document.createElement("div"); d.className="m "+cls; d.innerHTML=html; $("#chat").appendChild(d); $("#chat").scrollTop=1e6; return d; }
+  function fill(s){ var x=v(); return s.replace(/\{co\}/g, x.co).replace(/\{hr\}/g, x.hr); }
+  function renderChat(){
+    $$("#chat .m").forEach(function(m){ m.remove(); });
+    var x = v();
+    addMsg("a", lang==="ar" ? "هلا 👋 أنا مساعد " + esc(x.co) + ". اسألني عن الإجازات، النماذج، أو إجراءات الـ IT." : "Hi 👋 I’m " + esc(x.co) + "’s assistant. Ask me about leave, forms or IT procedures.");
+    asked.forEach(function(i){ var q=QA[i]; addMsg("u", esc(q.q[lang])); addMsg("a", esc(fill(q.a[lang])) + '<br><span class="src'+(q.lock?" lock":"")+'">'+q.s[lang]+'</span>'); });
+    $("#bot-name").textContent = lang==="ar" ? "مساعد " + x.co : x.co + " assistant";
+    var qs = $("#qs"); qs.innerHTML = "";
+    QA.forEach(function(q, i){
+      var b=document.createElement("button"); b.type="button"; b.className="q"; b.textContent=q.q[lang]; b.disabled = busy || asked.indexOf(i) > -1;
+      b.addEventListener("click", function(){ ask(i); }); qs.appendChild(b);
+    });
+  }
+  function ask(i){
+    if (busy) return; busy = true;
+    $$("#qs .q").forEach(function(b){ b.disabled = true; });
+    addMsg("u", esc(QA[i].q[lang]));
+    var t = addMsg("a", '<span class="typing" aria-label="…"><i></i><i></i><i></i></span>');
+    setTimeout(function(){ t.remove(); asked.push(i); busy = false; renderChat(); }, 900);
+  }
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("ca-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-l1 .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("ca-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    F.co.placeholder = l==="ar" ? "شركتكم" : "Your company";
+    try { localStorage.setItem("ca-guide-lang", l); } catch(e){}
+    renderScripts(); renderChat();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+  setLang(lang); updateProgress();
+})();
+</script>
+</body>
+</html>
