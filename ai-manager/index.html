@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مدير ذكي يشغّل محلك — بدون برمجة</title>
+<meta name="description" content="Step by step, no code: build an AI manager in a Claude Project for any shop with stock (clothing, watches, jewellery, electronics) that checks stock, drafts supplier orders, replies to customers, writes captions, answers reviews and sends a daily summary. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --dark:#17382A; --dline:#2E5A44;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--ground) radial-gradient(circle,rgba(220,213,198,.55) 1.1px,transparent 1.3px) 0 0/28px 28px;color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:48px 0 28px}
+.tags{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:16px}
+.mono{font-family:var(--mono);letter-spacing:.08em;font-size:12px;color:var(--mute);text-transform:lowercase}
+.cash-badge{display:inline-flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700}
+.cash-badge img{width:24px;height:24px;object-fit:contain}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.05;letter-spacing:-0.03em;margin:0 0 18px;max-width:16ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero h1 .g{color:var(--lime)}
+.hero p{font-size:19px;color:var(--ink-2);max-width:60ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:999px;font-weight:700;text-decoration:none;border:2px solid var(--ink)}
+.btn.p{background:var(--lime);border-color:var(--lime);color:#fff}
+.btn.p:hover{background:var(--lime-ink);border-color:var(--lime-ink);color:#fff}
+.btn.s{background:#fff;color:var(--ink)}
+.btn.s:hover{background:var(--ink);color:#fff}
+h2.sec{font-size:28px;margin:44px 0 6px}
+p.sub{margin:0 0 18px;color:var(--ink-2);max-width:62ch}
+/* demo */
+.demo{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:20px;display:grid;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field input:focus{border-color:var(--ink)}
+.chat{background:#EFEAE0;border-radius:18px;padding:16px;min-height:300px;max-height:440px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.chat .top{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.chat .top i{flex:none;width:40px;height:40px;border-radius:50%;background:var(--lime);color:#fff;font-style:normal;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px}
+.chat .top b{display:block;font-size:16px}.chat .top small{color:var(--mute);font-size:13px}
+.m{max-width:85%;padding:10px 14px;border-radius:16px;font-size:16px;line-height:1.55;white-space:pre-line}
+.m.u{align-self:flex-start;background:#D9F2E3;border-end-start-radius:4px}
+html[dir=ltr] .m.u{align-self:flex-end}
+.m.a{align-self:flex-end;background:#fff;border-end-end-radius:4px}
+html[dir=ltr] .m.a{align-self:flex-start}
+.m .src{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--lime-ink);background:var(--lime-soft);border-radius:999px;padding:3px 10px}
+.m .src.lock{color:var(--ink);background:#EDE7DA}
+.typing{display:inline-flex;gap:4px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.qs{display:flex;flex-wrap:wrap;gap:8px}
+.q{font:inherit;font-size:15px;font-weight:600;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:8px 14px;min-height:44px;cursor:pointer;text-align:start}
+.q:hover{background:var(--ink);color:#fff}
+.q:disabled{opacity:.45;cursor:default;background:#fff;color:var(--ink)}
+.note{font-size:14px;color:var(--mute);margin:0}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:600px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;transition:transform .2s}
+.card:hover{transform:translateY(-2px)}
+.card .n{font-family:var(--mono);font-size:13px;color:var(--mute)}
+.card .ic{font-size:28px;margin:6px 0}
+.card h3{margin:0 0 6px;font-size:19px}
+.card p{margin:0;color:var(--ink-2);font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:700;font-size:15px}
+.need{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 22px;margin:0}
+.need li{margin:8px 0;color:var(--ink-2)}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 18px}
+.steps li::before{content:counter(s,arabic-indic);flex:none;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+html[dir=ltr] .steps li::before{content:counter(s)}
+.steps b{display:block;color:var(--ink)} .steps span{color:var(--ink-2);font-size:16px}
+.safe{background:var(--dark) radial-gradient(circle,rgba(246,241,231,.07) 1.1px,transparent 1.3px) 0 0/28px 28px;color:#F6F1E7;border-radius:22px;padding:24px;margin-top:44px}
+.safe h2{margin:0 0 12px;font-size:24px}
+.safe ul{margin:0;padding-inline-start:20px}.safe li{margin:8px 0;color:#CFE6D8}
+.safe li b{color:#fff}
+.build{margin:36px 0 24px;background:var(--ink) radial-gradient(circle,rgba(246,241,231,.08) 1.1px,transparent 1.3px) 0 0/28px 28px;color:#F6F1E7;border-radius:26px;padding:30px}
+.build h2{margin:0 0 10px;font-size:28px}
+.build p{margin:0 0 18px;color:#CFE6D8}
+.build a{display:inline-flex;align-items:center;min-height:52px;padding:0 24px;border-radius:999px;background:var(--lime);color:#fff;font-weight:700;text-decoration:none}
+.build a:hover{background:var(--lime-ink)}
+.build small{display:block;margin-top:12px;color:#9FB8A8;font-size:14px}
+footer{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:8px 0 48px;color:var(--mute);font-size:14px}
+/* guide */
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field select{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px;color:var(--ink)}
+.field select:focus{border-color:var(--ink)}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.script.prompt{padding-top:52px;font-size:15.5px}
+.go{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.try.big{min-height:52px;padding:0 24px;font-size:16px;background:var(--lime);border-color:var(--lime);color:#fff}
+.try.big:hover{background:var(--lime-ink);border-color:var(--lime-ink)}
+.sks{display:grid;gap:10px;margin:12px 0}
+.sk{display:flex;align-items:center;gap:14px;background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:12px 14px;flex-wrap:wrap}
+.sk>i{flex:none;font-style:normal;font-size:26px;width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center}
+.sk .t{flex:1;min-width:0}
+.sk .t b{display:block;color:var(--ink)}
+.sk .t span{font-size:14px;color:var(--mute)}
+.sk .acts{display:flex;gap:8px;flex:none}
+.sbtn{font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.sbtn:hover{background:var(--ink);color:#fff}
+@media (max-width:520px){.sk .acts{width:100%}.sk .acts .sbtn{flex:1;justify-content:center}}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+.src{font-weight:700;color:var(--ink);margin:18px 0 0}
+.try{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:2px solid var(--ink);font-weight:700;text-decoration:none;font-size:14px}
+.try:hover{background:var(--ink);color:#fff}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#007A3D"/><path d="M20 20l14 12-14 12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 46h12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round"/></svg>
+      @eng.abdullah.ai <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="tags"><span class="mono"><bdi dir="ltr">for companies / 02</bdi></span><span class="cash-badge"><img src="../cash-mark.png" alt="Cash Clinic">الشريك التقني لكاش كلينك</span></div>
+    <h1 data-i="h1" data-en="An AI manager that runs your shop… &lt;span class=&quot;g&quot;&gt;all day.&lt;/span&gt;">مدير ذكي يشغّل محلك… <span class="g">طول اليوم.</span></h1>
+    <p data-i="lead" data-en="Clothing, watches, gold, electronics… any shop with stock. Here’s how to build it yourself in Claude, with no code: it checks your stock and drafts the supplier order, replies to customers, writes your captions, answers reviews and sends you a summary at the end of the day.">ملابس، ساعات، ذهب، إلكترونيات… أي محل عنده مخزون. هني تتعلم تسويه بنفسك بـ Claude، بدون برمجة: يشيك المخزون ويكتب طلب المورد، يرد على الزباين، يكتب الكابشن، يرد على التقييمات، ويدزلك ملخص آخر اليوم.</p>
+    <div class="meta"><span data-i="m1" data-en="No code">بدون برمجة</span><span data-i="m2" data-en="5 steps">٥ خطوات</span><span data-i="m3" data-en="Claude + a stock sheet">Claude + شيت المخزون</span></div>
+  </section>
+
+  <section class="setup" id="make" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Your shop">محلك</h2>
+    <p class="hint" data-i="setupHint" data-en="Fill these and the instructions below are written for your shop.">عبّي هذي والتعليمات تحت تنكتب على محلك.</p>
+    <div class="field"><label for="f-co" data-i="fCo" data-en="Shop or brand name">اسم المحل أو البراند</label><input id="f-co" dir="auto" value="" placeholder="محلك"></div>
+    <div class="field"><label for="f-what" data-i="fWhat" data-en="What you sell">شنو تبيع</label><input id="f-what" dir="auto" value="" placeholder="ساعات وإكسسوارات"></div>
+    <div class="field"><label for="f-link" data-i="fLink" data-en="Order link or WhatsApp number">رابط الطلب أو رقم الواتساب</label><input id="f-link" dir="ltr" value="" placeholder="wa.me/965XXXXXXXX"></div>
+  </section>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1">
+    <details class="step" data-step="a" open>
+      <summary><span class="num">1</span><h3 data-i="ah" data-en="Make your stock sheet">سوّ شيت المخزون</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="ap" data-en="One row per product and colour/size. Make these the column headers in Excel or Google Sheets:">سطر لكل منتج ولون أو مقاس. خل هذي عناوين الأعمدة بـ Excel أو Google Sheets:</p>
+        <div class="script" data-script="sheet"></div>
+        <ul>
+          <li data-i="a1" data-en="&lt;b&gt;Reorder at&lt;/b&gt; = the number where you start worrying (e.g. 5).">«<b>حد الطلب</b>» = الرقم اللي إذا وصلته تبدا تقلق (مثلاً ٥).</li>
+          <li data-i="a2" data-en="Keep a second sheet for today’s orders: order no., customer, product, qty, status.">خل شيت ثاني لطلبات اليوم: رقم الطلب، الزبون، المنتج، الكمية، الحالة.</li>
+        </ul>
+        <div class="tip" data-i="at" data-en="Clothing: size goes in the variant column. Watches/electronics: model or colour. Gold: weight and karat.">ملابس: المقاس بعمود الموديل. ساعات وإلكترونيات: الموديل أو اللون. ذهب: الوزن والعيار.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="b">
+      <summary><span class="num">2</span><h3 data-i="bh" data-en="Create a Project in Claude">سوّ Project بـ Claude</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="b1" data-en="Open &lt;strong&gt;claude.ai&lt;/strong&gt; → &lt;strong&gt;Projects&lt;/strong&gt; → &lt;strong&gt;Create project&lt;/strong&gt;, and name it after your shop’s manager.">افتح <strong>claude.ai</strong> ← <strong>Projects</strong> ← <strong>Create project</strong>، وسمّه «مدير» + اسم محلك.</li>
+          <li data-i="b2" data-en="In &lt;strong&gt;Project knowledge&lt;/strong&gt;, upload: your delivery and return policy, your most common customer questions, and 3–5 captions you liked.">بـ <strong>Project knowledge</strong> ارفع: سياسة التوصيل والإرجاع، أكثر أسئلة الزباين، و٣–٥ كابشنات عجبتك.</li>
+          <li data-i="b3" data-en="Don’t upload the stock sheet here — you’ll attach the fresh one each morning.">لا ترفع شيت المخزون هني… بترفق النسخة الجديدة كل صبح.</li>
+        </ul>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="c">
+      <summary><span class="num">3</span><h3 data-i="ch" data-en="Paste the instructions">الصق التعليمات</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="cp" data-en="Open &lt;strong&gt;Project instructions&lt;/strong&gt; and paste this. It gives your manager six jobs, each started by one word.">افتح <strong>Project instructions</strong> والصق هذا. هذا يعطي المدير ٦ شغلات، كل وحدة تبداها بكلمة.</p>
+        <div class="script" data-script="rules"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="d">
+      <summary><span class="num">4</span><h3 data-i="dh" data-en="Your day with the manager">يومك ويا المدير</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dp" data-en="Open one chat a day inside the project and send these at their times:">افتح محادثة وحدة كل يوم داخل المشروع، ودز هذي بوقتها:</p>
+        <div class="script" data-script="day"></div>
+        <div class="tip" data-i="dt" data-en="Always read before you send: the manager drafts, you approve. Never let it promise a delivery date you can’t keep.">اقرا دايماً قبل لا ترسل: المدير يكتب، وانت توافق. ولا تخليه يوعد بموعد توصيل ما تقدر عليه.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="e">
+      <summary><span class="num">5</span><h3 data-i="eh" data-en="Let it answer DMs on its own">خله يرد على الـ DM بروحه</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="e1" data-en="Connect Instagram to &lt;strong&gt;ManyChat&lt;/strong&gt; → &lt;strong&gt;Automation&lt;/strong&gt; → &lt;strong&gt;Default reply&lt;/strong&gt;.">اربط الانستغرام بـ <strong>ManyChat</strong> ← <strong>Automation</strong> ← <strong>Default reply</strong>.</li>
+          <li data-i="e2" data-en="Add an &lt;strong&gt;AI step&lt;/strong&gt; and paste these rules as its instructions.">ضيف <strong>AI step</strong> والصق هذي القواعد كتعليماته.</li>
+        </ul>
+        <div class="script" data-script="dm"></div>
+        <div class="tip" data-i="et" data-en="It doesn’t see your live stock — so it never says “available”; it sends the order link and a person confirms.">ما يشوف المخزون الحين… فما يقول «متوفر» أبد، يرسل رابط الطلب وإنسان يأكد.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <h2 class="sec" data-i="dH" data-en="This is what it looks like">هذا شكله لما يخلص</h2>
+  <p class="sub" data-i="dP" data-en="A demo with example data — nothing you tap here is sent anywhere.">تجربة ببيانات مثال… وما ينرسل أي شي هني لأي مكان.</p>
+  <section class="demo" aria-label="Demo">
+    <div class="chat" id="chat" aria-live="polite">
+      <div class="top"><i>AI</i><div><b id="bot-name">مدير محلك</b><small data-i="online" data-en="online · reads today’s sheet">متصل · يقرا شيت اليوم</small></div></div>
+    </div>
+    <div class="qs" id="qs"></div>
+  </section>
+
+  <section class="safe">
+    <h2 data-i="sH" data-en="What the Project can’t do on its own">اللي ما يقدر عليه الـ Project بروحه</h2>
+    <ul>
+      <li data-i="s1" data-en="&lt;b&gt;Run at 8 AM by itself&lt;/b&gt; — you open it and send the word."><b>يشتغل الساعة ٨ بروحه</b>… انت اللي تفتحه وتدز الكلمة.</li>
+      <li data-i="s2" data-en="&lt;b&gt;See your stock live&lt;/b&gt; — only the sheet you attach."><b>يشوف المخزون لايف</b>… بس الشيت اللي ترفقه.</li>
+      <li data-i="s3" data-en="&lt;b&gt;Take orders and payments&lt;/b&gt; on its own."><b>يستقبل الطلبات والدفع</b> بروحه.</li>
+      <li data-i="s4" data-en="&lt;b&gt;Message the customer&lt;/b&gt; when the order ships — it writes it, you send it."><b>يرسل للزبون</b> لما يطلع الطلب… يكتبها، وانت ترسلها.</li>
+    </ul>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Done? Your shop now has a manager that never sleeps.">خلصت؟ الحين محلك عنده مدير ما ينام.</h2>
+    <p data-i="finP" data-en="And if you can’t do it yourself… we’ll do it for you: your own website in your brand’s theme, that takes orders, updates stock and answers customers — on its own.">ولو ما تقدر تسويه… إحنا نسويلك اياه: موقع خاص فيكم، بثيم البراند حقكم، يستقبل الطلبات، يحدّث المخزون، ويرد على الزباين… بروحه.</p>
+    <a class="btn" href="https://instagram.com/eng.abdullah.ai" target="_blank" rel="noopener" data-i="finBtn" data-en="Message me on Instagram">راسلني على الانستغرام</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+    <span class="cash-badge"><img src="../cash-mark.png" alt="Cash Clinic">الشريك التقني لكاش كلينك</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("am-guide-lang") || "ar"; } catch(e){}
+
+  var F = { co:$("#f-co"), what:$("#f-what"), link:$("#f-link") };
+  try { var saved = JSON.parse(localStorage.getItem("am-guide-form")||"null"); if(saved){ Object.keys(F).forEach(function(k){ if(saved[k]!==undefined) F[k].value=saved[k]; }); } } catch(e){}
+  function v(){
+    return { co: F.co.value.trim() || (lang==="ar" ? "المحل" : "the shop"),
+             what: F.what.value.trim() || (lang==="ar" ? "منتجاتنا" : "our products"),
+             link: F.link.value.trim() || (lang==="ar" ? "رابط الطلب" : "the order link") };
+  }
+  var S = {
+    sheet: function(){
+      return lang==="ar" ? "الكود | المنتج | الموديل / اللون / المقاس | الكمية | حد الطلب | المورد | آخر تحديث"
+                         : "Code | Product | Variant (model / colour / size) | Qty | Reorder at | Supplier | Last updated";
+    },
+    rules: function(x){
+      if (lang === "ar") return [
+        "إنت المدير الذكي لـ " + x.co + "، محل يبيع " + x.what + " بالكويت.",
+        "تكلم بالكويتي، باختصار، وبدون مبالغة. لا تخترع أرقام أو منتجات مو موجودة بالشيت.",
+        "",
+        "عندك ٦ شغلات. كل وحدة تبدا بكلمة:",
+        "١) «المخزون» + الشيت: طلّع المنتجات اللي الكمية فيها عند «حد الطلب» أو أقل، رتبها من الأخطر، واكتب رسالة طلب جاهزة لكل مورد (المنتج، الموديل، الكمية المقترحة = ضعف حد الطلب).",
+        "٢) «رد» + رسالة زبون: اكتب رد ودود بالكويتي. لا تأكد إن المنتج متوفر إلا إذا موجود بالشيت بكمية أكثر من صفر. اختم بـ: " + x.link,
+        "٣) «كابشن» + صورة: كابشن انستغرام بالكويتي (٣ أسطر)، سطر ستوري، و٨ هاشتاقات. بدون أسعار إلا إذا عطيتك السعر.",
+        "٤) «توصيل» + رقم الطلب واسم الزبون: رسالة قصيرة إن طلبه طلع ويا المندوب ووقت الوصول المتوقع اللي أعطيك اياه.",
+        "٥) «تقييم» + التقييم: رد محترم. إذا التقييم زعلان: اعتذر، لا تجادل، واعرض حل واطلب منه يتواصل بالخاص.",
+        "٦) «ملخص» + شيت طلبات اليوم: كم طلب، أكثر ٣ منتجات انباعت، الطلبات المتأخرة، وشنو لازم نطلب باجر.",
+        "",
+        "إذا ناقصك معلومة، اسأل سؤال واحد بس قبل لا تكمل."
+      ].join("\n");
+      return [
+        "You are the AI manager of " + x.co + ", a shop in Kuwait that sells " + x.what + ".",
+        "Write in Kuwaiti Arabic unless I write in English. Be brief. Never invent numbers or products that aren’t in the sheet.",
+        "",
+        "You have 6 jobs. Each starts with one word:",
+        "1) “Stock” + the sheet: list items at or below “Reorder at”, most urgent first, and draft a ready order message per supplier (item, variant, suggested qty = twice the reorder level).",
+        "2) “Reply” + a customer message: write a friendly reply. Never confirm something is in stock unless the sheet shows qty above zero. End with: " + x.link,
+        "3) “Caption” + a photo: a 3-line Instagram caption, a story line and 8 hashtags. No prices unless I give you the price.",
+        "4) “Delivery” + order no. and customer name: a short message that the order is out with the driver and the ETA I give you.",
+        "5) “Review” + the review: a polite reply. If it’s angry: apologise, don’t argue, offer a fix and ask them to DM.",
+        "6) “Summary” + today’s orders sheet: number of orders, top 3 products, late orders, and what to reorder tomorrow.",
+        "",
+        "If something is missing, ask one question only before you continue."
+      ].join("\n");
+    },
+    day: function(){
+      if (lang === "ar") return [
+        "٨ الصبح  ← «المخزون» + ارفق شيت اليوم",
+        "١٠ الصبح ← «رد» + الصق رسالة الزبون",
+        "١٢ الظهر ← «كابشن» + صورة المنتج",
+        "٤ العصر  ← «توصيل» + رقم الطلب واسم الزبون",
+        "٧ المسا  ← «تقييم» + الصق التقييم",
+        "١١ بالليل ← «ملخص» + ارفق شيت طلبات اليوم"
+      ].join("\n");
+      return [
+        "8 AM  → “Stock” + attach today’s sheet",
+        "10 AM → “Reply” + paste the customer’s message",
+        "12 PM → “Caption” + the product photo",
+        "4 PM  → “Delivery” + order no. and customer name",
+        "7 PM  → “Review” + paste the review",
+        "11 PM → “Summary” + attach today’s orders sheet"
+      ].join("\n");
+    },
+    dm: function(x){
+      if (lang === "ar") return [
+        "إنت ترد على رسايل انستغرام حق " + x.co + " (نبيع " + x.what + ").",
+        "- رد بالكويتي، بجملتين بالكثير، وبأسلوب ودود.",
+        "- لا تقول إن منتج متوفر ولا تعطي سعر. قول: «أكدلك الحين» وأرسل: " + x.link,
+        "- أسئلة التوصيل والإرجاع: جاوب من السياسة بس.",
+        "- إذا الزبون زعلان أو يبي إرجاع، قول إن أحد من الفريق بيرد عليه بأقرب وقت."
+      ].join("\n");
+      return [
+        "You reply to Instagram DMs for " + x.co + " (we sell " + x.what + ").",
+        "- Reply in Kuwaiti Arabic unless they write in English; two sentences max; friendly.",
+        "- Never say an item is in stock and never give a price. Say you’ll confirm now and send: " + x.link,
+        "- Delivery and return questions: answer from the policy only.",
+        "- If the customer is upset or wants a return, say someone from the team will reply shortly."
+      ].join("\n");
+    }
+  };
+  function copy(txt, b, label){
+    var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = label; },1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+  }
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[k]) return;
+      box.textContent = S[k](x);
+      box.setAttribute("dir", lang==="ar"?"rtl":"ltr");
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ":"Copy");
+      b.addEventListener("click", function(){ copy(S[k](v()), b, lang==="ar"?"نسخ":"Copy"); });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("am-guide-form", JSON.stringify({ co:F.co.value, what:F.what.value, link:F.link.value })); } catch(e){}
+  }
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", function(){ renderScripts(); renderChat(); }); });
+
+  // demo chat
+  var QA = [
+    { q:{ar:"المخزون", en:"Stock"},
+      a:{ar:"⚠️ ٣ منتجات عند حد الطلب:\n١) A-104 · أسود: باقي ٢ (الحد ٥)\n٢) B-221 · فضي: باقي ٤ (الحد ٥)\n٣) C-090 · M: باقي ٥ (الحد ٥)\nرسالة المورد جاهزة: «هلا، نبي ١٠ من A-104 أسود و١٠ من B-221 فضي 🙏»", en:"⚠️ 3 items at reorder level:\n1) A-104 · black: 2 left (reorder at 5)\n2) B-221 · silver: 4 left (at 5)\n3) C-090 · M: 5 left (at 5)\nSupplier message ready: “Hi, we need 10 × A-104 black and 10 × B-221 silver 🙏”"},
+      s:{ar:"📄 شيت المخزون · اليوم", en:"📄 Stock sheet · today"} },
+    { q:{ar:"رد: «عندكم أسود؟»", en:"Reply: “Do you have it in black?”"},
+      a:{ar:"هلا والله 🤍 أكدلك الحين، وتقدر تطلب من هني: {link}", en:"Hi 🤍 Let me confirm for you now — you can order here: {link}"},
+      s:{ar:"💬 رد جاهز للنسخ", en:"💬 Reply ready to copy"} },
+    { q:{ar:"تقييم: «تأخر الطلب ٣ أيام»", en:"Review: “My order was 3 days late”"},
+      a:{ar:"نعتذر منك وايد على التأخير 🙏 هذا مو المستوى اللي نبيه لـ {co}. راسلنا بالخاص برقم الطلب ونعوضك.", en:"We’re really sorry for the delay 🙏 That’s not the standard we want at {co}. DM us your order number and we’ll make it right."},
+      s:{ar:"⭐ رد على تقييم", en:"⭐ Review reply"} },
+    { q:{ar:"ملخص", en:"Summary"},
+      a:{ar:"📊 اليوم: ١٨ طلب.\nالأكثر: A-104، B-221، C-090.\nمتأخر: طلب #1042.\nاطلب باجر: A-104 أسود، B-221 فضي.", en:"📊 Today: 18 orders.\nTop: A-104, B-221, C-090.\nLate: order #1042.\nReorder tomorrow: A-104 black, B-221 silver."},
+      s:{ar:"📄 شيت طلبات اليوم", en:"📄 Today’s orders sheet"} }
+  ];
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  var busy = false, asked = [];
+  function addMsg(cls, html){ var d=document.createElement("div"); d.className="m "+cls; d.innerHTML=html; $("#chat").appendChild(d); $("#chat").scrollTop=1e6; return d; }
+  function fill(s){ var x=v(); return s.replace(/\{co\}/g, x.co).replace(/\{link\}/g, x.link); }
+  function renderChat(){
+    $$("#chat .m").forEach(function(m){ m.remove(); });
+    var x = v();
+    addMsg("a", lang==="ar" ? "صباح الخير 👋 أنا مدير " + esc(x.co) + ". دز كلمة وأبدا." : "Morning 👋 I’m " + esc(x.co) + "’s manager. Send a word to start.");
+    asked.forEach(function(i){ var q=QA[i]; addMsg("u", esc(q.q[lang])); addMsg("a", esc(fill(q.a[lang])).replace(/\n/g,"<br>") + '<br><span class="src">'+q.s[lang]+'</span>'); });
+    $("#bot-name").textContent = lang==="ar" ? "مدير " + x.co : x.co + " manager";
+    var qs = $("#qs"); qs.innerHTML = "";
+    QA.forEach(function(q, i){
+      var b=document.createElement("button"); b.type="button"; b.className="q"; b.textContent=q.q[lang]; b.disabled = busy || asked.indexOf(i) > -1;
+      b.addEventListener("click", function(){ ask(i); }); qs.appendChild(b);
+    });
+  }
+  function ask(i){
+    if (busy) return; busy = true;
+    $$("#qs .q").forEach(function(b){ b.disabled = true; });
+    addMsg("u", esc(QA[i].q[lang]));
+    var t = addMsg("a", '<span class="typing" aria-label="…"><i></i><i></i><i></i></span>');
+    setTimeout(function(){ t.remove(); asked.push(i); busy = false; renderChat(); }, 900);
+  }
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("am-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-l1 .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("am-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    F.co.placeholder = l==="ar" ? "محلك" : "Your shop";
+    F.what.placeholder = l==="ar" ? "ساعات وإكسسوارات" : "watches and accessories";
+    try { localStorage.setItem("am-guide-lang", l); } catch(e){}
+    renderScripts(); renderChat();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+  setLang(lang); updateProgress();
+})();
+</script>
+</body>
+</html>
