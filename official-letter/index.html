@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>كتاب رسمي جاهز للطباعة — Claude skill</title>
+<meta name="description" content="A free Claude skill that turns what you want, in your own words, into a formal Arabic official letter in the standard Gulf layout (form of address, subject, request, closing) as a Word file ready to print, with an English version on request. Requests, grievances, complaints, resignations, letters to a bank or a ministry. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero .mono{font-family:var(--mono);letter-spacing:.08em;font-size:12px;color:var(--mute);text-transform:lowercase;display:block;margin-bottom:12px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:16ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field select{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px;color:var(--ink)}
+.field select:focus{border-color:var(--ink)}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.script.prompt{padding-top:52px;font-size:15.5px}
+.go{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.try.big{min-height:52px;padding:0 24px;font-size:16px;background:var(--lime);border-color:var(--lime);color:#fff}
+.try.big:hover{background:var(--lime-ink);border-color:var(--lime-ink)}
+.sks{display:grid;gap:10px;margin:12px 0}
+.sk{display:flex;align-items:center;gap:14px;background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:12px 14px;flex-wrap:wrap}
+.sk>i{flex:none;font-style:normal;font-size:26px;width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center}
+.sk .t{flex:1;min-width:0}
+.sk .t b{display:block;color:var(--ink)}
+.sk .t span{font-size:14px;color:var(--mute)}
+.sk .acts{display:flex;gap:8px;flex:none}
+.sbtn{font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.sbtn:hover{background:var(--ink);color:#fff}
+@media (max-width:520px){.sk .acts{width:100%}.sk .acts .sbtn{flex:1;justify-content:center}}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+.src{font-weight:700;color:var(--ink);margin:18px 0 0}
+.try{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:2px solid var(--ink);font-weight:700;text-decoration:none;font-size:14px}
+.try:hover{background:var(--ink);color:#fff}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#007A3D"/><path d="M20 20l14 12-14 12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 46h12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round"/></svg>
+      @eng.abdullah.ai <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="mono"><bdi dir="ltr">claude skills / 03</bdi></span>
+    <h1 data-i="h1" data-en="An official Arabic letter… ready to print.">كتاب رسمي… جاهز للطباعة.</h1>
+    <p data-i="lead" data-en="Tell Claude what you want in your own words, and this skill writes it as a proper official Arabic letter: the right form of address, the subject line, a clear request and the formal closing, in a Word file ready to print and sign. A request, a grievance, a complaint, a resignation, a letter to the bank or the ministry. It never invents a number, a date or a law article.">قول لـ Claude شنو تبي بكلامك العادي… وهالـ skill يكتبها كتاب رسمي مضبوط: المخاطبة الصح، الموضوع، طلب واضح، والخاتمة الرسمية، بملف Word جاهز للطباعة والتوقيع. طلب، تظلّم، شكوى، استقالة، كتاب للبنك أو للوزارة. وما يخترع رقم ولا تاريخ ولا مادة قانون.</p>
+    <div class="meta"><span data-i="m1" data-en="1 skill">skill واحد</span><span data-i="m2" data-en="Free">مجاني</span><span data-i="m3" data-en="Word · Arabic + English">Word · عربي + إنجليزي</span></div>
+  </section>
+
+  <section class="setup" id="make" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Your message to Claude">رسالتك حق Claude</h2>
+    <p class="hint" data-i="setupHint" data-en="Fill these and step 3 gives you the exact message to send.">عبّي هذي والخطوة ٣ تعطيك الرسالة اللي ترسلها.</p>
+    <div class="field"><label for="f-from" data-i="fFrom" data-en="From (you or your company)">من (اسمك أو اسم الشركة)</label><input id="f-from" dir="auto" value="" placeholder="اسمك"></div>
+    <div class="field"><label for="f-to" data-i="fTo" data-en="To (the organisation)">إلى (الجهة)</label><input id="f-to" dir="auto" value="" placeholder="البنك، الوزارة، الشركة…"></div>
+    <div class="field full"><label for="f-want" data-i="fWant" data-en="What do you want, in your own words?">شنو تبي بالضبط؟ (بكلامك)</label><input id="f-want" dir="auto" value="" placeholder="أبي أأجل قسط شهر ديسمبر"></div>
+    <div class="field"><label for="f-type" data-i="fType" data-en="Type of letter">نوع الكتاب</label>
+      <select id="f-type">
+        <option value="req" data-i="tReq" data-en="Request">طلب</option>
+        <option value="grv" data-i="tGrv" data-en="Grievance / appeal">تظلّم</option>
+        <option value="cmp" data-i="tCmp" data-en="Complaint">شكوى</option>
+        <option value="enq" data-i="tEnq" data-en="Enquiry">استفسار</option>
+        <option value="res" data-i="tRes" data-en="Resignation">استقالة</option>
+        <option value="thx" data-i="tThx" data-en="Thank-you">شكر</option>
+      </select></div>
+    <div class="field"><label for="f-lang" data-i="fLang" data-en="Language">اللغة</label>
+      <select id="f-lang">
+        <option value="ar" data-i="lAr" data-en="Arabic">عربي</option>
+        <option value="both" data-i="lBoth" data-en="Arabic + English">عربي + إنجليزي</option>
+      </select></div>
+  </section>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1">
+    <details class="step" data-step="a" open>
+      <summary><span class="num">1</span><h3 data-i="ah" data-en="Download the skill">حمّل الـ skill</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <div class="sks">
+          <div class="sk"><i>✉️</i><div class="t"><b>official-letter</b><span data-i="s1d" data-en="Right form of address · subject · formal closing · Word file · English version">المخاطبة الصح · الموضوع · الخاتمة · ملف Word · نسخة إنجليزي</span></div><div class="acts"><a class="sbtn" href="zips/official-letter.zip" download data-i="dl" data-en="Download">تحميل</a><button type="button" class="sbtn cp" data-skill="official-letter" data-i="cpb" data-en="Copy as prompt">نسخ كبرومبت</button></div></div>
+        </div>
+        <div class="tip" data-i="at" data-en="Only have ChatGPT? Tap &lt;strong&gt;Copy as prompt&lt;/strong&gt; and paste it at the start of your chat.">عندك ChatGPT بس؟ اضغط <strong>نسخ كبرومبت</strong> والصقه بأول المحادثة.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="b">
+      <summary><span class="num">2</span><h3 data-i="bh" data-en="Install it in Claude">ركّبه بـ Claude</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p class="src" data-i="bA" data-en="On claude.ai or the Claude app">بموقع claude.ai أو التطبيق</p>
+        <ul>
+          <li data-i="b1" data-en="&lt;strong&gt;Settings&lt;/strong&gt; → &lt;strong&gt;Capabilities&lt;/strong&gt; → &lt;strong&gt;Skills&lt;/strong&gt;."><strong>Settings</strong> ← <strong>Capabilities</strong> ← <strong>Skills</strong>.</li>
+          <li data-i="b2" data-en="&lt;strong&gt;Upload skill&lt;/strong&gt; → choose &lt;code&gt;official-letter.zip&lt;/code&gt;.">اضغط <strong>Upload skill</strong> ← اختار <code>official-letter.zip</code>.</li>
+          <li data-i="b3" data-en="Turn on &lt;strong&gt;Code execution&lt;/strong&gt; on the same page — that’s what lets Claude hand you the Word file.">فعّل <strong>Code execution</strong> بنفس الصفحة… هذا اللي يخلي Claude يعطيك ملف الـ Word.</li>
+        </ul>
+        <p class="src" data-i="bB" data-en="On Claude Code — paste this install prompt">بـ Claude Code… الصق برومبت التثبيت</p>
+        <div class="script" data-script="install"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="c">
+      <summary><span class="num">3</span><h3 data-i="ch" data-en="Say what you want + send this">قول شنو تبي + ارسل هذا</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="c1" data-en="Write what you want in plain words. Kuwaiti dialect is fine — the letter comes out in formal Arabic.">اكتب اللي تبيه بكلامك العادي. بالكويتي عادي… الكتاب يطلع بالفصحى الرسمية.</li>
+          <li data-i="c2" data-en="Then send this:">وعقبها ارسل هذا:</li>
+        </ul>
+        <div class="script" data-script="ask"></div>
+        <div class="tip" data-i="ct" data-en="Civil ID or account number? Don’t give them to Claude. It leaves a blank in brackets and you type them into the Word file yourself.">الرقم المدني أو رقم الحساب؟ لا تعطيهم Claude. يخلي مكانهم فاضي بين قوسين، وإنت تكتبهم بملف الـ Word بنفسك.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="d">
+      <summary><span class="num">4</span><h3 data-i="dh" data-en="Answer its questions">جاوب على أسئلته</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="dp" data-en="If something important is missing it asks you — three questions at most. It never makes up a date, a number or a law article: what it doesn’t know stays in brackets [ ] for you to fill in.">إذا ناقصه شي مهم يسألك… ثلاث أسئلة بالكثير. وما يألّف تاريخ ولا رقم ولا مادة قانون: اللي ما يعرفه يخليه بين قوسين [ ] وإنت تعبّيه.</p>
+        <div class="tip" data-i="dt" data-en="Want a different tone? Just say: “shorter”, “firmer”, or “make an English version”.">تبي نبرة ثانية؟ قول له: «خله أقصر»، «خله أقوى»، أو «سوّه إنجليزي».</div>
+        <div class="tip" data-i="dt2" data-en="It only writes letters from you or your company. It won’t write a document in another party’s name (a salary certificate, a letter from a ministry) — it writes you a request to that party to issue it.">يكتب بس كتب منك أو من شركتك. ما يكتب مستند باسم جهة ثانية (شهادة راتب، كتاب من وزارة)… يكتب لك طلب للجهة نفسها عشان تصدره.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="e">
+      <summary><span class="num">5</span><h3 data-i="eh" data-en="Before you print it">قبل لا تطبعه</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="e1" data-en="Fill in everything left in brackets [ ].">عبّي كل اللي بين قوسين [ ].</li>
+          <li data-i="e2" data-en="Check the organisation’s name and the person’s title. A wrong title spoils the letter.">راجع اسم الجهة والمسمى الوظيفي. غلطة باللقب تخرب الكتاب.</li>
+          <li data-i="e3" data-en="A company? Print it on your letterhead, sign it and stamp it.">شركة؟ اطبعه على الترويسة، ووقّع واختم.</li>
+          <li data-i="e4" data-en="Keep a copy, and ask for the incoming number when you hand it in.">احتفظ بنسخة، واطلب رقم الوارد لما تسلّمه.</li>
+        </ul>
+        <div class="tip" data-i="et" data-en="A grievance or a claim with legal rights and deadlines? Let a lawyer read it before you hand it in.">تظلّم أو مطالبة فيها حقوق ومواعيد قانونية؟ خل محامي يشوفه قبل لا تسلّمه.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Done? The letter that took an hour now takes two minutes.">خلصت؟ الكتاب اللي كان ياخذ ساعة… صار دقيقتين.</h2>
+    <p data-i="finP" data-en="Does your company write the same letters every day? We build it as a system: they come out on your letterhead, numbered and filed, and go for signature with one tap.">شركتكم تكتب نفس الكتب كل يوم؟ نبنيها لكم نظام: تطلع بترويستكم، مرقّمة ومحفوظة، وتروح للتوقيع بضغطة.</p>
+    <a class="btn" href="https://instagram.com/eng.abdullah.ai" target="_blank" rel="noopener" data-i="finBtn" data-en="Message me on Instagram">راسلني على الانستغرام</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("ol-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    F.from.placeholder = l==="ar" ? "اسمك" : "Your name";
+    F.to.placeholder = l==="ar" ? "البنك، الوزارة، الشركة…" : "The bank, the ministry, a company…";
+    F.want.placeholder = l==="ar" ? "أبي أأجل قسط شهر ديسمبر" : "I want to postpone my December instalment";
+    try { localStorage.setItem("ol-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { from:$("#f-from"), to:$("#f-to"), want:$("#f-want"), type:$("#f-type"), rl:$("#f-lang") };
+  var TYPES = { req:["طلب","a request"], grv:["تظلّم","a grievance / appeal"], cmp:["شكوى","a complaint"], enq:["استفسار","an enquiry"], res:["استقالة","a resignation"], thx:["شكر","a thank-you letter"] };
+  function v(){
+    var ar = lang === "ar";
+    return { from: F.from.value.trim() || (ar ? "[اسمك]" : "[your name]"),
+             to: F.to.value.trim() || (ar ? "[الجهة]" : "[the organisation]"),
+             want: F.want.value.trim() || (ar ? "[اكتب هني شنو تبي بكلامك]" : "[write here what you want, in your own words]"),
+             type: (TYPES[F.type.value] || TYPES.req)[ar ? 0 : 1], both: F.rl.value === "both" };
+  }
+  var BASE = location.href.replace(/[#?].*$/, "").replace(/index\.html$/, "");
+  var S = {
+    ask: function(x){
+      if (lang === "ar") return [
+        "أبي كتاب رسمي. استخدم skill official-letter.",
+        "النوع: " + x.type,
+        "من: " + x.from,
+        "إلى: " + x.to,
+        "اللي أبيه: " + x.want,
+        "",
+        "اسألني عن أي شي مهم ناقص قبل لا تكتب، وأي رقم أو تاريخ ما عطيتك اياه خله بين قوسين [ ].",
+        "عطني ملف Word جاهز للطباعة" + (x.both ? "، ونسخة إنجليزي بملف ثاني." : ".")
+      ].join("\n");
+      return [
+        "I need an official Arabic letter. Use the official-letter skill.",
+        "Type: " + x.type,
+        "From: " + x.from,
+        "To: " + x.to,
+        "What I want: " + x.want,
+        "",
+        "Ask me about anything important that is missing before you write, and leave any number or date I didn’t give you in brackets [ ].",
+        "Give me a Word file ready to print" + (x.both ? ", and an English version as a second file." : ".")
+      ].join("\n");
+    },
+    install: function(){
+      return "Install this skill for me in ~/.claude/skills/official-letter/ — create the folder and download its SKILL.md into it, then confirm:\n\n" + BASE + "skills/official-letter/SKILL.md";
+    }
+  };
+  function copy(txt, b, label){
+    var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = label; },1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+  }
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[k]) return;
+      box.textContent = S[k](x);
+      box.setAttribute("dir", k==="install" ? "ltr" : (lang==="ar"?"rtl":"ltr"));
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ":"Copy");
+      b.addEventListener("click", function(){ copy(S[k](v()), b, lang==="ar"?"نسخ":"Copy"); });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("ol-guide-form", JSON.stringify({ from:F.from.value, to:F.to.value, want:F.want.value, type:F.type.value, rl:F.rl.value })); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("ol-guide-form")||"null"); if(saved){ Object.keys(F).forEach(function(k){ if(saved[k]!==undefined) F[k].value=saved[k]; }); } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); F[k].addEventListener("change", renderScripts); });
+
+  // "Copy as prompt": fetch the skill file, drop its front matter
+  document.addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest(".sbtn.cp"); if(!b) return;
+    var label = b.textContent;
+    fetch("skills/" + b.getAttribute("data-skill") + "/SKILL.md").then(function(r){ if(!r.ok) throw 0; return r.text(); })
+      .then(function(t){ copy(t.replace(/^---[\s\S]*?---\s*/, ""), b, label); })
+      .catch(function(){ b.textContent = lang==="ar"?"ما قدرت أنسخ":"Couldn’t copy"; setTimeout(function(){ b.textContent = label; },1800); });
+  });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("ol-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-l1 .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("ol-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); updateProgress();
+})();
+</script>
+</body>
+</html>
