@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>اختبر فكرة مشروعك قبل لا تصرف دينار — Claude skill</title>
+<meta name="description" content="A free Claude skill that tests a business idea before you spend anything: a three-voice board, a CFO who works out the real margin and break-even, a marketing director with a 30-day plan, a simulated panel of 100 AI customers, and a one-page plan with a verdict: go, fix or stop. Built for small businesses in Kuwait. By Abdullah Alawadhi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#10251B; --ink-2:#2E3F35; --mute:#5C6B62; --line:#DCD5C6;
+  --ground:#F6F1E7; --panel:#FFFFFF; --lime:#007A3D; --lime-ink:#005C2E; --lime-soft:#E3F2EA; --red:#CE1126;
+  --sans:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --ar:'IBM Plex Sans Arabic','Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55}
+html[dir=rtl] body{font-family:var(--ar)}
+a{color:var(--ink)} a:hover{color:var(--lime-ink)}
+:focus-visible{outline:3px solid var(--lime-ink);outline-offset:3px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;min-width:0;white-space:nowrap}
+.brand span{font-size:15px;color:var(--ink-2);font-weight:500}
+@media (max-width:520px){.brand span{display:none}}
+.lang{display:flex;flex:none;border:2px solid var(--ink);border-radius:999px;overflow:hidden;white-space:nowrap}
+.lang button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:8px 16px;cursor:pointer;min-height:44px}
+.lang button[aria-pressed=true]{background:var(--lime);color:#fff}
+.hero{padding:56px 0 32px}
+.hero .mono{font-family:var(--mono);letter-spacing:.08em;font-size:12px;color:var(--mute);text-transform:lowercase;display:block;margin-bottom:12px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px;max-width:16ch}
+html[dir=rtl] .hero h1{letter-spacing:0;line-height:1.25}
+.hero p{font-size:19px;color:var(--ink-2);max-width:58ch;margin:0 0 24px}
+.meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta span{background:var(--lime-soft);color:var(--lime-ink);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:8px 0 36px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.setup h2{grid-column:1/-1;margin:0;font-size:18px}
+.setup p.hint{grid-column:1/-1;margin:-6px 0 0;color:var(--mute);font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-weight:600;font-size:15px}
+.field input{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px}
+.field select{font:inherit;width:100%;max-width:100%;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;min-height:44px;color:var(--ink)}
+.field select:focus{border-color:var(--ink)}
+.field input[dir=auto]{text-align:start}
+.field input:focus{border-color:var(--ink)}
+@media (max-width:600px){.setup{grid-template-columns:minmax(0,1fr)}}
+.progress{display:flex;align-items:center;gap:14px;margin:0 0 24px;color:var(--ink-2);font-size:15px}
+.bar{flex:1;height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .3s}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:0;margin:0 0 14px;overflow:hidden}
+.step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 20px;min-height:64px}
+.step summary::-webkit-details-marker{display:none}
+.num{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step.done .num{background:var(--lime);color:#fff}
+.step h3{margin:0;font-size:19px;flex:1}
+.step .chev{flex:none;transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.body{padding:4px 20px 20px 76px;color:var(--ink-2)}
+html[dir=rtl] .body{padding:4px 76px 20px 20px}
+@media (max-width:600px){.body,html[dir=rtl] .body{padding:4px 20px 20px}}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-inline-start:20px}
+.body li{margin:6px 0}
+.body strong{color:var(--ink)}
+.tip{background:var(--lime-soft);color:var(--lime-ink);border-radius:12px;padding:12px 16px;margin:12px 0}
+.script{position:relative;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px;margin:12px 0;white-space:pre-wrap;color:var(--ink);font-size:16px}
+.script[dir=rtl]{font-family:var(--ar)}
+.script.prompt{padding-top:52px;font-size:15.5px}
+.go{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.try.big{min-height:52px;padding:0 24px;font-size:16px;background:var(--lime);border-color:var(--lime);color:#fff}
+.try.big:hover{background:var(--lime-ink);border-color:var(--lime-ink)}
+.sks{display:grid;gap:10px;margin:12px 0}
+.sk{display:flex;align-items:center;gap:14px;background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:12px 14px;flex-wrap:wrap}
+.sk>i{flex:none;font-style:normal;font-size:26px;width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center}
+.sk .t{flex:1;min-width:0}
+.sk .t b{display:block;color:var(--ink)}
+.sk .t span{font-size:14px;color:var(--mute)}
+.sk .acts{display:flex;gap:8px;flex:none}
+.sbtn{font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.sbtn:hover{background:var(--ink);color:#fff}
+@media (max-width:520px){.sk .acts{width:100%}.sk .acts .sbtn{flex:1;justify-content:center}}
+.copy{position:absolute;top:8px;inset-inline-end:8px;font:inherit;font-size:13px;font-weight:700;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.copy:hover{background:var(--lime);color:#fff;border-color:var(--lime)}
+.src{font-weight:700;color:var(--ink);margin:18px 0 0}
+.try{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;border:2px solid var(--ink);font-weight:700;text-decoration:none;font-size:14px}
+.try:hover{background:var(--ink);color:#fff}
+code{font-family:var(--mono);font-size:.92em;background:var(--ground);padding:2px 6px;border-radius:6px;direction:ltr;unicode-bidi:embed}
+.check{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--lime-ink)}
+.finish{margin:36px 0 64px;padding:28px;border-radius:18px;background:var(--lime);color:#fff}
+.finish h2{margin:0 0 10px;font-size:26px}
+.finish p{margin:0 0 18px;color:#D6EBDF}
+.finish a.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:#fff;color:var(--lime);font-weight:700;text-decoration:none}
+footer{padding:0 0 48px;color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#007A3D"/><path d="M20 20l14 12-14 12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M34 46h12" stroke="#F6F1E7" stroke-width="6" stroke-linecap="round"/></svg>
+      @eng.abdullah.ai <span data-i="by" data-en="by Abdullah Alawadhi">بقلم عبدالله العوضي</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="mono"><bdi dir="ltr">claude skills / 04</bdi></span>
+    <h1 data-i="h1" data-en="Test your business idea… before you spend a dinar.">اختبر فكرة مشروعك… قبل لا تصرف دينار.</h1>
+    <p data-i="lead" data-en="Describe your idea in a few lines and this Claude skill puts it through a whole team: a board that criticises it from three angles, a CFO who works out your real margin, a marketing director with a 30-day plan, and 100 AI customers who tell you who would buy, who wouldn’t and why. At the end you get a one-page plan and a verdict: go, fix, or stop.">اكتب فكرتك بكم سطر… وهالـ skill حق Claude يمشّيها على فريق كامل: مجلس إدارة ينتقدها من ثلاث زوايا، مدير مالي يطلّع ربحك الحقيقي، مدير تسويق مع خطة ٣٠ يوم، و١٠٠ زبون AI يقولون لك منو يشتري، منو لا، وليش. وبالآخر خطة بصفحة وحدة والحكم: كمّل، عدّل، أو وقّف.</p>
+    <div class="meta"><span data-i="m1" data-en="1 skill">skill واحد</span><span data-i="m2" data-en="Free">مجاني</span><span data-i="m3" data-en="5 roles · 1 verdict">٥ أدوار · حكم واحد</span></div>
+  </section>
+
+  <section class="setup" id="make" aria-labelledby="setup-h">
+    <h2 id="setup-h" data-i="setupH" data-en="Your idea">فكرتك</h2>
+    <p class="hint" data-i="setupHint" data-en="Fill these and step 3 gives you the exact message to send.">عبّي هذي والخطوة ٣ تعطيك الرسالة اللي ترسلها.</p>
+    <div class="field full"><label for="f-idea" data-i="fIdea" data-en="The idea, in one line">الفكرة بسطر واحد</label><input id="f-idea" dir="auto" value="" placeholder="قهوة مختصة توصيل للدوامات"></div>
+    <div class="field"><label for="f-who" data-i="fWho" data-en="Who is the customer?">منو الزبون؟</label><input id="f-who" dir="auto" value="" placeholder="موظفين بالعاصمة"></div>
+    <div class="field"><label for="f-price" data-i="fPrice" data-en="Your price">السعر اللي ببالك</label><input id="f-price" dir="ltr" value="" placeholder="2.500 KWD"></div>
+    <div class="field"><label for="f-where" data-i="fWhere" data-en="Where do you sell?">وين تبيع؟</label>
+      <select id="f-where">
+        <option value="on" data-i="wOn" data-en="Online">أونلاين</option>
+        <option value="shop" data-i="wShop" data-en="A shop">محل</option>
+        <option value="both" data-i="wBoth" data-en="Both">الاثنين</option>
+      </select></div>
+    <div class="field"><label for="f-cost" data-i="fCost" data-en="Costs you know (optional)">التكاليف اللي تعرفها (اختياري)</label><input id="f-cost" dir="auto" value="" placeholder="الكوب يكلفني 0.900، الإيجار 400"></div>
+  </section>
+
+  <div class="progress"><span id="prog-label">0 / 0</span><div class="bar"><i id="prog-bar"></i></div></div>
+
+  <section id="route-l1">
+    <details class="step" data-step="a" open>
+      <summary><span class="num">1</span><h3 data-i="ah" data-en="Download the skill">حمّل الـ skill</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <div class="sks">
+          <div class="sk"><i>🧪</i><div class="t"><b>idea-test</b><span data-i="s1d" data-en="Board · CFO · marketing · 100 AI customers · plan and verdict">مجلس إدارة · مدير مالي · تسويق · ١٠٠ زبون AI · الخطة والحكم</span></div><div class="acts"><a class="sbtn" href="zips/idea-test.zip" download data-i="dl" data-en="Download">تحميل</a><button type="button" class="sbtn cp" data-skill="idea-test" data-i="cpb" data-en="Copy as prompt">نسخ كبرومبت</button></div></div>
+        </div>
+        <div class="tip" data-i="at" data-en="Only have ChatGPT? Tap &lt;strong&gt;Copy as prompt&lt;/strong&gt; and paste it at the start of your chat.">عندك ChatGPT بس؟ اضغط <strong>نسخ كبرومبت</strong> والصقه بأول المحادثة.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="b">
+      <summary><span class="num">2</span><h3 data-i="bh" data-en="Install it in Claude">ركّبه بـ Claude</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p class="src" data-i="bA" data-en="On claude.ai or the Claude app">بموقع claude.ai أو التطبيق</p>
+        <ul>
+          <li data-i="b1" data-en="&lt;strong&gt;Settings&lt;/strong&gt; → &lt;strong&gt;Capabilities&lt;/strong&gt; → &lt;strong&gt;Skills&lt;/strong&gt;."><strong>Settings</strong> ← <strong>Capabilities</strong> ← <strong>Skills</strong>.</li>
+          <li data-i="b2" data-en="&lt;strong&gt;Upload skill&lt;/strong&gt; → choose &lt;code&gt;idea-test.zip&lt;/code&gt;.">اضغط <strong>Upload skill</strong> ← اختار <code>idea-test.zip</code>.</li>
+          <li data-i="b3" data-en="Want the plan as a Word or PDF file? Turn on &lt;strong&gt;Code execution&lt;/strong&gt; on the same page.">تبي الخطة ملف Word أو PDF؟ فعّل <strong>Code execution</strong> بنفس الصفحة.</li>
+        </ul>
+        <p class="src" data-i="bB" data-en="On Claude Code — paste this install prompt">بـ Claude Code… الصق برومبت التثبيت</p>
+        <div class="script" data-script="install"></div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="c">
+      <summary><span class="num">3</span><h3 data-i="ch" data-en="Send your idea">ارسل فكرتك</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <p data-i="cp" data-en="Open a new chat and send this. The more real numbers you give it, the more honest the answer.">افتح محادثة جديدة وارسل هذا. وكل ما عطيته أرقام حقيقية، طلع الجواب أصدق.</p>
+        <div class="script" data-script="ask"></div>
+        <div class="tip" data-i="ct" data-en="Don’t know a cost? Say so. It asks you, or uses a number clearly marked as an assumption for you to confirm.">ما تعرف تكلفة؟ قول له. يسألك، أو يحط رقم مكتوب عليه «افتراض» عشان تتأكد منه.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="d">
+      <summary><span class="num">4</span><h3 data-i="dh" data-en="Read the five answers">اقرا الأجوبة الخمسة</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="d1" data-en="&lt;b&gt;The board&lt;/b&gt;: the optimist, the sceptic and the customer’s voice, and the one question you must answer."><b>مجلس الإدارة</b>: المتفائل، المتشكك، وصوت الزبون… والسؤال اللي لازم تجاوبه.</li>
+          <li data-i="d2" data-en="&lt;b&gt;The CFO&lt;/b&gt;: your real margin per sale after delivery and commission, and how many sales a day you need to break even."><b>المدير المالي</b>: ربحك الحقيقي بكل بيعة عقب التوصيل والعمولة، وكم بيعة باليوم عشان تغطي مصاريفك.</li>
+          <li data-i="d3" data-en="&lt;b&gt;The marketing director&lt;/b&gt;: a 30-day launch plan, week by week."><b>مدير التسويق</b>: خطة ٣٠ يوم، أسبوع بأسبوع.</li>
+          <li data-i="d4" data-en="&lt;b&gt;100 AI customers&lt;/b&gt;: who buys, who might, who won’t, and the top objections."><b>١٠٠ زبون AI</b>: منو يشتري، منو يمكن، منو لا… وأكثر الاعتراضات.</li>
+          <li data-i="d5" data-en="&lt;b&gt;The verdict&lt;/b&gt;: go, fix, or stop, with the first step for the next 48 hours."><b>الحكم</b>: كمّل، عدّل، أو وقّف… وأول خطوة تسويها خلال ٤٨ ساعة.</li>
+        </ul>
+        <div class="tip" data-i="dt" data-en="The 100 customers are a simulation, not a survey. They show you where the objections are, not how many people will really buy.">الـ ١٠٠ زبون محاكاة مو استبيان. يبيّنون لك وين الاعتراضات، مو كم واحد راح يشتري فعلاً.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+
+    <details class="step" data-step="e">
+      <summary><span class="num">5</span><h3 data-i="eh" data-en="Before you spend a dinar">قبل لا تصرف دينار</h3><svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="body">
+        <ul>
+          <li data-i="e1" data-en="Do the real test it gives you this week: a pre-order link to 20 people, a story poll, or 10 units sold by hand.">سوّ الاختبار الحقيقي اللي يعطيك اياه هالأسبوع: رابط طلب مسبق لـ ٢٠ واحد، تصويت بالستوري، أو بيع ١٠ حبات بيدك.</li>
+          <li data-i="e2" data-en="Check every number marked “assumption” with the real provider: rent, commission, payment fees, licence.">تأكد من كل رقم مكتوب عليه «افتراض» من مصدره: الإيجار، العمولة، رسوم الدفع، الترخيص.</li>
+          <li data-i="e3" data-en="Changed the price or the customer? Send the new numbers in the same chat and it recalculates.">غيّرت السعر أو الزبون؟ ارسل الأرقام الجديدة بنفس المحادثة ويعيد الحساب.</li>
+        </ul>
+        <div class="tip" data-i="et" data-en="It tests the idea; the market decides. Licences, contracts and taxes: check with the authority or a professional.">هو يختبر الفكرة، والسوق يقرر. التراخيص والعقود والضرايب: اسأل الجهة نفسها أو مختص.</div>
+        <label class="check"><input type="checkbox"> <span data-i="done" data-en="Done">خلصت</span></label>
+      </div>
+    </details>
+  </section>
+
+  <section class="finish">
+    <h2 data-i="finH" data-en="Done? You know where the idea is weak before it costs you.">خلصت؟ الحين تعرف وين فكرتك ضعيفة… قبل لا تكلفك.</h2>
+    <p data-i="finP" data-en="Decided to go? We build what the business runs on: the website, ordering, payments and the dashboard that shows you the numbers every day.">قررت تكمّل؟ نبني لك اللي يشتغل عليه المشروع: الموقع، الطلبات، الدفع، ولوحة تشوف منها أرقامك كل يوم.</p>
+    <a class="btn" href="https://instagram.com/eng.abdullah.ai" target="_blank" rel="noopener" data-i="finBtn" data-en="Message me on Instagram">راسلني على الانستغرام</a>
+  </section>
+
+  <footer>
+    <span data-i="foot" data-en="Abdullah Alawadhi · IT Manager · AI, software &amp; automation · Kuwait">عبدالله العوضي · مدير تقنية المعلومات · ذكاء اصطناعي، برمجة وأتمتة · الكويت</span>
+  </footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var AR = {}, ENm = {};
+  $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); AR[k]=el.innerHTML; if(el.hasAttribute("data-en")) ENm[k]=el.getAttribute("data-en"); });
+  var lang = "ar";
+  try { lang = localStorage.getItem("it-guide-lang") || "ar"; } catch(e){}
+  function setLang(l){
+    lang = l;
+    $$("[data-i]").forEach(function(el){ var k=el.getAttribute("data-i"); el.innerHTML = l==="ar" ? AR[k] : (ENm[k]!==undefined ? ENm[k] : AR[k]); });
+    document.documentElement.lang = l; document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+    $("#btn-en").setAttribute("aria-pressed", l==="en"); $("#btn-ar").setAttribute("aria-pressed", l==="ar");
+    F.idea.placeholder = l==="ar" ? "قهوة مختصة توصيل للدوامات" : "Specialty coffee delivered to offices";
+    F.who.placeholder = l==="ar" ? "موظفين بالعاصمة" : "Office workers in Kuwait City";
+    F.cost.placeholder = l==="ar" ? "الكوب يكلفني 0.900، الإيجار 400" : "A cup costs me 0.900, rent is 400";
+    try { localStorage.setItem("it-guide-lang", l); } catch(e){}
+    renderScripts();
+  }
+  $("#btn-en").addEventListener("click", function(){ setLang("en"); });
+  $("#btn-ar").addEventListener("click", function(){ setLang("ar"); });
+
+  var F = { idea:$("#f-idea"), who:$("#f-who"), price:$("#f-price"), where:$("#f-where"), cost:$("#f-cost") };
+  var WHERE = { on:["أونلاين","online"], shop:["محل","from a shop"], both:["أونلاين ومحل","online and from a shop"] };
+  function v(){
+    var ar = lang === "ar";
+    return { idea: F.idea.value.trim() || (ar ? "[اكتب فكرتك هني]" : "[write your idea here]"),
+             who: F.who.value.trim() || (ar ? "[منو الزبون]" : "[who the customer is]"),
+             price: F.price.value.trim() || (ar ? "[السعر]" : "[the price]"),
+             where: (WHERE[F.where.value] || WHERE.on)[ar ? 0 : 1], cost: F.cost.value.trim() };
+  }
+  var BASE = location.href.replace(/[#?].*$/, "").replace(/index\.html$/, "");
+  var S = {
+    ask: function(x){
+      if (lang === "ar") return [
+        "اختبر فكرة مشروعي. استخدم skill idea-test.",
+        "الفكرة: " + x.idea,
+        "الزبون: " + x.who,
+        "السعر: " + x.price,
+        "البيع: " + x.where,
+        (x.cost ? "التكاليف اللي أعرفها: " + x.cost : "التكاليف: ما أعرفها كلها… اسألني عن المهم."),
+        "",
+        "أبي الخمسة: مجلس الإدارة، المدير المالي، مدير التسويق، ١٠٠ زبون AI، والخطة مع الحكم.",
+        "كون صريح، وأي رقم ما عطيتك اياه اكتب قدامه «افتراض»."
+      ].join("\n");
+      return [
+        "Test my business idea. Use the idea-test skill.",
+        "The idea: " + x.idea,
+        "The customer: " + x.who,
+        "The price: " + x.price,
+        "Sold: " + x.where,
+        (x.cost ? "Costs I know: " + x.cost : "Costs: I don’t know them all — ask me about the important ones."),
+        "",
+        "I want all five: the board, the CFO, the marketing director, the 100 AI customers, and the plan with a verdict.",
+        "Be direct, and mark any number I didn’t give you as an assumption."
+      ].join("\n");
+    },
+    install: function(){
+      return "Install this skill for me in ~/.claude/skills/idea-test/ — create the folder and download its SKILL.md into it, then confirm:\n\n" + BASE + "skills/idea-test/SKILL.md";
+    }
+  };
+  function copy(txt, b, label){
+    var done=function(){ b.textContent = lang==="ar"?"تم النسخ":"Copied"; setTimeout(function(){ b.textContent = label; },1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,done); else done();
+  }
+  function renderScripts(){
+    var x = v();
+    $$(".script").forEach(function(box){
+      var k = box.getAttribute("data-script"); if(!S[k]) return;
+      box.textContent = S[k](x);
+      box.setAttribute("dir", k==="install" ? "ltr" : (lang==="ar"?"rtl":"ltr"));
+      var b = document.createElement("button"); b.type="button"; b.className="copy"; b.textContent = lang==="ar"?"نسخ":"Copy";
+      b.setAttribute("aria-label", lang==="ar"?"نسخ":"Copy");
+      b.addEventListener("click", function(){ copy(S[k](v()), b, lang==="ar"?"نسخ":"Copy"); });
+      box.appendChild(b);
+    });
+    try { localStorage.setItem("it-guide-form", JSON.stringify({ idea:F.idea.value, who:F.who.value, price:F.price.value, where:F.where.value, cost:F.cost.value })); } catch(e){}
+  }
+  try { var saved = JSON.parse(localStorage.getItem("it-guide-form")||"null"); if(saved){ Object.keys(F).forEach(function(k){ if(saved[k]!==undefined) F[k].value=saved[k]; }); } } catch(e){}
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", renderScripts); F[k].addEventListener("change", renderScripts); });
+
+  // "Copy as prompt": fetch the skill file, drop its front matter
+  document.addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest(".sbtn.cp"); if(!b) return;
+    var label = b.textContent;
+    fetch("skills/" + b.getAttribute("data-skill") + "/SKILL.md").then(function(r){ if(!r.ok) throw 0; return r.text(); })
+      .then(function(t){ copy(t.replace(/^---[\s\S]*?---\s*/, ""), b, label); })
+      .catch(function(){ b.textContent = lang==="ar"?"ما قدرت أنسخ":"Couldn’t copy"; setTimeout(function(){ b.textContent = label; },1800); });
+  });
+
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("it-guide-done")||"{}"); } catch(e){}
+  function updateProgress(){
+    var steps = $$("#route-l1 .step");
+    var n = steps.filter(function(s){ return done[s.getAttribute("data-step")]; }).length;
+    $("#prog-label").textContent = n + " / " + steps.length;
+    $("#prog-bar").style.width = Math.round(100*n/steps.length) + "%";
+  }
+  $$(".step").forEach(function(step){
+    var id = step.getAttribute("data-step"), cb = $("input[type=checkbox]", step);
+    cb.checked = !!done[id]; step.classList.toggle("done", cb.checked);
+    cb.addEventListener("change", function(){
+      done[id] = cb.checked; step.classList.toggle("done", cb.checked);
+      try { localStorage.setItem("it-guide-done", JSON.stringify(done)); } catch(e){}
+      updateProgress();
+      if (cb.checked) { step.removeAttribute("open"); var nx = step.nextElementSibling; if (nx && nx.classList.contains("step")) nx.setAttribute("open",""); }
+    });
+  });
+  setLang(lang); updateProgress();
+})();
+</script>
+</body>
+</html>
